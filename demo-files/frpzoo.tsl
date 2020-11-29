@@ -1,0 +1,24 @@
+always guarantee {
+  // update the display, depending on whether the count button is
+  // enabled or not
+  !activated toggle0 <-> [ display0 <- setLabel value0 ];
+   activated toggle0 <-> [ display0 <- setLabel minusOne() ];
+  !activated toggle5 <-> [ display5 <- setLabel value5 ];
+   activated toggle5 <-> [ display5 <- setLabel minusOne() ];
+  !activated toggle10 <-> [ display10 <- setLabel value10 ];
+   activated toggle10 <-> [ display10 <- setLabel minusOne() ];
+
+  //deal with 0
+  // increase the value on the count button click
+  (clicked0 buttonEvent && !activated toggle0) <-> [ value0 <- inc value0 ];
+  // reset the counter when the count button is turned back on
+  activated toggle0 <-> [ value0 <- zero() ]; 
+
+  //deal with 5
+  (clicked5 buttonEvent && !activated toggle5) <-> [ value5 <- inc value5 ];
+
+  //deal with 10
+  (clicked10 buttonEvent) <-> [ value10 <- inc value10 ];
+}
+
+
