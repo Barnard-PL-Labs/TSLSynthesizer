@@ -9,13 +9,24 @@ app.use(express.static("./public"));
 
 // Start the express web server listening on 8080
 app.listen(8080, () => {
-  console.log('Service started on port 8080.');
+  console.log(`Service started on port ${PORT}.`);
 });
 
 // Serve the homepage
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
+
+// GET and POST
+app.get('/clicks', async (req, res) => {
+  let val = await synthesize();
+  res.send({result:val});
+})
+
+app.post('/clicked', (req, res) => {
+  console.log("Button click functional.");
+  res.sendStatus(201);
+})
 
 // Function to synthesize TSL spec
 function synthesize() {
