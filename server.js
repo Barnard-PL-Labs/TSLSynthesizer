@@ -23,7 +23,10 @@ app.get('/', (req, res) => {
 // GET and POST
 app.get('/clicks', async (req, res) => {
   let synthesized = await synthesize(tslSpec);
-  let returnStr = tslSpec + "<br><br>Synthesized:<br><br>" + synthesized;
+  let returnStr = "<em><strong>Specification</strong></em>:<br><br>" + 
+    tslSpec + "<br><br>" + 
+    "<em><strong>Synthesized</strong></em>:<br><br>" + 
+    synthesized;
   res.send({result:returnStr});
 })
 
@@ -33,9 +36,10 @@ app.post('/clicked', (req, res) => {
 })
 
 // Function to synthesize TSL spec
+// Currently ignores input and runs hardcoded output.
 function synthesize(tsl) {
     return new Promise(resolve => {
-        execFile('demo-files/demo.sh', [tsl],
+        execFile('tsltools/tsl2tlsf', ['tsltools/frpzoo.tsl'],
             function (err, data) {
                 let returnValue;
                 if (err) {
@@ -48,12 +52,3 @@ function synthesize(tsl) {
             })
     })
 }
-
-// Test the demo
-(async function(){
-  let demoResult = await synthesize("foobarbaz");
-  if(demoResult=="foobarbaz\n")
-    console.log("Async demo success!");
-  else
-    console.log("Async demo failure...");
-})();
