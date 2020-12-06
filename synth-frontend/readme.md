@@ -1,7 +1,16 @@
-## Web Synth with Webpack, D3.js & the Web Audio API
-[![License: CC BY Tinus Wagner 4.0](https://licensebuttons.net/l/by/4.0/80x15.png)](http://creativecommons.org/licenses/by/4.0/)
+# TSL Synthesis Synthesizer
 
-[See it live](https://mysterious-ravine-13417.herokuapp.com/)
+Based on the Synth UI from [Tinus Wanger](https://github.com/Tinusw/webAudioSynth).
+
+Assuming you have `Node.js` installed, running the program is easy:
+
+```sh
+node server.js
+```
+
+And then open up `localhost:8080` on your favorite browser.
+
+---------------------------------------------------------------------------------------------
 
 This is a little synthesizer with:
 - Polyphonic playable keyboard

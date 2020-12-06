@@ -530,7 +530,7 @@ function windowLoadHandler() {
     width: keyboardWidth,
     height: 150,
     startNote: "A2",
-    whiteNotesColour: "#fff",
+    whiteNotesColour: "#000",
     blackNotesColour: "#000",
     borderColour: "#000",
     activeColour: "orange",

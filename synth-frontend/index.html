@@ -96,19 +96,21 @@
         <div class="row bottom-row">
           <!-- Delay -->
           <div class="col-lg-3 text-left">
-            <h3>Delay</h3>
+            <h3>Change 1</h3>
             <div class="row">
               <div class="col-lg-12" id="delay">
-                <canvas id="delayPad" class="svg-background"></canvas>
+                <canvas hidden id="delayPad" class="svg-background" id="change-1"></canvas>
+                <button class="btn btn-md" style="font-size: 32px">Change 1</button>
               </div>
             </div>
           </div>
           <!-- Distortion -->
           <div class="col-lg-3 text-left">
-            <h3>Distortion</h3>
+            <h3>Change 2</h3>
             <div class="row">
               <div class="col-lg-12" id="distortion">
-                <canvas id="distortionPad" class="svg-background"></canvas>
+                <canvas hidden id="distortionPad" class="svg-background"></canvas>
+                <button class="btn btn-md" style="font-size: 32px" id="change-2">Change 2</button>
               </div>
             </div>
           </div>
@@ -120,14 +122,17 @@
           <div class="col-lg-3 description text-center">
             <div class="row">
               <div class="col-lg-9">
-                <h3> Made by Tinus Wagner </h3>
+                <h3> 
+                  TSL Synthesis Synthesizer <br><br>
+                  Thanks to <a href="https://github.com/Tinusw/webAudioSynth">Tinus Wagner</a>
+                </h3>
               </div>
-              <div class="col-lg-3">
+              <!-- <div class="col-lg-3">
                 <a href="https://github.com/Tinusw/webAudioSynth" target="_blank" class="github"></a>
               </div>
               <div class="col-lg-12 text-left">
                 <button class="btn btn-md" id="tutorial">How does this thing work?</button>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -140,4 +145,4 @@
   </div>
   <script src="bundle.js"></script>
  </body>
-</html
+</html>
