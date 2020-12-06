@@ -3,10 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TSL Prototype</title>
+    <title>FRPZoo-esque music synthesis</title>
 </head>
 <body>
-   <button>Button</button> 
+    <h1>TSL Music Synthesis Prototype</h1>
+    <div>
+        <label for="spec1">Spec 1</label><br>
+        Frequency <input type="range" id="freq" min="1" max="1000">
+        Gain <input type="range" id="gain" min="1" max="1000">
+        <br>
+        <select name="spec1" id="spec1">
+            <option value="">When</option>
+            <option value="when">Button 1 Pressed</option>
+            <option value="when">Piano track played</option>
+        </select>
+        <select name="spec1" id="spec1">
+            <option value="">Action</option>
+            <option value="when">add</option>
+            <option value="when">delete</option>
+            <option value="when">set frequency</option>
+            <option value="when">set volume</option>
+        </select>
+        <select name="spec1" id="spec1">
+            <option value="">Source</option>
+            <option value="when">piano</option>
+            <option value="when">guitar</option>
+        </select>
+        <br><br>
+    </div>        
+    <div>
+        <hr>
+        <button>Button 1</button>
+        <button>Play piano</button>
+        <button>Play guitar</button>
+    </div>
+    <hr>
+    <div>
+        <button>Synthesize!</button><br>
+    </div>
+    <div>
+        <h2>Resulting Code</h2>
+        <textarea name="Code result" id="" cols="30" rows="10"></textarea><br>
+        <button>Play / Pause</button>
+        <button>Export</button>
+    </div>
 </body>
-<script src="app.js"></script>
 </html>

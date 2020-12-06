@@ -1,20 +1,24 @@
-var audioCtx;
-var osc;
+var audioContext;
 
-(function(){
-    if(audioCtx){
-        return;
-    }
-    audioCtx = new(window.AudioContext || window.webkitAudioContext)
-    const globalGain = audioCtx.createGain();
-    globalGain.gain.setValueAtTime(.4, audioCtx.currentTime);
+var modulatorFreq;
+var modulationIdx;
 
-    oscSteady = audioCtx.createOscillator();
-    oscSteady.frequency.setValueAtTime(1200, audioCtx.currentTime);
-    oscSteady.connect(globalGain).connect(audioCtx.destination);
-    oscSteady.start();
+function init() {
+    audioContext = new(window.AudioContext || window.webkitAudioContex);
+    var osc = audioContext.createOscillator();
+    modulatorFreq = audioContext.createOscillator();
 
-    osc = audioCtx.createOscillator();
-    osc.connect(globalGain).connect(audioCtx.destination);
+    modulationIdx = audioContext.createGain();
+    modulationIdx.gain.value = 100;
+    modulatorFreq.frequency.value = 100;
+
+    modulatorFreq.connect(modulationIdx);
+    modulationIdx.connect(osc.frequency);
+
+    osc.connect(audioContext.destination);
+
     osc.start();
-})();
+    modulatorFreq.start();
+}
+
+// init();
