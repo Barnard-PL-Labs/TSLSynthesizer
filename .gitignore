@@ -1,7 +1,9 @@
-reference.js
+# Audio files
+*.mp3
 
-# Node.js files
-package-lock.json
+# Reference files
+reference.js
+reference.html
 
 # Logs
 logs

@@ -6,46 +6,99 @@
     <title>FRPZoo-esque music synthesis</title>
 </head>
 <body>
-    <h1>TSL Music Synthesis Prototype</h1>
-    <div>
-        <label for="spec1">Spec 1</label><br>
-        Frequency <input type="range" id="freq" min="1" max="1000">
-        Gain <input type="range" id="gain" min="1" max="1000">
-        <br>
+    <h1><em>The TSL Synthesis Synthesizer </em>(Prototype)</h1>
+    <section id="spec">
+        <h2>Specification</h2>
+        <label for="spec1">Predicate Spec 1</label>
         <select name="spec1" id="spec1">
             <option value="">When</option>
+            <option value="when">Always</option>
+            <option value="when">Eventually</option>
             <option value="when">Button 1 Pressed</option>
-            <option value="when">Piano track played</option>
+            <option value="when">Action Spec 1</option>
+            <option value="when">Action Spec 2</option>
         </select>
+        <span>&Implies;</span>
+        <select name="spec1" id="spec1">
+            <option value="">Spec</option>
+            <option value="when">Action Spec 1</option>
+            <option value="when">Action Spec 2</option>
+        </select>
+        <br><br>
+        <label for="spec1">Action Spec 1</label>
         <select name="spec1" id="spec1">
             <option value="">Action</option>
-            <option value="when">add</option>
-            <option value="when">delete</option>
-            <option value="when">set frequency</option>
-            <option value="when">set volume</option>
+            <option value="when">Play</option>
+            <option value="when">Stop</option>
+            <option value="when">Change Freq</option>
+            <option value="when">Change Gain</option>
         </select>
         <select name="spec1" id="spec1">
             <option value="">Source</option>
-            <option value="when">piano</option>
-            <option value="when">guitar</option>
+            <option value="when">Track A</option>
+            <option value="when">Track B</option>
+        </select>
+        <select name="spec1" id="spec1">
+            <option value="">Operator</option>
+            <option value="when">And</option>
+            <option value="when">Or</option>
+            <option value="when">Until</option>
+        </select>
+        <select name="spec1" id="spec1">
+            <option value="">Action</option>
+            <option value="when">Play</option>
+            <option value="when">Stop</option>
+            <option value="when">Change Freq</option>
+            <option value="when">Change Gain</option>
+        </select>
+        <select name="spec1" id="spec1">
+            <option value="">Source</option>
+            <option value="when">Track A</option>
+            <option value="when">Track B</option>
         </select>
         <br><br>
-    </div>        
-    <div>
-        <hr>
-        <button>Button 1</button>
-        <button>Play piano</button>
-        <button>Play guitar</button>
-    </div>
-    <hr>
-    <div>
         <button>Synthesize!</button><br>
-    </div>
-    <div>
+        <hr>
+    </section>        
+    <section id="mixer">
+        <h2>Audio Mixer</h2>
+        <code>Track A</code> <button>Compose</button> <input type="file" id="file"><br>
+        <code>Track B</code> <button>Compose</button> <input type="file" id="trackBFile"><br>
+        <code>Track C</code> <button>Compose</button> <input type="file" id="trackAFile"><br>
+        <code>Track D</code> <button>Compose</button> <input type="file" id="trackBFile"><br><br>
+        <button><code>Button A</code></button>
+        <button><code>Button B</code></button>
+        <button><code>Button C</code></button>
+        <button><code>Button D</code></button><br>
+        <button><code>Button E</code></button>
+        <button><code>Button F</code></button>
+        <button><code>Button G</code></button>
+        <button><code>Button H</code></button><br>
+        <button><code>Button I</code></button>
+        <button><code>Button J</code></button>
+        <button><code>Button K</code></button>
+        <button><code>Button L</code></button><br><br>
+        <code>Knob A </code><input type="range"><br>
+        <code>Knob B </code><input type="range"><br>
+        <code>Knob C </code><input type="range"><br>
+        <code>Knob D </code><input type="range"><br>
+        <hr>
+    </section>
+    <section>
         <h2>Resulting Code</h2>
         <textarea name="Code result" id="" cols="30" rows="10"></textarea><br>
         <button>Play / Pause</button>
         <button>Export</button>
-    </div>
+    </section>
+    <section id="test">
+        <audio id="audio">
+          <source id="audioSource" src=""></source>
+        </audio>
+    </section>
+    <footer>
+        <br><br>
+        <br><br>
+    </footer>
 </body>
+<script src="app.js"></script>
 </html>
