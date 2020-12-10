@@ -1,15 +1,27 @@
 //get input by id
-var audioFile = document.getElementById("file")
+var trackA = document.getElementById("trackAFile")
 //get source by id
 var audioSource = document.getElementById("audioSource");
 //get audio by id
 var audioTag = document.getElementById('audio');
 
-//apply event listener to input using the playAudio function
-audioFile.addEventListener("change", function() {
-  playAudio(this);
-});
+//button to press play
+var playButton = document.getElementById('playBtn')
 
+playButton.addEventListener("click", function() {
+  playAudio(trackA);
+})
+
+/*
+  make sure to have an event listener, but to depend on the actions of the circuit
+
+  - the function/circuit should start when we press play
+  -                             stop  when we press pause
+
+  boil down to a very stripped down version of the app:
+    - always Track1 until Track2
+    - pressButton -> Track2
+*/
 
 function playAudio(input) {
   //empty var to read file

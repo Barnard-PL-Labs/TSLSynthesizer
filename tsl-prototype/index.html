@@ -9,63 +9,67 @@
     <h1><em>The TSL Synthesis Synthesizer </em>(Prototype)</h1>
     <section id="spec">
         <h2>Specification</h2>
-        <label for="spec1">Predicate Spec 1</label>
-        <select name="spec1" id="spec1">
-            <option value="">When</option>
-            <option value="when">Always</option>
-            <option value="when">Eventually</option>
-            <option value="when">Button 1 Pressed</option>
-            <option value="when">Action Spec 1</option>
-            <option value="when">Action Spec 2</option>
-        </select>
-        <span>&Implies;</span>
-        <select name="spec1" id="spec1">
-            <option value="">Spec</option>
-            <option value="when">Action Spec 1</option>
-            <option value="when">Action Spec 2</option>
-        </select>
+        <article predicate>
+            <label for="spec1">Predicate Spec 1</label>
+            <select name="1-predicate-fst" class="predicate-fst">
+                <option value="">When</option>
+                <option value="when">Always</option>
+                <option value="when">Eventually</option>
+                <option value="when">Button 1 Pressed</option>
+                <option value="when">Action Spec 1</option>
+                <option value="when">Action Spec 2</option>
+            </select>
+            <span>&Implies;</span>
+            <select name="1-predicate-snd" class="predicate-snd">
+                <option value="">Spec</option>
+                <option value="when">Action Spec 1</option>
+                <option value="when">Action Spec 2</option>
+            </select>
+        </article>
         <br><br>
-        <label for="spec1">Action Spec 1</label>
-        <select name="spec1" id="spec1">
-            <option value="">Action</option>
-            <option value="when">Play</option>
-            <option value="when">Stop</option>
-            <option value="when">Change Freq</option>
-            <option value="when">Change Gain</option>
-        </select>
-        <select name="spec1" id="spec1">
-            <option value="">Source</option>
-            <option value="when">Track A</option>
-            <option value="when">Track B</option>
-        </select>
-        <select name="spec1" id="spec1">
-            <option value="">Operator</option>
-            <option value="when">And</option>
-            <option value="when">Or</option>
-            <option value="when">Until</option>
-        </select>
-        <select name="spec1" id="spec1">
-            <option value="">Action</option>
-            <option value="when">Play</option>
-            <option value="when">Stop</option>
-            <option value="when">Change Freq</option>
-            <option value="when">Change Gain</option>
-        </select>
-        <select name="spec1" id="spec1">
-            <option value="">Source</option>
-            <option value="when">Track A</option>
-            <option value="when">Track B</option>
-        </select>
+        <article action>
+            <label for="spec1">Action Spec 1</label>
+            <select name="spec1" id="spec1">
+                <option value="">Action</option>
+                <option value="when">Play</option>
+                <option value="when">Stop</option>
+                <option value="when">Change Freq</option>
+                <option value="when">Change Gain</option>
+            </select>
+            <select name="spec1" id="spec1">
+                <option value="">Source</option>
+                <option value="when">Track A</option>
+                <option value="when">Track B</option>
+            </select>
+            <select name="spec1" id="spec1">
+                <option value="">Operator</option>
+                <option value="when">And</option>
+                <option value="when">Or</option>
+                <option value="when">Until</option>
+            </select>
+            <select name="spec1" id="spec1">
+                <option value="">Action</option>
+                <option value="when">Play</option>
+                <option value="when">Stop</option>
+                <option value="when">Change Freq</option>
+                <option value="when">Change Gain</option>
+            </select>
+            <select name="spec1" id="spec1">
+                <option value="">Source</option>
+                <option value="when">Track A</option>
+                <option value="when">Track B</option>
+            </select>
+        </article>
         <br><br>
         <button>Synthesize!</button><br>
         <hr>
     </section>        
     <section id="mixer">
         <h2>Audio Mixer</h2>
-        <code>Track A</code> <button>Compose</button> <input type="file" id="file"><br>
+        <code>Track A</code> <button>Compose</button> <input type="file" id="trackAFile"><br>
         <code>Track B</code> <button>Compose</button> <input type="file" id="trackBFile"><br>
-        <code>Track C</code> <button>Compose</button> <input type="file" id="trackAFile"><br>
-        <code>Track D</code> <button>Compose</button> <input type="file" id="trackBFile"><br><br>
+        <code>Track C</code> <button>Compose</button> <input type="file" id="trackCFile"><br>
+        <code>Track D</code> <button>Compose</button> <input type="file" id="trackDFile"><br><br>
         <button><code>Button A</code></button>
         <button><code>Button B</code></button>
         <button><code>Button C</code></button>
@@ -87,7 +91,7 @@
     <section>
         <h2>Resulting Code</h2>
         <textarea name="Code result" id="" cols="30" rows="10"></textarea><br>
-        <button>Play / Pause</button>
+        <button id="playBtn">Play / Pause</button>
         <button>Export</button>
     </section>
     <section id="test">
