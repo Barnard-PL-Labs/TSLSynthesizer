@@ -66,29 +66,35 @@
     </section>        
     <section id="mixer">
         <h2>Audio Mixer</h2>
-        <code>Track A</code> <button>Compose</button> <input type="file" id="trackAFile"><br>
-        <code>Track B</code> <button>Compose</button> <input type="file" id="trackBFile"><br>
-        <code>Track C</code> <button>Compose</button> <input type="file" id="trackCFile"><br>
-        <code>Track D</code> <button>Compose</button> <input type="file" id="trackDFile"><br><br>
-        <button><code>Button A</code></button>
-        <button><code>Button B</code></button>
-        <button><code>Button C</code></button>
-        <button><code>Button D</code></button><br>
-        <button><code>Button E</code></button>
-        <button><code>Button F</code></button>
-        <button><code>Button G</code></button>
-        <button><code>Button H</code></button><br>
-        <button><code>Button I</code></button>
-        <button><code>Button J</code></button>
-        <button><code>Button K</code></button>
-        <button><code>Button L</code></button><br><br>
-        <code>Knob A </code><input type="range"><br>
-        <code>Knob B </code><input type="range"><br>
-        <code>Knob C </code><input type="range"><br>
-        <code>Knob D </code><input type="range"><br>
+        <article id="track">
+            <code>Track A</code> <button>Compose</button> <input type="file" id="trackAFile"><br>
+            <code>Track B</code> <button>Compose</button> <input type="file" id="trackBFile"><br>
+            <code>Track C</code> <button>Compose</button> <input type="file" id="trackCFile"><br>
+            <code>Track D</code> <button>Compose</button> <input type="file" id="trackDFile"><br><br>
+        </article>
+        <article id="buttonPad">
+            <button class="btn" id="btnA"><code>Button A</code></button>
+            <button><code>Button B</code></button>
+            <button><code>Button C</code></button>
+            <button><code>Button D</code></button><br>
+            <button><code>Button E</code></button>
+            <button><code>Button F</code></button>
+            <button><code>Button G</code></button>
+            <button><code>Button H</code></button><br>
+            <button><code>Button I</code></button>
+            <button><code>Button J</code></button>
+            <button><code>Button K</code></button>
+            <button><code>Button L</code></button><br><br>
+        </article>
+        <article id="knobs">
+            <code>Knob A </code><input type="range"><br>
+            <code>Knob B </code><input type="range"><br>
+            <code>Knob C </code><input type="range"><br>
+            <code>Knob D </code><input type="range"><br>
+        </article>
         <hr>
     </section>
-    <section>
+    <section id="result">
         <h2>Resulting Code</h2>
         <textarea name="Code result" id="" cols="30" rows="10"></textarea><br>
         <button id="playBtn">Play / Pause</button>
