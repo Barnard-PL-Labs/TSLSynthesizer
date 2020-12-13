@@ -10,12 +10,14 @@ let trackA = document.getElementById("trackAFile");
 let trackB = document.getElementById("trackBFile");
 let trackC = document.getElementById("trackCFile");
 let trackD = document.getElementById("trackDFile");
+let noTrack = Null; // TODO 
 
 /////////////////////
 //  Mixer Buttons  //
 ///////////////////// 
 
 let buttonA = document.getElementById("btnA");
+let buttonB = document.getElementById("btnB");
 
 /////////////////////
 //  Program Logic  //
@@ -38,7 +40,14 @@ playButton.addEventListener("click", function() {
   }
 });
 
-// Make this a class
+////////////////////////
+//  Synthesized Code  //
+////////////////////////
+
+// Spec:
+// always Track1 until Track2
+// pressButton -> Track2
+// FIMXE: Make this a class
 function hardCodedProgram() {
   let track2Playing = False;
   buttonA.addEventListener("onclick", function(){track2Playing = True;});
@@ -50,18 +59,36 @@ function hardCodedProgram() {
   }
 }
 
-/*
-  make sure to have an event listener, but to depend on the actions of the circuit
+// Spec:
+// button1 --> play/pause
+// knob 1 --> volume
+// knob 2 --> freq
+// trackA and trackB
+// trackB until trackC
+// buttonB -> play/pause trackB
+function hardCodedProgram2(){
+  let isPlaying = Null; // Then isPlaying can change
+  // [isPlaying <- trackA] is predicate
+}
 
-  - the function/circuit should start when we press play
-  -                             stop  when we press pause
+// Uses DOM elements.
+function programFromSpecification(){
+}
 
-  - learn how to get elements from spec.
+// Uses parameters.
+function programWithArgs(){
+}
 
-  boil down to a very stripped down version of the app:
-    - always Track1 until Track2
-    - pressButton -> Track2
-*/
+
+//////////////////////
+//  HTTP w/ Server  //
+//////////////////////
+
+
+
+/////////////////////
+//  Audio Control  //
+/////////////////////
 
 // Swap with webaudio later on
 let audioSource = document.getElementById("audioSource");
