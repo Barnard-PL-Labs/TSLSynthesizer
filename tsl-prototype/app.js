@@ -2,32 +2,13 @@
 //  Audio Control  //
 /////////////////////
 
-// Swap with webaudio later on
-let audioSource = document.getElementById("audioSource");
-let audioTag = document.getElementById('audio');
-
-function playAudio(input) {
-  //empty var to read file
-  let reader;
-  //if a file is uploaded then use FileReader to read file
-  if (input.files && input.files[0]) {
-    reader = new FileReader();
-    //onload set the audio source with the uploaded audio
-    reader.onload = function(e) {
-      audioSource.setAttribute('src', e.target.result);
-      //load source
-      audioTag.load();
-      //play source
-      audioTag.play();
-    }
-    //read contents of of file
-    reader.readAsDataURL(input.files[0]);
-  }
-}
+// TODO: add webAudio
 
 /////////////////////
 //  Specification  //
-///////////////////// 
+/////////////////////
+
+// TODO: get spec from DOM
 
 ///////////////////
 //  Track Files  //
@@ -60,13 +41,13 @@ let program;
 // Manages play/pause and audio update based on event listeners
 playButton.addEventListener("click", function() {
   if(!currPlaying){
-    program = new Control(playAudio);
+    program = new Control();
     currPlaying = true;
     document.body.addEventListener("click", function(){program.play()});
   }
   else{
     currPlaying = false;
-    audioTag.pause();
+    program.stop();
   }
 });
 
@@ -75,30 +56,11 @@ playButton.addEventListener("click", function() {
 ////////////////////////
 
 let synthesized = document.getElementsByTagName("textarea")[0];
-
-const spec1 = "Track1 Until Track2\n" +
-              "press ButtonA -> Track2"
-class ToyProgram{
-  constructor(playAudio){
-    this.track2Playing = false;
-    this.playAudio = playAudio;
-    buttonA.addEventListener("click", _ => this.track2Playing = true);
-    synthesized.value = spec1;
-  }
-  play(){
-    audioTag.pause();
-    if(!this.track2Playing)
-      playAudio(trackA);
-    else
-      playAudio(trackB);
-  }
-}
-
 /*
   --- Full TSL Spec ---
   press buttonA &&  [output <- audio] => ![output <- audio]
   press buttonA && ![output <- audio] =>  [output <- audio]
-  [audio <- playAudio trackA trackB trackC aPlaying bPlaying cPlaying]
+  [audio <- playAudio trackA trackB trackC aPlaying bPlaying cPlaying gain freq]
   [gain <- knob1]
   [freq <- knob2]
   bPlaying => aPlaying
@@ -113,6 +75,7 @@ const spec2 = "buttonA=>play/stop\n" +
               "playing trackB UNTIL playing trackC\n" +
               "buttonB=>play/stop trackB"
 class Control{
+  // Synthesized
   constructor() {
     this.output = null;
     this.audio = null;
@@ -123,7 +86,9 @@ class Control{
     this.trackCPlaying = false;
     this.untilConsumed = false;
     this.control();
+    synthesized.value = spec2;
   }
+  // Synthesized
   control(){
     // press buttonA => play/stop
     buttonA.addEventListener("click",
@@ -141,7 +106,8 @@ class Control{
     document.body.addEventListener("click",
         ev => this.audio =
                      this.audioUpdate(trackA, trackB, trackC,
-                                      this.trackAPlaying, this.trackBPlaying, this.trackCPlaying));
+                                      this.trackAPlaying, this.trackBPlaying, this.trackCPlaying,
+                                      this.gain, this.freq));
     // bPlaying => aPlaying
     document.body.addEventListener("click",
         ev => this.trackAPlaying = this.bImpliesA(this.trackBPlaying));
@@ -182,23 +148,18 @@ class Control{
   }
 
   // Implemented functions
-  audioUpdate(){
-
+  audioUpdate(trackA, trackB, trackC,
+              trackAPlaying, trackBPlaying, trackCPlaying,
+              gain, freq){
+    // Do some webAudio magic
+  }
+  play(){
+    // Play this.audio
+  }
+  stop(){
+    // Stop webAudio
   }
 }
-
-
-// TODO
-
-/*
-// Uses DOM elements.
-function programFromSpecification(){
-}
-
-// Uses parameters.
-function programWithArgs(){
-}
-*/
 
 
 //////////////////////
