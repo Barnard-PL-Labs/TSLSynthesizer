@@ -65,8 +65,9 @@ let synthesized = document.getElementsByTagName("textarea")[0];
   [freq <- knob2]
   bPlaying => aPlaying
   bPlaying UNTIL cPlaying
-  press buttonB &&  bPlaying => !bPlaying
-  press buttonB && !bPlaying =>  bPlaying
+  press buttonB && bPlaying => [trackB <- stop]
+  [trackB <- stop] => NEXT !bPlaying
+  [trackB <- play] => NEXT  bPlaying
  */
 const spec2 = "buttonA=>play/stop\n" +
               "knob1=>gain\n" +
@@ -148,7 +149,7 @@ class Control{
   }
 
   // Implemented functions
-  audioUpdate(trackA, trackB, trackC,
+  playAudio(trackA, trackB, trackC,
               trackAPlaying, trackBPlaying, trackCPlaying,
               gain, freq){
     // Do some webAudio magic
