@@ -5,8 +5,10 @@
 *.mp3
 
 # Reference files
-reference.js
-reference.html
+reference*
+
+# Swap files
+*.swp
 
 # Logs
 logs

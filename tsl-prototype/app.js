@@ -2,7 +2,50 @@
 //  Audio Control  //
 /////////////////////
 
-// TODO: add webAudio
+let audioCtx;
+const audioGain = 0.1;
+let switchVal = 0;
+
+async function loadBuffer(bufferURL){
+  const response = await fetch(bufferURL);
+  const arrayBuffer = await response.arrayBuffer();
+  return await audioCtx.decodeAudioData(arrayBuffer);
+}
+
+async function initWebAudio(){
+  audioCtx = new (window.AudioContext || window.webkitAudioContext);
+  let audioSource = await loadBuffer('./sample.mp3');
+  let source = audioCtx.createBufferSource();
+  source.buffer = audioSource;
+
+  let gainNode = audioCtx.createGain();
+  gainNode.gain.value = audioGain;
+  source.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  source.loop = true;
+  source.start();
+
+  let audioSrc2 = await loadBuffer('./sample2.mp3');
+  let src2 = audioCtx.createBufferSource();
+  src2.buffer = audioSrc2;
+  src2.connect(audioCtx.destination);
+  src2.start();
+}
+
+document.getElementById('btnA').addEventListener("click", async function(){
+  await initWebAudio();
+})
+
+document.getElementById('btnB').addEventListener("click", function(){
+  if(switchVal % 2 === 0){
+    audioCtx.suspend();
+    switchVal ++;
+  }
+  else{
+    audioCtx.resume();
+    switchVal ++;
+  }
+}, false);
 
 /////////////////////
 //  Specification  //
