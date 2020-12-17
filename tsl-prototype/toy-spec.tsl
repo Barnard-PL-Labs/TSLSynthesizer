@@ -13,14 +13,14 @@ always guarantee {
 	// buttonA => play/stop audio
 	press buttonA &&  audioPlaying -> [audio <- stop];
 	press buttonA && !audioPlaying -> [audio <- play];
-	[audio <- stop] <-> X !audioPlaying;
-	[audio <- play] <-> X  audioPlaying;
+	//[audio <- stop] <-> X !audioPlaying;
+	//[audio <- play] <-> X  audioPlaying;
 	
 	// buttonB => play/stop trackB
 	press buttonB &&  bPlaying -> [trackB <- stop];
 	press buttonB && !bPlaying -> [trackB <- play];
-	[trackB <- stop] <-> X !bPlaying;
-	[trackB <- play] <-> X  bPlaying;
+	//[trackB <- stop] <-> X !bPlaying;
+	//[trackB <- play] <-> X  bPlaying;
 
 	// trackB => trackA
 	[trackB <- play] -> [trackA <- play];
