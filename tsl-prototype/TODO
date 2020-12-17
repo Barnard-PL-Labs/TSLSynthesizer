@@ -1,4 +1,3 @@
-* implement js with webaudio
 * get spec from DOM
 * build js backend for tsltools
 * connect application to server to call tsltools

@@ -1,0 +1,31 @@
+// Toy spec to guide generation of js code.
+
+// Higher level spec
+// knob1=>gain
+// knob2=>freq
+// buttonA=>play/stop
+// buttonB=>play/stop trackB
+// trackB => trackA
+// trackB UNTIL trackC
+
+always guarantee {
+	
+	// buttonA => play/stop audio
+	press buttonA &&  audioPlaying -> [audio <- stop];
+	press buttonA && !audioPlaying -> [audio <- play];
+	[audio <- stop] <-> X !audioPlaying;
+	[audio <- play] <-> X  audioPlaying;
+	
+	// buttonB => play/stop trackB
+	press buttonB &&  bPlaying -> [trackB <- stop];
+	press buttonB && !bPlaying -> [trackB <- play];
+	[trackB <- stop] <-> X !bPlaying;
+	[trackB <- play] <-> X  bPlaying;
+
+	// trackB => trackA
+	[trackB <- play] -> [trackA <- play];
+
+	// trackB UNTIL trackC
+	[trackB <- play] U [trackC <- play];
+
+}

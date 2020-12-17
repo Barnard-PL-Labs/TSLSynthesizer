@@ -103,11 +103,10 @@ let synthesized = document.getElementsByTagName("textarea")[0];
   --- Full TSL Spec ---
   press buttonA &&  [output <- audio] => ![output <- audio]
   press buttonA && ![output <- audio] =>  [output <- audio]
-  [audio <- playAudio trackA trackB trackC aPlaying bPlaying cPlaying gain freq]
-  [gain <- knob1]
-  [freq <- knob2]
+
   bPlaying => aPlaying
   bPlaying UNTIL cPlaying
+
   press buttonB && bPlaying => [trackB <- stop]
   [trackB <- stop] => NEXT !bPlaying
   [trackB <- play] => NEXT  bPlaying
