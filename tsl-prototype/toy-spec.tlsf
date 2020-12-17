@@ -6,8 +6,6 @@ INFO {
 }
 MAIN {
   INPUTS {
-    p0b0audio2playing;
-    p0b0b2playing;
     p0p0press0button2a;
     p0p0press0button2b;
   }
@@ -26,6 +24,6 @@ MAIN {
   }
 
   GUARANTEE {
-    (G ((((! (((u0audio0play) && (! ((u0audio0stop) || (u0audio0audio)))) <-> ((! (((u0audio0stop) && (! (u0audio0audio))) <-> ((u0audio0audio) && (! (u0audio0stop))))) && (! (u0audio0play))))) && (! (((u0track2a0play) && (! (u0track2a0track2a))) <-> ((u0track2a0track2a) && (! (u0track2a0play)))))) && (! (((u0track2b0stop) && (! ((u0track2b0track2b) || (u0track2b0play)))) <-> ((! (((u0track2b0track2b) && (! (u0track2b0play))) <-> ((u0track2b0play) && (! (u0track2b0track2b))))) && (! (u0track2b0stop)))))) && (! (((u0track2c0play) && (! (u0track2c0track2c))) <-> ((u0track2c0track2c) && (! (u0track2c0play))))))) && ((((((G (((p0p0press0button2a) && (p0b0audio2playing)) -> (u0audio0stop))) && (G (((p0p0press0button2a) && (! (p0b0audio2playing))) -> (u0audio0play)))) && (G (((p0p0press0button2b) && (p0b0b2playing)) -> (u0track2b0stop)))) && (G (((p0p0press0button2b) && (! (p0b0b2playing))) -> (u0track2b0play)))) && (G ((u0track2b0play) -> (u0track2a0play)))) && (G ((u0track2b0play) U (u0track2c0play))));
+    (G ((((! (((u0audio0play) && (! ((u0audio0stop) || (u0audio0audio)))) <-> ((! (((u0audio0stop) && (! (u0audio0audio))) <-> ((u0audio0audio) && (! (u0audio0stop))))) && (! (u0audio0play))))) && (! (((u0track2a0play) && (! (u0track2a0track2a))) <-> ((u0track2a0track2a) && (! (u0track2a0play)))))) && (! (((u0track2b0stop) && (! ((u0track2b0track2b) || (u0track2b0play)))) <-> ((! (((u0track2b0track2b) && (! (u0track2b0play))) <-> ((u0track2b0play) && (! (u0track2b0track2b))))) && (! (u0track2b0stop)))))) && (! (((u0track2c0play) && (! (u0track2c0track2c))) <-> ((u0track2c0track2c) && (! (u0track2c0play))))))) && ((((((G (((p0p0press0button2a) && (u0audio0play)) -> (X (u0audio0stop)))) && (G (((p0p0press0button2a) && (u0audio0stop)) -> (X (u0audio0play))))) && (G (((p0p0press0button2b) && (u0track2b0play)) -> (X (u0track2b0stop))))) && (G (((p0p0press0button2b) && (u0track2b0stop)) -> (X (u0track2b0play))))) && (G ((u0track2b0play) -> (u0track2a0play)))) && (G ((u0track2b0play) U (u0track2c0play))));
   }
 }

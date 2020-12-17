@@ -1,23 +1,19 @@
 REALIZABLE
-aag 4 4 0 10 0
+aag 2 2 0 10 0
 2
 4
-6
-8
+0
+1
+1
+0
 0
 1
 0
-6
-7
-6
-7
-8
-9
 0
+0
+1
 i0 p0p0press0button2b
 i1 p0p0press0button2a
-i2 p0b0b2playing
-i3 p0b0audio2playing
 o0 u0track2c0track2c
 o1 u0track2c0play
 o2 u0track2b0track2b
