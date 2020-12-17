@@ -17,7 +17,7 @@ always guarantee {
 	[audio <- play] <-> X  audioPlaying;
 	
 	// buttonB => play/stop trackB
-	press buttonB && bPlaying  -> [trackB <- stop];
+	press buttonB &&  bPlaying -> [trackB <- stop];
 	press buttonB && !bPlaying -> [trackB <- play];
 	[trackB <- stop] <-> X !bPlaying;
 	[trackB <- play] <-> X  bPlaying;
