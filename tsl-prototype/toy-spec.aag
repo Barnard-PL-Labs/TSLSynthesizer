@@ -1,11 +1,11 @@
 aag 2 2 0 10 0
 2
 4
-0
-1
 1
 0
 0
+0
+1
 1
 0
 0
@@ -13,13 +13,13 @@ aag 2 2 0 10 0
 1
 i0 p0p0press0button2b
 i1 p0p0press0button2a
-o0 u0track2c0track2c
-o1 u0track2c0play
-o2 u0track2b0track2b
-o3 u0track2b0stop
-o4 u0track2b0play
-o5 u0track2a0track2a
-o6 u0track2a0play
-o7 u0audio0stop
-o8 u0audio0play
+o0 u0track2c0f1dplay1b
+o1 u0track2c0track2c
+o2 u0track2b0f1dstop1b
+o3 u0track2b0f1dplay1b
+o4 u0track2b0track2b
+o5 u0track2a0f1dplay1b
+o6 u0track2a0track2a
+o7 u0audio0f1dstop1b
+o8 u0audio0f1dplay1b
 o9 u0audio0audio

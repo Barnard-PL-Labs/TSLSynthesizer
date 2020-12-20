@@ -84,7 +84,7 @@ let program;
 // Manages play/pause and audio update based on event listeners
 playButton.addEventListener("click", function() {
   if(!currPlaying){
-    program = new Control();
+    program = new ReactiveControl();
     currPlaying = true;
     document.body.addEventListener("click", function(){program.play()});
   }
@@ -99,108 +99,81 @@ playButton.addEventListener("click", function() {
 ////////////////////////
 
 let synthesized = document.getElementsByTagName("textarea")[0];
-/*
+spec= `
   --- Full TSL Spec ---
-  press buttonA &&  [output <- audio] => ![output <- audio]
-  press buttonA && ![output <- audio] =>  [output <- audio]
+  // buttonA => play/stop audio
+  press buttonA && [audio <- play] -> X [audio <- stop];
+  press buttonA && [audio <- stop] -> X [audio <- play];
 
-  bPlaying => aPlaying
-  bPlaying UNTIL cPlaying
+  // buttonB => play/stop trackB
+  press buttonB && [trackB <- play] -> X [trackB <- stop];
+  press buttonB && [trackB <- stop] -> X [trackB <- play];
 
-  press buttonB && bPlaying => [trackB <- stop]
-  [trackB <- stop] => NEXT !bPlaying
-  [trackB <- play] => NEXT  bPlaying
- */
-const spec2 = "buttonA=>play/stop\n" +
-              "knob1=>gain\n" +
-              "knob2=>freq\n" +
-              "trackB => trackA\n" +
-              "playing trackB UNTIL playing trackC\n" +
-              "buttonB=>play/stop trackB"
-class Control{
-  // Synthesized
-  constructor() {
-    this.output = null;
-    this.audio = null;
-    this.gain = 0;
-    this.freq = 0;
-    this.trackAPlaying = false;
-    this.trackBPlaying = false;
-    this.trackCPlaying = false;
-    this.untilConsumed = false;
-    this.control();
-    synthesized.value = spec2;
-  }
-  // Synthesized
-  control(){
-    // press buttonA => play/stop
-    buttonA.addEventListener("click",
-        ev => this.audio = this.audioPlayingControl(this.output, this.audio));
-    // press buttonB => play/stop trackB
-    buttonB.addEventListener("click",
-        ev => this.trackBPlaying = this.trackBPlayingControl(this.trackBPlaying));
-    // [gain <- knobA]
-    knobA.addEventListener("change",
-        ev => this.gain = this.changeGain(ev));
-    // [freq <- knobB]
-    knobB.addEventListener("change",
-        ev => this.gain = this.changeFreq(ev));
-    // [audio <- playAudio trackA trackB trackC aPlaying bPlaying cPlaying]
-    document.body.addEventListener("click",
-        ev => this.audio =
-                     this.audioUpdate(trackA, trackB, trackC,
-                                      this.trackAPlaying, this.trackBPlaying, this.trackCPlaying,
-                                      this.gain, this.freq));
-    // bPlaying => aPlaying
-    document.body.addEventListener("click",
-        ev => this.trackAPlaying = this.bImpliesA(this.trackBPlaying));
-    // bPlaying UNTIL cPlaying
-    document.body.onload = ev => this.trackBPlaying = this.initB();
-    document.body.addEventListener("click",
-        ev => this.trackCPlaying = this.bUntilC(this.trackBPlaying, this.untilConsumed));
-  }
+  // trackB => trackA
+  [trackB <- play] -> [trackA <- play];
 
-  // Synthesized (control) functions
-  audioPlayingControl(output, audio){
-    if(output !== audio)
-      return audio;
-    else
-      return null;
-  }
-  trackBPlayingControl(trackBPlaying){
-    return !trackBPlaying;
-  }
-  bImpliesA(trackBPlaying){
-    if(trackBPlaying)
-      return true;
-    return true;  // equally valid to return false
-  }
-  initB(){
-    return true;
-  }
-  bUntilC(trackBPlaying, untilConsumed){
-    if(!trackBPlaying && untilConsumed)
-      return true;
-    return true;  // equally valid to return false
-  }
-  changeFreq(freq){
-    return freq;
-  }
-  changeGain(gain){
-    return gain;
-  }
+  // trackB UNTIL trackC
+  [trackB <- play] W [trackC <- play];
+`
 
-  // Implemented functions
-  playAudio(trackA, trackB, trackC,
-              trackAPlaying, trackBPlaying, trackCPlaying,
-              gain, freq){
-    // Do some webAudio magic
+// TODO
+function p_press(foo){}
+function play(){return true;}
+function stop(){return false;}
+
+let o_audio  = true,
+    o_trackA = true,
+    o_trackB = true,
+    o_trackC = false,
+    c_audio  = o_audio,
+    c_trackA = o_trackA,
+    c_trackB = o_trackB,
+    c_trackC = o_trackC;
+
+// Human transpiled to js from kotlin.
+class ReactiveControl{
+  constructor(buttonA, buttonB){
+    this.btnAPressed = p_press(buttonA);
+    this.btnBPressed = p_press(buttonB);
   }
-  play(){
-    // Play this.audio
+  returnOutput(){
+    let circuit = this.controlCircuit();
+
+    c_audio  = o_audio;
+    c_trackA = o_trackA;
+    c_trackB = o_trackB;
+    c_trackC = o_trackC;
+
+    let stop = stop();
+    let play = play();
+
+    o_audio = this.audioSwitch([stop, circuit[7]],
+                               [play, circuit[8]],
+                               [c_audio, circuit[9]]);
+    o_trackA = this.trackASwitch([c_trackA, circuit[5]],
+                                 [play, circuit[6]]);
+    o_trackB = this.trackBSwitch([c_trackB, circuit[2]],
+                                 [stop, circuit[3]],
+                                 [play, circuit[4]]);
+    o_trackC = this.trackCSwitch([c_trackC, circuit[0]],
+                                 [play, circuit[1]]);
   }
-  stop(){
-    // Stop webAudio
+  audioSwitch(stop, play, prev){
+    const temp = play[1] ? play[0] : prev[0];
+    return stop[1] ? stop[0] : temp;
+  }
+  trackASwitch(prev, play){
+    return prev[1] ? prev[0] : play[0]
+  }
+  trackBSwitch(prev, stop, play){
+    const temp = stop[1] ? stop[0] : play[0];
+    return prev[1] ? prev[0] : temp;
+  }
+  trackCSwitch(prev, play){
+    return prev[1] ? prev[0] : play[0];
+  }
+  controlCircuit(){
+    return [false, true, true, false, false, true, false, false, false, true];
   }
 }
 

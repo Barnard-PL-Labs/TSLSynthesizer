@@ -8,20 +8,26 @@
 // trackB => trackA
 // trackB UNTIL trackC
 
+//initially guarantee{
+//	[trackA <- play()];
+//	[trackB <- play()];
+//	[trackC <- stop()];
+//}
+
 always guarantee {
 	
-	// buttonA => play/stop audio
-	press buttonA && [audio <- play] -> X [audio <- stop];
-	press buttonA && [audio <- stop] -> X [audio <- play];
+	// buttonA => play/stop() audio
+	press buttonA && [audio <- play()] -> X [audio <- stop()];
+	press buttonA && [audio <- stop()] -> X [audio <- play()];
 	
-	// buttonB => play/stop trackB
-	press buttonB && [trackB <- play] -> X [trackB <- stop];
-	press buttonB && [trackB <- stop] -> X [trackB <- play];
+	// buttonB => play()/stop() trackB
+	press buttonB && [trackB <- play()] -> X [trackB <- stop()];
+	press buttonB && [trackB <- stop()] -> X [trackB <- play()];
 
 	// trackB => trackA
-	[trackB <- play] -> [trackA <- play];
+	[trackB <- play()] -> [trackA <- play()];
 
-	// trackB UNTIL trackC
-	[trackB <- play] U [trackC <- play];
-
+	// trackB weak until trackC
+	[trackB <- play()] W [trackC <- play()];
+	// [trackC <- stop()] W [trackB <- stop()];
 }

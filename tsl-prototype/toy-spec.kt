@@ -1,12 +1,37 @@
+// Module : Toy-spec
+//
+// Rxlotlin Interface for toy-spec.
+//
+
+/////////////////////////////////////////////////////////////////////////////
+
+module Toy-spec
+  ( toy-spec
+  ) where
+
+/////////////////////////////////////////////////////////////////////////////
+
+import Control.Arrow
+  ( Arrow
+  , ArrowLoop
+  , returnA
+  , arr
+  , (<<<)
+  )
+
+-----------------------------------------------------------------------------
+
+toy-spec
 data class ntupleb(val audio:b, val trackA:b, val trackB:b, val trackC:b)
+
 
 private fun toy-spec
        ( buttonA: a
        , buttonB: a
-       , play: b
-       , stop: b
        ):ntupleb{
 
+      val w6 = f_play()
+      val w7 = f_stop()
       val b8 = p_press(s_buttonA)
       val b9 = p_press(s_buttonB)
 
@@ -17,19 +42,18 @@ private fun toy-spec
       c_trackB = o_trackB
       c_trackC = o_trackC
 
-      val o_audio = audioSwitch(Pair(s_stop, cout[7]), Pair(s_play, cout[8]), Pair(c_audio, cout[9]))
+      val o_audio = audioSwitch(Pair(w7, cout[7]), Pair(w6, cout[8]), Pair(c_audio, cout[9]))
 
-      val o_trackA = trackASwitch(Pair(c_trackA, cout[5]), Pair(s_play, cout[6]))
+      val o_trackA = trackASwitch(Pair(w6, cout[5]), Pair(c_trackA, cout[6]))
 
-      val o_trackB = trackBSwitch(Pair(c_trackB, cout[2]), Pair(s_stop, cout[3]), Pair(s_play, cout[4]))
+      val o_trackB = trackBSwitch(Pair(w7, cout[2]), Pair(w6, cout[3]), Pair(c_trackB, cout[4]))
 
-      val o_trackC = trackCSwitch(Pair(c_trackC, cout[0]), Pair(s_play, cout[1]))
+      val o_trackC = trackCSwitch(Pair(w6, cout[0]), Pair(c_trackC, cout[1]))
 
     return ntuple(o_audio, o_trackA, o_trackB, o_trackC)
 }
 
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 private fun <T>audioSwitch
        ( p0: Pair<T,Boolean>
        , p1: Pair<T,Boolean>
@@ -73,6 +97,8 @@ private fun controlCircuit
     ): Array<Boolean>{
 
 
-    return arrayOf(false, true, true, false, false, true, false, false, false, true)
+    return arrayOf(true, false, false, false, true, true, false, false, false, true)
 
  }
+
+=============================================================================
