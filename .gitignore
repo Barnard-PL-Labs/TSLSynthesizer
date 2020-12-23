@@ -1,3 +1,6 @@
+# Sensitive files
+synth_resources
+
 # Jetbrains
 .idea
 

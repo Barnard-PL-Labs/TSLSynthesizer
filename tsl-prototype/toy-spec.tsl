@@ -8,11 +8,12 @@
 // trackB => trackA
 // trackB UNTIL trackC
 
-//initially guarantee{
-//	[trackA <- play()];
-//	[trackB <- play()];
-//	[trackC <- stop()];
-//}
+initially guarantee{
+	[audio <- play()];
+	[trackA <- play()];
+	[trackB <- play()];
+	[trackC <- stop()];
+}
 
 always guarantee {
 	
@@ -29,5 +30,5 @@ always guarantee {
 
 	// trackB weak until trackC
 	[trackB <- play()] W [trackC <- play()];
-	// [trackC <- stop()] W [trackB <- stop()];
+	[trackC <- stop()] W [trackB <- stop()];
 }
