@@ -1,0 +1,21 @@
+INFO {
+  TITLE:       "Converted TSL Specification: sample"
+  DESCRIPTION: "TSL specification, which has been converted to TLSF."
+  SEMANTICS:   Mealy
+  TARGET:      Mealy
+}
+MAIN {
+  INPUTS {
+    p0p02press02c4;
+  }
+
+  OUTPUTS {
+    u02wave02sawtooth;
+    u02wave02square;
+    u02wave02wave;
+  }
+
+  GUARANTEE {
+    (G (! (((u02wave02square) && (! ((u02wave02wave) || (u02wave02sawtooth)))) <-> ((! (((u02wave02wave) && (! (u02wave02sawtooth))) <-> ((u02wave02sawtooth) && (! (u02wave02wave))))) && (! (u02wave02square)))))) && ((u02wave02square) && (G ((p0p02press02c4) -> (X (u02wave02sawtooth)))));
+  }
+}
