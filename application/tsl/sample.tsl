@@ -1,9 +1,0 @@
-// Sample TSL for constructing the application.
-
-initially guarantee {
-    [Wave <- Square];
-}
-
-always guarantee {
-    Press C4 -> X [Wave <- Sawtooth];
-}

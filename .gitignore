@@ -1,7 +1,12 @@
 # Local files
 TODO
+
 # Sensitive files
 synth_resources
+package-lock.json
+
+# Node 
+node_modules
 
 # Jetbrains
 .idea

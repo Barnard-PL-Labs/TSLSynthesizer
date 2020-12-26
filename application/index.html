@@ -6,15 +6,21 @@
     <meta name="description" content="A synthesizer that synthesizes code based off of logical specifications." />
     <meta name="author" content="Wonhyuk Choi" />
     <link href='http://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet'/>
-    <link rel="stylesheet" href="style.css"/>
+<!--    <link rel="stylesheet" href="style.css"/>-->
+    <link rel="stylesheet" href="public/style.css"/>
 </head>
 <body>
 <div class="container" style="background:yellow; width: 800px;">
     <h2>The TSL Synthesis Synthesizer</h2>
-    <label style="color: black;">Gain<input type="range"></label>
+    <label style="color: black;">Gain<input id="gain" type="range" min="0" max="100"></label>
     <div id="keyboard"></div>
 </div>
-<script src="qwerty-hancock.js"></script>
-<script src="app.js"></script>
+<!--Comment these out when not using server-->
+<!--<script src="qwerty-hancock.js"></script>-->
+<!--<script src="client.js"></script>-->
+<script src="public/qwerty-hancock.js"></script>
+<script src="public/client.js"></script>
+<script src="public/control.js"></script>
+<script src="public/audio.js"></script>
 </body>
 </html>
