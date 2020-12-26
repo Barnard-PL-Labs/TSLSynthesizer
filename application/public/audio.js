@@ -22,6 +22,10 @@ let waveform = 'sine';
 masterGain.gain.value = 0.1;
 masterGain.connect(context.destination);
 
+let volumeControl = document.getElementById("gain");
+volumeControl.addEventListener("change", _=>{
+    masterGain.gain.value = volumeControl.value;
+}, false);
 
 keyboard.keyDown = function (note, frequency) {
     let oscillator = context.createOscillator();
@@ -49,19 +53,3 @@ keyboard.keyUp = function (note, frequency) {
 };
 
 keyboard = new QwertyHancock(settings);
-
-// IMPLEMENTED FUNCTIONS BEGIN
-function p_Press(noteBool){
-    return noteBool;
-}
-
-const c4 = document.getElementById("C4");
-
-// Initialize all
-waveform = control(false, "sawtooth", "square", waveform);
-
-c4.addEventListener("click", function(){
-    waveform = control(true, "sawtooth", "square", waveform);
-});
-
-// IMPLEMENTED FUNCTIONS END

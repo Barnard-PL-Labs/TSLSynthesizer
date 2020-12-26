@@ -28,10 +28,26 @@ function WaveSwitch(p0, p1, p2){
     return p0[1] ? p0[0] : r1;
 }
 
-let w2;
+var w2;
 
 function controlCircuit(cin0){
     w2 = cin0;
     const o1 = !w2;
     return [false, o1, w2];
 }
+
+// IMPLEMENTED FUNCTIONS BEGIN
+function p_Press(noteBool){
+    return noteBool;
+}
+
+const c4 = document.getElementById("C4");
+
+// Initialize all
+waveform = control(false, "sawtooth", "square", waveform);
+
+c4.addEventListener("click", function(){
+    waveform = control(true, "sawtooth", "square", waveform);
+});
+
+// IMPLEMENTED FUNCTIONS END
