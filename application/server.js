@@ -47,17 +47,6 @@ function writeTmpFile(spec){
     })
 }
 
-function deleteTmpFile(){
-    return new Promise(resolve => {
-        fs.unlink(tmpFileName, function (err) {
-            if (err) throw err;
-            else
-                console.log('Temp file deletion successful.');
-            resolve();
-        });
-    })
-}
-
 function deleteTmpFiles(){
     const shellCmd = "rm " + tmpFileHeader + "*";
     return new Promise(resolve => {

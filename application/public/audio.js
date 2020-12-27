@@ -27,6 +27,11 @@ volumeControl.addEventListener("change", _=>{
     masterGain.gain.value = volumeControl.value;
 }, false);
 
+let waveformControl = document.getElementById("waveform");
+waveformControl.addEventListener("change", _ => {
+    waveform = waveformControl.value;
+}, false);
+
 keyboard.keyDown = function (note, frequency) {
     let oscillator = context.createOscillator();
     oscillator.type = waveform;

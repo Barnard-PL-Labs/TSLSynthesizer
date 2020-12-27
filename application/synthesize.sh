@@ -7,10 +7,10 @@ aag="$file_header.aag"
 js="$file_header.js"
 
 # Build TLSF
-../tsltools/tsl2tlsf $file_name | cat > $tlsf
+tsltools/tsl2tlsf $file_name | cat > $tlsf
 
 # Build AAG from docker
-sudo docker run --rm -v $(pwd):/files -it strix_v2 /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
+sudo docker run --rm -v $(pwd):/files -i strix_v2 /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
 
 # Change to unix format
 dos2unix $aag 2> /dev/null
@@ -28,4 +28,4 @@ fi
 tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
 
 # Synthesize the resulting code
-../tsltools/cfm2code JavaScript $aag 
+tsltools/cfm2code JavaScript $aag 

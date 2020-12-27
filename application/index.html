@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8"/>
     <title>The TSL Synthesis Synthesizer</title>
@@ -9,16 +9,43 @@
    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<div class="container" style="background:yellow; width: 800px;">
+<div class="container" style="background:yellow; color:black; width: 800px;">
     <h2>The TSL Synthesis Synthesizer</h2>
-    <label style="color: black;">Gain
-        <input id="gain" type="range" min="0" max="1" step="0.01">
-    </label>
-    <button id="synthesize-btn">Button</button>
+    <section id="specification">
+        <label for="predicate"> Pressing Key
+            <select name="predicate" id="predicate">
+                <option value="C4">C4</option>
+                <option value="D#4">D#4</option>
+            </select>
+        </label>
+        <span>&Implies;</span>
+        <label for="action"> Waveform is
+            <select name="action" id="action">
+                <option value="square">Square</option>
+                <option value="sawtooth">Sawtooth</option>
+                <option value="sine">Sine</option>
+                <option value="triangle">Triangle</option>
+            </select>
+        </label>
+        <button id="synthesize-btn">Synthesize!</button>
+    </section>
+    <section id="controls">
+        <label>Gain
+            <input id="gain" type="range" min="0" max="1" step="0.01">
+        </label>
+        <label for="waveform">Waveform
+            <select name="waveform" id="waveform">
+                <option value="sine">Sine</option>
+                <option value="sawtooth">Sawtooth</option>
+                <option value="square">Square</option>
+                <option value="triangle">Triangle</option>
+            </select>
+        </label>
+    </section>
     <div id="keyboard"></div>
 </div>
 <script src="qwerty-hancock.js"></script>
-<script src="specReader.js"></script>
+<script src="client.js"></script>
 <script src="audio.js"></script>
 </body>
 </html>

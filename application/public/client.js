@@ -45,6 +45,8 @@ function synthesize(spec){
             let script = document.createElement("script");
             script.text = synthesized;
             document.body.appendChild(script);
+            // TODO: allow functions to be auto-implemented
+            addScript("control.js");
         })
         .catch(function(error) {
             console.log(error);
@@ -52,16 +54,15 @@ function synthesize(spec){
 
 }
 
-synthesize(tslSpec);
+document.getElementById("synthesize-btn").addEventListener(
+    "click", _ => {
+        synthesize(tslSpec);
+    }
+);
 
-// function addScript(scriptName){
-//     let controlJS = document.createElement("script");
-//     controlJS.setAttribute("src", scriptName);
-//     document.body.appendChild(controlJS);
-// }
+function addScript(scriptName){
+    let controlJS = document.createElement("script");
+    controlJS.setAttribute("src", scriptName);
+    document.body.appendChild(controlJS);
+}
 
-// document.getElementById("synthesize-btn").addEventListener(
-//     "click", _ => {
-//         addScript("public/control.js");
-//     }
-// );
