@@ -1,19 +1,35 @@
+let synthStatus = document.getElementById("synth-status");
+
 // Rudimentary, needs buffing.
 function getSpecFromDOM(){
-    let tslSpec = "always guarantee {\n";
+    let tslSpec = "";
     let specifications = document.getElementById("specification");
     for(let i=0; i < specifications.children.length; i++){
         const spec = specifications.children[i];
+
         // Predicate
         console.assert(spec.querySelectorAll(".predicate").length === 1);
         let predicate = spec.querySelector(".predicate").value;
+
         // Action
         console.assert(spec.querySelectorAll(".action").length === 1);
         let action = spec.querySelector(".action").value;
+
+        // If spec is unspecified
+        if(!predicate || !action)
+            continue;
+
         // Create spec
-        tslSpec += `Press ${predicate} -> [Wave <- ${action}];`;
+        tslSpec += `Press ${predicate} -> [Wave <- ${action}];\n`;
     }
-    tslSpec += "\n}";
+
+    // If no specs have been initialized
+    if(!tslSpec){
+        console.log("No specs initialized.");
+        return "";
+    }
+
+    tslSpec = "always guarantee {\n" + tslSpec + "\n}";
     console.log(`Got spec from DOM:\n${tslSpec}`);
     return tslSpec;
 }
@@ -57,6 +73,8 @@ function synthesize(spec){
             document.body.appendChild(script);
             // TODO: allow functions to be auto-implemented
             addScript("control.js");
+            // Probably hack
+            synthStatus.innerHTML = "Status: Synthesis Complete!\t"
         })
         .catch(function(error) {
             console.log(error);
@@ -66,7 +84,12 @@ function synthesize(spec){
 
 document.getElementById("synthesize-btn").addEventListener(
     "click", _ => {
+        synthStatus.innerHTML = "Status: Synthesizing...\t"
         const spec = getSpecFromDOM();
+        if(!spec){
+            synthStatus.innerHTML = "Status: No specification given\t";
+            return;
+        }
         synthesize(spec);
     }
 );

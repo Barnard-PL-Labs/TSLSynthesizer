@@ -16,21 +16,31 @@
         <article class="indiv-spec">
             <label for="predicate1"> Pressing Key
                 <select name="predicate" class="predicate" id="predicate1">
+                    <option value=""></option>
+                    <option value="vibrato">Vibrato</option>
                     <option value="C4">C4</option>
                     <option value="D#4">D#4</option>
                 </select>
             </label>
             <span>&Implies;</span>
-            <label for="action1"> change waveform to
+            <label for="action1">
                 <select name="action1" class="action" id="action1">
-                    <option value="Square">Square</option>
-                    <option value="Sawtooth">Sawtooth</option>
-                    <option value="Sine">Sine</option>
-                    <option value="Triangle">Triangle</option>
+                    <option value=""></option>
+                    <option value="vibrato">add LFO</option>
+                    <option value="FM">FM synthesis</option>
+                    <option value="AM">AM synthesis</option>
+                    <option value="additive">additive synthesis</option>
+                    <option value="square">waveform to square</option>
+                    <option value="sawtooth">waveform to sawtooth</option>
+                    <option value="sine">waveform to sine</option>
+                    <option value="triangle">waveform to triangle</option>
                 </select>
             </label>
-            <button id="synthesize-btn">Synthesize!</button>
         </article>
+    </section>
+    <section id="synth-control">
+        <span id="synth-status">Status: Unsynthesized</span>
+        <button id="synthesize-btn">Synthesize!    </button>
     </section>
     <section id="controls">
         <label>Gain
