@@ -35,5 +35,12 @@ Then, pull the docker image (you may need sudo privileges here):
 docker something...
 ```
 
+Finally, run the application:
+```sh
+node server.js
+```
+Then open your favorite browser to `localhost:8080`, and enjoy!
+
+
 ## Acknowledgments
 The UI is adopted from [qwerty hancock](https://stuartmemo.com/qwerty-hancock/).

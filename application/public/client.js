@@ -1,12 +1,22 @@
-const tslSpec=`
-initially guarantee {
-    [Wave <- Square];
+// Rudimentary, needs buffing.
+function getSpecFromDOM(){
+    let tslSpec = "always guarantee {\n";
+    let specifications = document.getElementById("specification");
+    for(let i=0; i < specifications.children.length; i++){
+        const spec = specifications.children[i];
+        // Predicate
+        console.assert(spec.querySelectorAll(".predicate").length === 1);
+        let predicate = spec.querySelector(".predicate").value;
+        // Action
+        console.assert(spec.querySelectorAll(".action").length === 1);
+        let action = spec.querySelector(".action").value;
+        // Create spec
+        tslSpec += `Press ${predicate} -> [Wave <- ${action}];`;
+    }
+    tslSpec += "\n}";
+    console.log(`Got spec from DOM:\n${tslSpec}`);
+    return tslSpec;
 }
-
-always guarantee {
-    Press C4 -> X [Wave <- Sawtooth];
-}
-`
 
 // https://gist.github.com/aerrity/fd393e5511106420fba0c9602cc05d35
 function synthesize(spec){
@@ -56,7 +66,8 @@ function synthesize(spec){
 
 document.getElementById("synthesize-btn").addEventListener(
     "click", _ => {
-        synthesize(tslSpec);
+        const spec = getSpecFromDOM();
+        synthesize(spec);
     }
 );
 

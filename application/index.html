@@ -12,22 +12,25 @@
 <div class="container" style="background:yellow; color:black; width: 800px;">
     <h2>The TSL Synthesis Synthesizer</h2>
     <section id="specification">
-        <label for="predicate"> Pressing Key
-            <select name="predicate" id="predicate">
-                <option value="C4">C4</option>
-                <option value="D#4">D#4</option>
-            </select>
-        </label>
-        <span>&Implies;</span>
-        <label for="action"> Waveform is
-            <select name="action" id="action">
-                <option value="square">Square</option>
-                <option value="sawtooth">Sawtooth</option>
-                <option value="sine">Sine</option>
-                <option value="triangle">Triangle</option>
-            </select>
-        </label>
-        <button id="synthesize-btn">Synthesize!</button>
+<!--        FIXME: create this statically from js on load-->
+        <article class="indiv-spec">
+            <label for="predicate1"> Pressing Key
+                <select name="predicate" class="predicate" id="predicate1">
+                    <option value="C4">C4</option>
+                    <option value="D#4">D#4</option>
+                </select>
+            </label>
+            <span>&Implies;</span>
+            <label for="action1"> change waveform to
+                <select name="action1" class="action" id="action1">
+                    <option value="Square">Square</option>
+                    <option value="Sawtooth">Sawtooth</option>
+                    <option value="Sine">Sine</option>
+                    <option value="Triangle">Triangle</option>
+                </select>
+            </label>
+            <button id="synthesize-btn">Synthesize!</button>
+        </article>
     </section>
     <section id="controls">
         <label>Gain
