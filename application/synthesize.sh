@@ -7,22 +7,25 @@ aag="$file_header.aag"
 js="$file_header.js"
 
 # Build TLSF
-tsltools/tsl2tlsf $file_name | cat > $tlsf
+../tsltools/tsl2tlsf $file_name | cat > $tlsf
 
 # Build AAG from docker
-sudo docker run --rm -v $(pwd):/files -i strix_v2 /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
+sudo docker run --rm -v $(pwd):/files -it strix_v2 /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
 
-# TODO: 
-# Output result of aag
-# cat $aag | head -1
+# Change to unix format
+dos2unix $aag 2> /dev/null
+
+# Check for realizability
+is_realizable=$(head -n1 $aag)
+
+if [ "$is_realizable" = "UNREALIZABLE" ]; then
+	echo $is_realizable >&2
+	exit 1
+fi
 
 # Remove first line 
 # https://stackoverflow.com/a/339941/11801882
 tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
 
-# Change to unix format
-dos2unix $aag 2> /dev/null
-
 # Synthesize the resulting code
-# tsltools/cfm2code JavaScript $aag > $js
-tsltools/cfm2code JavaScript $aag
+../tsltools/cfm2code JavaScript $aag 

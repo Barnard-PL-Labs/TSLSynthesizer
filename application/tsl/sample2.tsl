@@ -1,9 +1,0 @@
-// Sample TSL for constructing the application.
-
-always guarantee {
-    // Press C4 -> X [Wave <- Sawtooth];
-	// Press D4 -> X [Wave <- Square];
-	// !(Press C4 && Press D4);
-	// Press C4 -> Press D4;
-	!(Press C4) || !(Press D4);
-}
