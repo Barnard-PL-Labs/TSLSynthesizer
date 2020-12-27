@@ -29,7 +29,7 @@ function getSpecFromDOM(){
         return "";
     }
 
-    tslSpec = "always guarantee {\n" + tslSpec + "\n}";
+    tslSpec = "always guarantee {\n" + tslSpec + "}";
     console.log(`Got spec from DOM:\n${tslSpec}`);
     return tslSpec;
 }
@@ -68,19 +68,31 @@ function synthesize(spec){
         })
         .then(function(data){
             let synthesized = data.result;
-            let script = document.createElement("script");
-            script.text = synthesized;
-            document.body.appendChild(script);
-            // TODO: allow functions to be auto-implemented
-            addScript("control.js");
-            // Probably hack
-            synthStatus.innerHTML = "Status: Synthesis Complete!\t"
+            console.log(typeof(synthesized));
+
+            // XXX
+            if(synthesized.toString().search("UNREALIZABLE") !== -1){
+                synthStatus.innerHTML = "Status: Unrealizable... please try again\t";
+            }
+
+            else {
+                let script = document.createElement("script");
+                script.text = synthesized;
+                document.body.appendChild(script);
+
+                // TODO: allow functions to be auto-implemented
+                addScript("control.js");
+
+                synthStatus.innerHTML = "Status: Synthesis Complete!\t"
+            }
+
         })
         .catch(function(error) {
             console.log(error);
         });
 
 }
+
 
 document.getElementById("synthesize-btn").addEventListener(
     "click", _ => {

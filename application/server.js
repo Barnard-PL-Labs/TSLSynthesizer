@@ -68,7 +68,7 @@ function synthesize() {
             function (err, data) {
                 let returnValue;
                 if (err) {
-                    returnValue = "ERROR:\n" + err;
+                    returnValue = "ERROR" + err;
                 }
                 else {
                     returnValue = data.toString();
