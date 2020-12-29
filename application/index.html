@@ -12,53 +12,42 @@
 <div class="container" style="background:yellow; color:black; width: 800px;">
     <h2>The TSL Synthesis Synthesizer</h2>
     <section id="specification">
-<!--        FIXME: create this statically from js on load-->
-        <article class="indiv-spec">
-            <label for="predicate1"> Pressing Key
-                <select name="predicate" class="predicate" id="predicate1">
-                    <option value=""></option>
-                    <option value="vibrato">Vibrato</option>
-                    <option value="C4">C4</option>
-                    <option value="D#4">D#4</option>
-                </select>
-            </label>
-            <span>&Implies;</span>
-            <label for="action1">
-                <select name="action1" class="action" id="action1">
-                    <option value=""></option>
-                    <option value="vibrato">add LFO</option>
-                    <option value="FM">FM synthesis</option>
-                    <option value="AM">AM synthesis</option>
-                    <option value="additive">additive synthesis</option>
-                    <option value="square">waveform to square</option>
-                    <option value="sawtooth">waveform to sawtooth</option>
-                    <option value="sine">waveform to sine</option>
-                    <option value="triangle">waveform to triangle</option>
-                </select>
-            </label>
-        </article>
     </section>
     <section id="synth-control">
         <span id="synth-status">Status: Unsynthesized</span>
         <button id="synthesize-btn">Synthesize!    </button>
     </section>
+    <br>
     <section id="controls">
-        <label>Gain
-            <input id="gain" type="range" min="0" max="1" step="0.01">
-        </label>
-        <label for="waveform">Waveform
-            <select name="waveform" id="waveform">
-                <option value="sine">Sine</option>
-                <option value="sawtooth">Sawtooth</option>
-                <option value="square">Square</option>
-                <option value="triangle">Triangle</option>
-            </select>
-        </label>
+        <div>
+            <label>Gain
+                <input id="gain" type="range" min="0" max="1" step="0.01">
+            </label>
+            <label for="waveform">Waveform
+                <select name="waveform" id="waveform">
+                    <option value="sine">Sine</option>
+                    <option value="sawtooth">Sawtooth</option>
+                    <option value="square">Square</option>
+                    <option value="triangle">Triangle</option>
+                </select>
+            </label>
+            <button id="lfo-btn"> Toggle LFO </button>
+            <button id="fm-btn"> Toggle FM </button>
+        </div>
+        <div>
+            <label for="amFreq">AM frequency
+                <input id="amFreq" type="range" min="0" max="1000">
+            </label>
+            <button id="am-btn"> Toggle AM </button>
+        </div>
     </section>
+    <br>
     <div id="keyboard"></div>
 </div>
 <script src="qwerty-hancock.js"></script>
 <script src="client.js"></script>
 <script src="audio.js"></script>
+<script src="tempControl.js"></script>
+<script src="implemented.js"></script>
 </body>
 </html>

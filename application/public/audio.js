@@ -15,16 +15,13 @@ let context = new AudioContext(),
     },
     keyboard = new QwertyHancock(settings);
 
-let masterGain = context.createGain();
 let nodes = [];
 let waveform = 'sine';
 
-masterGain.gain.value = 0.1;
-masterGain.connect(context.destination);
-
 let volumeControl = document.getElementById("gain");
+let masterGain = parseFloat(volumeControl.value);
 volumeControl.addEventListener("change", _=>{
-    masterGain.gain.value = volumeControl.value;
+    masterGain = parseFloat(volumeControl.value);
 }, false);
 
 let waveformControl = document.getElementById("waveform");
@@ -32,14 +29,94 @@ waveformControl.addEventListener("change", _ => {
     waveform = waveformControl.value;
 }, false);
 
+let amSynthesis = false;
+let amBtn = document.getElementById("am-btn");
+let amFreqRange = document.getElementById("amFreq");
+amBtn.addEventListener("click", _ =>{
+    if(!amSynthesis){
+        amSynthesis = true;
+        fmSynthesis = false;
+    }
+    else
+        amSynthesis = false;
+})
+let amFreq = parseInt(amFreqRange.value);
+amFreqRange.addEventListener("change", _ => {
+    amFreq = parseInt(amFreqRange.value);
+})
+
+let fmSynthesis = false;
+let fmBtn = document.getElementById("fm-btn");
+let fmFreqRange = document.getElementById("fmFreq");
+fmBtn.addEventListener("click", _ => {
+    if(!fmSynthesis){
+       fmSynthesis = true;
+       amSynthesis = false;
+    }
+    else
+        fmSynthesis = false;
+})
+// let fmFreq = fmFreqRange.value;
+// fmFreqRange.addEventListener("change", _ => {
+//     fmFreq = fmFreqRange.value;
+// })
+
+let vibrato = false;
+let lfoBtn = document.getElementById("lfo-btn");
+lfoBtn.addEventListener("click", _ => {
+    vibrato = !vibrato;
+})
+
+let carrierMap = {};
+
 keyboard.keyDown = function (note, frequency) {
     let oscillator = context.createOscillator();
+    const modulationIndex = context.createGain();
     oscillator.type = waveform;
-    oscillator.frequency.value = frequency;
-    oscillator.connect(masterGain);
-    oscillator.start(0);
 
+    oscillator.frequency.value = frequency;
+    modulationIndex.gain.value = masterGain;
+
+    if(amSynthesis){
+        let carrier = context.createOscillator();
+        carrier.frequency.value = amFreq;
+
+        const modulated = context.createGain();
+        modulated.gain.value = 1.0 - masterGain;
+
+        oscillator.connect(modulationIndex).connect(modulated.gain);
+        carrier.connect(modulated);
+        modulated.connect(context.destination);
+        carrier.start(0);
+
+        carrierMap[oscillator] = carrier;
+    }
+
+    else if(fmSynthesis){
+        modulationIndex.gain.value *= 100;
+        oscillator.connect(modulationIndex);
+
+        let carrier = context.createOscillator();
+        modulationIndex.connect(carrier.frequency);
+
+        carrier.connect(context.destination);
+        carrier.start(0);
+
+        carrierMap[oscillator] = carrier;
+    }
+
+    else {
+        oscillator.connect(modulationIndex);
+        modulationIndex.connect(context.destination);
+    }
+
+    if(vibrato){
+
+    }
+
+    oscillator.start(0);
     nodes.push(oscillator);
+
 };
 
 keyboard.keyUp = function (note, frequency) {
@@ -49,6 +126,12 @@ keyboard.keyUp = function (note, frequency) {
         if (Math.round(nodes[i].frequency.value) === Math.round(frequency)) {
             nodes[i].stop(0);
             nodes[i].disconnect();
+            // XXX
+            if(nodes[i] in carrierMap){
+                carrierMap[nodes[i]].stop(0);
+                carrierMap[nodes[i]].disconnect();
+                delete carrierMap[nodes[i]];
+            }
         } else {
             new_nodes.push(nodes[i]);
         }

@@ -1,5 +1,35 @@
 let synthStatus = document.getElementById("synth-status");
 
+// FIXME
+const htmlLoad = `
+                When
+                <select name="predicate" class="predicate">
+                    <option value=""></option>
+                    <option value="C4">C4 Pressed</option>
+                    <option value="amFreq">Change AMFreq</option>
+                </select>
+            <span>&Implies;</span>
+                <select name="action1" class="action">
+                    <option value=""></option>
+                    <option value="LFOOn">activate LFO</option>
+                    <option value="LFOOff">deactivate LFO</option>
+                    <option value="FMOn">activate FM Synthesis</option>
+                    <option value="AMOn">activate AM synthesis</option>
+                    <option value="square">waveform to square</option>
+                    <option value="sawtooth">waveform to sawtooth</option>
+                    <option value="sine">waveform to sine</option>
+                    <option value="triangle">waveform to triangle</option>
+                </select>
+`
+document.addEventListener("DOMContentLoaded", _ => {
+    let specificationBox = document.getElementById("specification");
+    for(let i=0; i<3;i++){
+        const temp = document.createElement('article');
+        temp.innerHTML = htmlLoad;
+        specificationBox.appendChild(temp);
+    }
+});
+
 // Rudimentary, needs buffing.
 function getSpecFromDOM(){
     let tslSpec = "";
@@ -33,6 +63,19 @@ function getSpecFromDOM(){
     console.log(`Got spec from DOM:\n${tslSpec}`);
     return tslSpec;
 }
+
+const tempSpec = `
+initially guarantee {
+    [Wave <- Sine];
+    [AMSynth <- False];
+}
+
+always guarantee {
+	Change amFreq -> X [AMSynth <- True];
+	Press C4 -> X [Wave <- Sawtooth];
+}
+`
+
 
 // https://gist.github.com/aerrity/fd393e5511106420fba0c9602cc05d35
 function synthesize(spec){
@@ -68,7 +111,6 @@ function synthesize(spec){
         })
         .then(function(data){
             let synthesized = data.result;
-            console.log(typeof(synthesized));
 
             // XXX
             if(synthesized.toString().search("UNREALIZABLE") !== -1){
@@ -76,12 +118,14 @@ function synthesize(spec){
             }
 
             else {
-                let script = document.createElement("script");
-                script.text = synthesized;
-                document.body.appendChild(script);
+                // FIXME
+                // let script = document.createElement("script");
+                // script.text = synthesized;
+                // document.body.appendChild(script);
 
-                // TODO: allow functions to be auto-implemented
-                addScript("control.js");
+                // TODO: obviate the need to hand-implement functions
+                addScript("tempControl.js");
+                addScript("implemented.js");
 
                 synthStatus.innerHTML = "Status: Synthesis Complete!\t"
             }
@@ -102,7 +146,9 @@ document.getElementById("synthesize-btn").addEventListener(
             synthStatus.innerHTML = "Status: No specification given\t";
             return;
         }
-        synthesize(spec);
+        synthesize(tempSpec)
+        // FIXME
+        // synthesize(spec);
     }
 );
 
