@@ -13,7 +13,7 @@ let tslFile;
 app.use(express.static("./public"));
 
 // Start the express web server listening on 8080
-app.listen(8080, () => {
+app.listen(PORT, () => {
     console.log(`Service started on port ${PORT}.`);
 });
 
@@ -61,12 +61,12 @@ function deleteTmpFiles(){
 }
 
 // Function to synthesize TSL spec
-// Currently ignores input and runs hardcoded output.
 function synthesize() {
     return new Promise(resolve => {
         execFile('sh', ['synthesize.sh', tslFile],
             function (err, data) {
                 let returnValue;
+                // XXX
                 if (err) {
                     returnValue = "ERROR" + err;
                 }

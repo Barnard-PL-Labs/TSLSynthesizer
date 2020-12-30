@@ -64,19 +64,6 @@ function getSpecFromDOM(){
     return tslSpec;
 }
 
-const tempSpec = `
-initially guarantee {
-    [Wave <- Sine];
-    [AMSynth <- False];
-}
-
-always guarantee {
-	Change amFreq -> X [AMSynth <- True];
-	Press C4 -> X [Wave <- Sawtooth];
-}
-`
-
-
 // https://gist.github.com/aerrity/fd393e5511106420fba0c9602cc05d35
 function synthesize(spec){
     // POST
@@ -118,13 +105,11 @@ function synthesize(spec){
             }
 
             else {
-                // FIXME
-                // let script = document.createElement("script");
-                // script.text = synthesized;
-                // document.body.appendChild(script);
+                let script = document.createElement("script");
+                script.text = synthesized;
+                document.body.appendChild(script);
 
                 // TODO: obviate the need to hand-implement functions
-                addScript("tempControl.js");
                 addScript("implemented.js");
 
                 synthStatus.innerHTML = "Status: Synthesis Complete!\t"
@@ -146,15 +131,12 @@ document.getElementById("synthesize-btn").addEventListener(
             synthStatus.innerHTML = "Status: No specification given\t";
             return;
         }
-        synthesize(tempSpec)
-        // FIXME
-        // synthesize(spec);
+        synthesize(spec);
     }
 );
 
 function addScript(scriptName){
-    let controlJS = document.createElement("script");
-    controlJS.setAttribute("src", scriptName);
-    document.body.appendChild(controlJS);
+    let script = document.createElement("script");
+    script.setAttribute("src", scriptName);
+    document.body.appendChild(script);
 }
-

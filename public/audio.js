@@ -56,10 +56,6 @@ fmBtn.addEventListener("click", _ => {
     else
         fmSynthesis = false;
 })
-// let fmFreq = fmFreqRange.value;
-// fmFreqRange.addEventListener("change", _ => {
-//     fmFreq = fmFreqRange.value;
-// })
 
 let vibrato = false;
 let lfoBtn = document.getElementById("lfo-btn");
