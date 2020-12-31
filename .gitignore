@@ -3,6 +3,7 @@ TODO
 local_testing
 archive
 paper
+tmp*
 
 # Sensitive files
 synth_resources

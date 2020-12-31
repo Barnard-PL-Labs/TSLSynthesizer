@@ -15,10 +15,10 @@ const htmlLoad = `
                     <option value="LFOOff">deactivate LFO</option>
                     <option value="FMOn">activate FM Synthesis</option>
                     <option value="AMOn">activate AM synthesis</option>
-                    <option value="square">waveform to square</option>
-                    <option value="sawtooth">waveform to sawtooth</option>
-                    <option value="sine">waveform to sine</option>
-                    <option value="triangle">waveform to triangle</option>
+                    <option value="waveform-square">waveform to square</option>
+                    <option value="waveform-sawtooth">waveform to sawtooth</option>
+                    <option value="waveform-sine">waveform to sine</option>
+                    <option value="waveform-triangle">waveform to triangle</option>
                 </select>
 `
 document.addEventListener("DOMContentLoaded", _ => {
@@ -30,7 +30,10 @@ document.addEventListener("DOMContentLoaded", _ => {
     }
 });
 
-// Rudimentary, needs buffing.
+// TODO
+// The spec to DOM function is currently under heavy development.
+// It will change according to changes in the interface.
+// Currently hardcoded for prototype & demonstration purposes.
 function getSpecFromDOM(){
     let tslSpec = "";
     let specifications = document.getElementById("specification");
@@ -40,17 +43,47 @@ function getSpecFromDOM(){
         // Predicate
         console.assert(spec.querySelectorAll(".predicate").length === 1);
         let predicate = spec.querySelector(".predicate").value;
+        let predicateTSL;
+        if(predicate === "C4")
+            predicateTSL = "Press C4";
+        else
+            predicateTSL = "Change AMFreq";
 
         // Action
         console.assert(spec.querySelectorAll(".action").length === 1);
         let action = spec.querySelector(".action").value;
+        let actionTSL;
+        if(action.search("waveform") !== -1){
+            if(action.search("square") !== -1)
+                actionTSL = "[Waveform <- Square]";
+            else if(action.search("sine") !== -1)
+                actionTSL = "[Waveform <- Sine]";
+            else if(action.search("triangle") !== -1)
+                actionTSL = "[Waveform <- Triangle]";
+            else if(action.search("sawtooth") !== -1)
+                actionTSL = "[Waveform <- Sawtooth]";
+            else
+                throw "Waveform Error";
+        }
+        else if(action.search("LFO") !== -1){
+            if(action.search("On") !== -1)
+                actionTSL = "[LFO <- True]";
+            else if(action.search("Off") !== -1)
+                actionTSL = "[LFO <- False]";
+            else
+                throw "LFO error";
+        }
+        else if(action.search("AM") !== -1)
+            actionTSL = "[AMSynthesis <- True]"
+        else
+            actionTSL = "[FMSynthesis <- True]"
 
         // If spec is unspecified
         if(!predicate || !action)
             continue;
 
         // Create spec
-        tslSpec += `Press ${predicate} -> [Wave <- ${action}];\n`;
+        tslSpec += `${predicateTSL} -> ${actionTSL};\n`;
     }
 
     // If no specs have been initialized
@@ -108,10 +141,6 @@ function synthesize(spec){
                 let script = document.createElement("script");
                 script.text = synthesized;
                 document.body.appendChild(script);
-
-                // TODO: obviate the need to hand-implement functions
-                addScript("implemented.js");
-
                 synthStatus.innerHTML = "Status: Synthesis Complete!\t"
             }
 
