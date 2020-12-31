@@ -1,6 +1,8 @@
 # The TSL Synthesis Synthesizer
 
-[Try it live](https://wonhyukchoi.github.io/tsl-synth)
+[Try it live -- Link not yet active](#)
+
+_* Note: This project is still under development. It has yet to release even a 0.1.0 version. *_
 
 ## Installation
 You need `node.js` and `docker`, which are widely available on `apt`, `snap`, `pacman`, etc.
@@ -32,14 +34,14 @@ cd -
 
 Then, pull the docker image (you may need sudo privileges here): 
 ```sh
-docker something...
+docker <not yet pushed to docker hub>
 ```
 
 Finally, run the application:
 ```sh
 node server.js
 ```
-Then open your favorite browser to `localhost:8080`, and enjoy!
+Then open your favorite browser to `localhost:4747`, and enjoy!
 
 
 ## Acknowledgments
