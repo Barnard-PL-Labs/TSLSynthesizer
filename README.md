@@ -34,7 +34,7 @@ cd -
 
 Then, pull the docker image (you may need sudo privileges here): 
 ```sh
-docker <not yet pushed to docker hub>
+docker pull wonhyukchoi/tlsf_to_aag
 ```
 
 Finally, run the application:
