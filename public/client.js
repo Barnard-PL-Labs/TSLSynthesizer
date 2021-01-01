@@ -47,7 +47,7 @@ function getSpecFromDOM(){
         if(predicate === "C4")
             predicateTSL = "Press C4";
         else
-            predicateTSL = "Change AMFreq";
+            predicateTSL = "Change amFreq";
 
         // Action
         console.assert(spec.querySelectorAll(".action").length === 1);
@@ -55,35 +55,35 @@ function getSpecFromDOM(){
         let actionTSL;
         if(action.search("waveform") !== -1){
             if(action.search("square") !== -1)
-                actionTSL = "[Waveform <- Square]";
+                actionTSL = "[waveform <- square]";
             else if(action.search("sine") !== -1)
-                actionTSL = "[Waveform <- Sine]";
+                actionTSL = "[waveform <- sine]";
             else if(action.search("triangle") !== -1)
-                actionTSL = "[Waveform <- Triangle]";
+                actionTSL = "[waveform <- triangle]";
             else if(action.search("sawtooth") !== -1)
-                actionTSL = "[Waveform <- Sawtooth]";
+                actionTSL = "[waveform <- sawtooth]";
             else
                 throw "Waveform Error";
         }
         else if(action.search("LFO") !== -1){
             if(action.search("On") !== -1)
-                actionTSL = "[LFO <- True]";
+                actionTSL = "[vibrato <- True]";
             else if(action.search("Off") !== -1)
-                actionTSL = "[LFO <- False]";
+                actionTSL = "[vibrato <- False]";
             else
                 throw "LFO error";
         }
         else if(action.search("AM") !== -1)
-            actionTSL = "[AMSynthesis <- True]"
+            actionTSL = "[amSynthesis <- True]"
         else
-            actionTSL = "[FMSynthesis <- True]"
+            actionTSL = "[fmSynthesis <- True]"
 
         // If spec is unspecified
         if(!predicate || !action)
             continue;
 
         // Create spec
-        tslSpec += `${predicateTSL} -> ${actionTSL};\n`;
+        tslSpec += `${predicateTSL} -> X ${actionTSL};\n`;
     }
 
     // If no specs have been initialized
