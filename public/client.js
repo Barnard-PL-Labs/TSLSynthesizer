@@ -24,9 +24,9 @@ const htmlLoad = `
 document.addEventListener("DOMContentLoaded", _ => {
     let specificationBox = document.getElementById("specification");
     for(let i=0; i<3;i++){
-        const temp = document.createElement('article');
-        temp.innerHTML = htmlLoad;
-        specificationBox.appendChild(temp);
+        const specChild = document.createElement('article');
+        specChild.innerHTML = htmlLoad;
+        specificationBox.appendChild(specChild);
     }
 });
 
@@ -140,6 +140,7 @@ function synthesize(spec){
             else {
                 let script = document.createElement("script");
                 script.text = synthesized;
+                script.setAttribute("id", "synthesizedScript");
                 document.body.appendChild(script);
                 synthStatus.innerHTML = "Status: Synthesis Complete!\t"
             }
@@ -154,6 +155,11 @@ function synthesize(spec){
 
 document.getElementById("synthesize-btn").addEventListener(
     "click", _ => {
+
+        let prevSynthesized = document.getElementById("synthesizedScript");
+        if(prevSynthesized)
+            prevSynthesized.remove();
+
         synthStatus.innerHTML = "Status: Synthesizing...\t"
         const spec = getSpecFromDOM();
         if(!spec){
@@ -163,9 +169,3 @@ document.getElementById("synthesize-btn").addEventListener(
         synthesize(spec);
     }
 );
-
-function addScript(scriptName){
-    let script = document.createElement("script");
-    script.setAttribute("src", scriptName);
-    document.body.appendChild(script);
-}
