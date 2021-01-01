@@ -2,9 +2,10 @@
 
 [Try it live -- Link not yet active](#)
 
-_* Note: This project is still under development. It has yet to release even a 0.1.0 version. *_
+## Local installation
 
-## Installation
+### Dependencies
+
 You need `node.js` and `docker`, which are widely available on `apt`, `snap`, `pacman`, etc.
 You also need the `haskell` tool stack, which should be installable on most systems with
 ```sh
@@ -12,32 +13,36 @@ curl -sSL https://get.haskellstack.org/ | sh
 ```
 If not, the [`haskell` stack documentation](https://docs.haskellstack.org/en/stable/install_and_upgrade/) has a variety of other installation methods.
 
-After cloning and moving into the repository, install some `node.js` packages:
+### Installation
 
+The build process involves installing `node.js` packages, and configuring `stack`, all of which _do not_ interfere with system installations; they are local to this project. The project does, however, pull a `docker` image, which you may delete after playing with the project.
+
+Simply run:
 ```sh
-npm install child_process
-npm install express
-npm install fs
+chmod +x install.sh
+./install.sh
 ```
 
-Then, pull the `tsltools` repository:
-```sh
-git clone https://github.com/wonhyukchoi/tsltools
+Depending on your system, you may need to grant `sudo` privilege to `docker`.
+
+#### Retry with '--allow-different-user'
+
+Depending on your system, you may get the following error:
+
+```
+You are not the owner of '~/.stack/'. Aborting to protect file permissions.
+Retry with '--allow-different-user' to disable this precaution.
 ```
 
-Then, we need to `make` tsltools:
-```sh
-cd tsltools
-make
-cd -
+If you get this error, add the following line in your `~/.stack/config.yaml`:
+
+```yaml
+allow-different-user: true
 ```
 
-Then, pull the docker image (you may need sudo privileges here): 
-```sh
-docker pull wonhyukchoi/tlsf_to_aag
-```
+### Run the application
 
-Finally, run the application:
+To run the application:
 ```sh
 node server.js
 ```
