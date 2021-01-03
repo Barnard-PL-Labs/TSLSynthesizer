@@ -9,7 +9,7 @@ const htmlLoad = `
                     <option value="amFreq">Change AMFreq</option>
                 </select>
             <span>&Implies;</span>
-                <select name="action1" class="action">
+                <select name="action" class="action">
                     <option value=""></option>
                     <option value="LFOOn">activate LFO</option>
                     <option value="LFOOff">deactivate LFO</option>
@@ -21,6 +21,8 @@ const htmlLoad = `
                     <option value="waveform-triangle">waveform to triangle</option>
                 </select>
 `
+
+// INITIALIZE SPEC FIELD
 document.addEventListener("DOMContentLoaded", _ => {
     let specificationBox = document.getElementById("specification");
     for(let i=0; i<3;i++){
@@ -37,6 +39,9 @@ document.addEventListener("DOMContentLoaded", _ => {
 function getSpecFromDOM(){
     let tslSpec = "";
     let specifications = document.getElementById("specification");
+    
+    let predicateList = [];
+
     for(let i=0; i < specifications.children.length; i++){
         const spec = specifications.children[i];
 
@@ -67,9 +72,9 @@ function getSpecFromDOM(){
         }
         else if(action.search("LFO") !== -1){
             if(action.search("On") !== -1)
-                actionTSL = "[vibrato <- True]";
+                actionTSL = "[lfo <- True]";
             else if(action.search("Off") !== -1)
-                actionTSL = "[vibrato <- False]";
+                actionTSL = "[lfo <- False]";
             else
                 throw "LFO error";
         }
@@ -81,9 +86,11 @@ function getSpecFromDOM(){
         // If spec is unspecified
         if(!predicate || !action)
             continue;
+        else
+            predicateList.push(predicateTSL);
 
         // Create spec
-        tslSpec += `${predicateTSL} -> X ${actionTSL};\n`;
+        tslSpec += `\t${predicateTSL} -> X ${actionTSL};\n`;
     }
 
     // If no specs have been initialized
@@ -93,6 +100,18 @@ function getSpecFromDOM(){
     }
 
     tslSpec = "always guarantee {\n" + tslSpec + "}";
+
+    // FIXME
+    if(predicateList.length > 1){
+        let assumeClause = "always assume{\n\t";
+        for(let i=0; i<predicateList.length; i++){
+            const predicate = predicateList[i];
+            assumeClause += "!(" + predicate +") || ";
+        }
+        assumeClause = assumeClause.slice(0, -4) + ";\n}";
+        tslSpec = assumeClause + tslSpec;
+    }
+
     console.log(`Got spec from DOM:\n${tslSpec}`);
     return tslSpec;
 }

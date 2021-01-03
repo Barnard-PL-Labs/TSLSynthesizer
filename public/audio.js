@@ -15,46 +15,46 @@ let context = new AudioContext(),
     },
     keyboard = new QwertyHancock(settings);
 
+// VARIABLE INIT
 let nodes = [];
 let waveform = 'sine';
-
 let masterGain = document.getElementById("gain");
 
+// WAVEFORM
 let waveformControl = document.getElementById("waveform");
 waveformControl.addEventListener("change", _ => {
     waveform = waveformControl.value;
 }, false);
 
+// AM SYNTHESIS
 let amSynthesis = false;
-let amBtn = document.getElementById("am-btn");
+let amOnBtn = document.getElementById("amOnBtn");
+let amOffBtn = document.getElementById("amOffBtn");
 let amFreq= document.getElementById("amFreq");
-amBtn.addEventListener("click", _ =>{
-    if(!amSynthesis){
-        amSynthesis = true;
-        fmSynthesis = false;
-    }
-    else
-        amSynthesis = false;
-})
+amOnBtn.addEventListener("click", _ => {
+    amSynthesis = true;
+    fmSynthesis = false;
+});
+amOffBtn.addEventListener("click", _ => {amSynthesis = false;});
 
+// FM SYNTHESIS
 let fmSynthesis = false;
-let fmBtn = document.getElementById("fm-btn");
-fmBtn.addEventListener("click", _ => {
-    if(!fmSynthesis){
-       fmSynthesis = true;
-       amSynthesis = false;
-    }
-    else
-        fmSynthesis = false;
-})
+let fmOnBtn = document.getElementById("fmOnBtn");
+let fmOffBtn = document.getElementById("fmOffBtn");
+fmOnBtn.addEventListener("click", _ => {
+    fmSynthesis = true;
+    amSynthesis = false;
+});
+fmOffBtn.addEventListener("click", _ => {fmSynthesis = false;});
 
-let vibrato = false;
+// LFO
+let lfo = false;
 let vibFreq =  document.getElementById("lfoFreq");
 let vibDepth =  document.getElementById("lfoDepth");
-let lfoBtn = document.getElementById("lfo-btn");
-lfoBtn.addEventListener("click", _ => {
-    vibrato = !vibrato;
-})
+let lfoOnBtn = document.getElementById("lfoOnBtn");
+let lfoOffBtn = document.getElementById("lfoOffBtn");
+lfoOnBtn.addEventListener("click", _ => {lfo = true;});
+lfoOffBtn.addEventListener("click", _ => {lfo = false;});
 
 let carrierMap = {};
 
@@ -99,7 +99,7 @@ keyboard.keyDown = function (note, frequency) {
         modulationIndex.connect(context.destination);
     }
 
-    if(vibrato){
+    if(lfo){
         let vibOsc = context.createOscillator();
         let vibIdx = context.createGain();
         vibIdx.gain.value = parseInt(vibDepth.value);

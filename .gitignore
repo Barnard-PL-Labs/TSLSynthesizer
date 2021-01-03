@@ -4,6 +4,7 @@ local_testing
 archive
 paper
 tmp*
+tsltools
 
 # Sensitive files
 synth_resources
