@@ -22,6 +22,13 @@ const htmlLoad = `
                 </select>
 `
 
+const initially= `
+initially guarantee{
+    [amSynthesis <- False()];
+    [waveform <- sine()];
+}
+`
+
 // INITIALIZE SPEC FIELD
 document.addEventListener("DOMContentLoaded", _ => {
     let specificationBox = document.getElementById("specification");
@@ -50,9 +57,9 @@ function getSpecFromDOM(){
         let predicate = spec.querySelector(".predicate").value;
         let predicateTSL;
         if(predicate === "C4")
-            predicateTSL = "Press C4";
+            predicateTSL = "press C4";
         else
-            predicateTSL = "Change amFreq";
+            predicateTSL = "change amFreq";
 
         // Action
         console.assert(spec.querySelectorAll(".action").length === 1);
@@ -60,28 +67,28 @@ function getSpecFromDOM(){
         let actionTSL;
         if(action.search("waveform") !== -1){
             if(action.search("square") !== -1)
-                actionTSL = "[waveform <- square]";
+                actionTSL = "[waveform <- square()]";
             else if(action.search("sine") !== -1)
-                actionTSL = "[waveform <- sine]";
+                actionTSL = "[waveform <- sine()]";
             else if(action.search("triangle") !== -1)
-                actionTSL = "[waveform <- triangle]";
+                actionTSL = "[waveform <- triangle()]";
             else if(action.search("sawtooth") !== -1)
-                actionTSL = "[waveform <- sawtooth]";
+                actionTSL = "[waveform <- sawtooth()]";
             else
                 throw "Waveform Error";
         }
         else if(action.search("LFO") !== -1){
             if(action.search("On") !== -1)
-                actionTSL = "[lfo <- True]";
+                actionTSL = "[lfo <- True()]";
             else if(action.search("Off") !== -1)
-                actionTSL = "[lfo <- False]";
+                actionTSL = "[lfo <- False()]";
             else
                 throw "LFO error";
         }
         else if(action.search("AM") !== -1)
-            actionTSL = "[amSynthesis <- True]"
+            actionTSL = "[amSynthesis <- True()]"
         else
-            actionTSL = "[fmSynthesis <- True]"
+            actionTSL = "[fmSynthesis <- True()]"
 
         // If spec is unspecified
         if(!predicate || !action)
@@ -108,10 +115,11 @@ function getSpecFromDOM(){
             const predicate = predicateList[i];
             assumeClause += "!(" + predicate +") || ";
         }
-        assumeClause = assumeClause.slice(0, -4) + ";\n}";
+        assumeClause = assumeClause.slice(0, -4) + ";\n}\n";
         tslSpec = assumeClause + tslSpec;
     }
 
+    tslSpec = initially + tslSpec;
     console.log(`Got spec from DOM:\n${tslSpec}`);
     return tslSpec;
 }
