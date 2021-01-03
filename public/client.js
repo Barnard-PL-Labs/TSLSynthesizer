@@ -23,9 +23,11 @@ const htmlLoad = `
 `
 
 const initially= `
-initially guarantee{
+initially guarantee {
     [amSynthesis <- False()];
+    [fmSynthesis <- False()];
     [waveform <- sine()];
+    [lfo <- False()];
 }
 `
 
@@ -110,7 +112,7 @@ function getSpecFromDOM(){
 
     // FIXME
     if(predicateList.length > 1){
-        let assumeClause = "always assume{\n\t";
+        let assumeClause = "always assume {\n\t";
         for(let i=0; i<predicateList.length; i++){
             const predicate = predicateList[i];
             assumeClause += "!(" + predicate +") || ";
