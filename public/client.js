@@ -1,12 +1,15 @@
-let synthStatus = document.getElementById("synth-status");
+//////////
+// HTML //
+//////////
 
 // FIXME
 const htmlLoad = `
                 When
                 <select name="predicate" class="predicate">
                     <option value=""></option>
-                    <option value="C4">C4 Pressed</option>
+                    <option value="note">Play last played note</option>
                     <option value="amFreq">Change AMFreq</option>
+                    <option value="toSine">Waveform is Sine</option>
                 </select>
             <span>&Implies;</span>
                 <select name="action" class="action">
@@ -21,16 +24,6 @@ const htmlLoad = `
                     <option value="waveform-triangle">waveform to triangle</option>
                 </select>
 `
-
-const initially= `
-initially guarantee {
-    [amSynthesis <- False()];
-    [fmSynthesis <- False()];
-    [waveform <- sine()];
-    [lfo <- False()];
-}
-`
-
 // INITIALIZE SPEC FIELD
 document.addEventListener("DOMContentLoaded", _ => {
     let specificationBox = document.getElementById("specification");
@@ -41,90 +34,39 @@ document.addEventListener("DOMContentLoaded", _ => {
     }
 });
 
-// TODO
-// The spec to DOM function is currently under heavy development.
-// It will change according to changes in the interface.
-// Currently hardcoded for prototype & demonstration purposes.
-function getSpecFromDOM(){
-    let tslSpec = "";
-    let specifications = document.getElementById("specification");
-    
-    let predicateList = [];
+function removeSharp(str){return str.replace("#", "Sharp");}
+function addSharp(str){return str.replace("Sharp", "#");}
 
-    for(let i=0; i < specifications.children.length; i++){
-        const spec = specifications.children[i];
-
-        // Predicate
-        console.assert(spec.querySelectorAll(".predicate").length === 1);
-        let predicate = spec.querySelector(".predicate").value;
-        let predicateTSL;
-        if(predicate === "C4")
-            predicateTSL = "press C4";
-        else
-            predicateTSL = "change amFreq";
-
-        // Action
-        console.assert(spec.querySelectorAll(".action").length === 1);
-        let action = spec.querySelector(".action").value;
-        let actionTSL;
-        if(action.search("waveform") !== -1){
-            if(action.search("square") !== -1)
-                actionTSL = "[waveform <- square()]";
-            else if(action.search("sine") !== -1)
-                actionTSL = "[waveform <- sine()]";
-            else if(action.search("triangle") !== -1)
-                actionTSL = "[waveform <- triangle()]";
-            else if(action.search("sawtooth") !== -1)
-                actionTSL = "[waveform <- sawtooth()]";
-            else
-                throw "Waveform Error";
-        }
-        else if(action.search("LFO") !== -1){
-            if(action.search("On") !== -1)
-                actionTSL = "[lfo <- True()]";
-            else if(action.search("Off") !== -1)
-                actionTSL = "[lfo <- False()]";
-            else
-                throw "LFO error";
-        }
-        else if(action.search("AM") !== -1)
-            actionTSL = "[amSynthesis <- True()]"
-        else
-            actionTSL = "[fmSynthesis <- True()]"
-
-        // If spec is unspecified
-        if(!predicate || !action)
-            continue;
-        else
-            predicateList.push(predicateTSL);
-
-        // Create spec
-        tslSpec += `\t${predicateTSL} -> X ${actionTSL};\n`;
+// TSL lexer does not recognize "#".
+// Must change all ids to "sharp".
+document.addEventListener("DOMContentLoaded", _ => {
+    for(let i=0; i<allKeys.length; i++){
+        const keyNote = allKeys[i];
+        keyNote.setAttribute("id", removeSharp(keyNote.id));
     }
+})
 
-    // If no specs have been initialized
-    if(!tslSpec){
-        console.log("No specs initialized.");
-        return "";
-    }
+////////////////////////////
+// SAVE LAST CLICKED NOTE //
+////////////////////////////
+let lastClicked;
+const lastClickHTML = document.getElementById("lastClicked");
 
-    tslSpec = "always guarantee {\n" + tslSpec + "}";
-
-    // FIXME
-    if(predicateList.length > 1){
-        let assumeClause = "always assume {\n\t";
-        for(let i=0; i<predicateList.length; i++){
-            const predicate = predicateList[i];
-            assumeClause += "!(" + predicate +") || ";
-        }
-        assumeClause = assumeClause.slice(0, -4) + ";\n}\n";
-        tslSpec = assumeClause + tslSpec;
-    }
-
-    tslSpec = initially + tslSpec;
-    console.log(`Got spec from DOM:\n${tslSpec}`);
-    return tslSpec;
+function saveLastClicked(e){
+    lastClicked = e.target.id;
+    lastClickHTML.innerText = "Last Played Note: " + addSharp(lastClicked);
 }
+
+for(let i=0; i<allKeys.length; i++){
+    const keyNote = allKeys[i];
+    keyNote.addEventListener("click", e => saveLastClicked(e), false);
+}
+
+////////////////////////////
+// SERVER HANDSHAKE LOGIC //
+////////////////////////////
+
+let synthStatus = document.getElementById("synth-status");
 
 // https://gist.github.com/aerrity/fd393e5511106420fba0c9602cc05d35
 function synthesize(spec){
@@ -180,7 +122,6 @@ function synthesize(spec){
         });
 
 }
-
 
 document.getElementById("synthesize-btn").addEventListener(
     "click", _ => {

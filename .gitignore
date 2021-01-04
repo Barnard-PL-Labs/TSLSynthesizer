@@ -5,6 +5,7 @@ archive
 paper
 tmp*
 tsltools
+media
 
 # Sensitive files
 synth_resources

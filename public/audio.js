@@ -145,3 +145,5 @@ keyboard.keyUp = function (note, frequency) {
 };
 
 keyboard = new QwertyHancock(settings);
+
+const allKeys = document.getElementById("keyboard").children[0].children;
