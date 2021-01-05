@@ -1,5 +1,71 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
+
+
+
+// Function to parse the MIDI messages we receive
+function getMIDIMessage(message) {
+    var command = message.data[0];
+    var note = message.data[1];
+    var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
+
+    switch (command) {
+        case 144: // note on
+            if (velocity > 0) {
+                noteOn(note, velocity);
+            } else {
+                noteOff(note);
+            }
+            break;
+        case 128: // note off
+            noteOff(note);
+            break;
+
+    }
+}
+
+// Function to handle noteOn messages (ie. key is pressed)
+function noteOn(note, velocity) {
+    let noteName = midiNoteToNoteName[note]
+    audioKeyDown(noteName, getFrequencyOfNote(noteName))
+}
+
+// Function to handle noteOff messages (ie. key is released)
+function noteOff(note) {
+    let noteName = midiNoteToNoteName[note]
+    audioKeyUp(noteName, getFrequencyOfNote(noteName))
+}
+
+
+function getFrequencyOfNote(note) {
+    var notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'],
+        key_number,
+        octave;
+
+    if (note.length === 3) {
+        octave = note.charAt(2);
+    } else {
+        octave = note.charAt(1);
+    }
+
+    key_number = notes.indexOf(note.slice(0, -1));
+
+    if (key_number < 3) {
+        key_number = key_number + 12 + ((octave - 1) * 12) + 1;
+    } else {
+        key_number = key_number + ((octave - 1) * 12) + 1;
+    }
+
+    return 440 * Math.pow(2, (key_number - 49) / 12);
+};
+
+
+
+
+
+
+
+
 let context = new AudioContext(),
     settings = {
         id: 'keyboard',
@@ -19,6 +85,44 @@ let context = new AudioContext(),
 let nodes = [];
 let waveform = 'sine';
 let masterGain = document.getElementById("gain");
+
+let midiNoteToNoteName = {
+      45: "A2",
+      46: "A#2",
+      47: "B2",
+      48: "C3",
+      49: "C#3",
+      50: "D3",
+      51: "D#3",
+      52: "E3",
+      53: "F3",
+      54: "F#3",
+      55: "G3",
+      56: "G#3",
+      57: "A3",
+      58: "A#3",
+      59: "B3",
+      60: "C4",
+      61: "C#4",
+      62: "D4",
+      63: "D#4",
+      64: "E4",
+      65: "F4",
+      66: "F#4",
+      67: "G4",
+      68: "G#4",
+      69: "A4",
+      70: "A#4",
+      71: "B4",
+      72: "C5",
+      73: "C#5",
+      74: "D5",
+      75: "D#5",
+      76: "E5",
+      77: "F5",
+      78: "F#5",
+      79: "G5",
+    }
 
 // WAVEFORM
 let waveformControl = document.getElementById("waveform");
@@ -58,7 +162,11 @@ lfoOffBtn.addEventListener("click", _ => {lfo = false;});
 
 let carrierMap = {};
 
-keyboard.keyDown = function (note, frequency) {
+
+
+
+
+function audioKeyDown(note, frequency) {
     let oscillator = context.createOscillator();
     const modulationIndex = context.createGain();
     oscillator.type = waveform;
@@ -119,7 +227,8 @@ keyboard.keyDown = function (note, frequency) {
 
 };
 
-keyboard.keyUp = function (note, frequency) {
+
+function audioKeyUp(note, frequency) {
     let new_nodes = [];
 
     for (let i = 0; i < nodes.length; i++) {
@@ -143,6 +252,9 @@ keyboard.keyUp = function (note, frequency) {
 
     nodes = new_nodes;
 };
+
+keyboard.keyDown = audioKeyDown;
+keyboard.keyUp = audioKeyUp;
 
 keyboard = new QwertyHancock(settings);
 
