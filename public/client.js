@@ -83,43 +83,45 @@ function synthesize(spec){
         .then(function(response){
             if(response.ok){
                 console.log('POST success.');
+            // GET
+            fetch('/synthesized', {method: 'GET'})
+                .then(function(response){
+                    if(response.ok){
+                        console.log("GET success.");
+                        return response.json();
+                    }
+                    throw new Error('GET failed.');
+                })
+                .then(function(data){
+                    let synthesized = data.result;
+
+                    // XXX
+                    if(synthesized.toString().search("UNREALIZABLE") !== -1){
+                        synthStatus.innerHTML = "Status: Unrealizable... please try again\t";
+                    }
+
+                    else {
+                        let script = document.createElement("script");
+                        script.text = synthesized;
+                        script.setAttribute("id", "synthesizedScript");
+                        document.body.appendChild(script);
+                        synthStatus.innerHTML = "Status: Synthesis Complete!\t"
+                    }
+
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
                 return;
             }
-            throw new Error('POST failed.');
+            else
+                throw new Error('POST failed.');
         })
         .catch(function(error){
             console.log(error);
         });
 
-    // GET
-    fetch('/synthesized', {method: 'GET'})
-        .then(function(response){
-            if(response.ok){
-                console.log("GET success.");
-                return response.json();
-            }
-            throw new Error('GET failed.');
-        })
-        .then(function(data){
-            let synthesized = data.result;
 
-            // XXX
-            if(synthesized.toString().search("UNREALIZABLE") !== -1){
-                synthStatus.innerHTML = "Status: Unrealizable... please try again\t";
-            }
-
-            else {
-                let script = document.createElement("script");
-                script.text = synthesized;
-                script.setAttribute("id", "synthesizedScript");
-                document.body.appendChild(script);
-                synthStatus.innerHTML = "Status: Synthesis Complete!\t"
-            }
-
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
 
 }
 
