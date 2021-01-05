@@ -63,7 +63,7 @@ function deleteTmpFiles(){
 // Function to synthesize TSL spec
 function synthesize() {
     return new Promise(resolve => {
-        execFile('sh', ['synthesize.sh', tslFile],
+        execFile('bash', ['synthesize.sh', tslFile],
             function (err, data) {
                 let returnValue;
                 // XXX

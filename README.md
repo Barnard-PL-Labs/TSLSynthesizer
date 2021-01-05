@@ -1,13 +1,18 @@
 # The TSL Synthesis Synthesizer
 
-[Try it live -- Link not yet active](#)
+[Try it live!](http://159.203.73.47:4747)
 
 ## Local installation
 
 ### Dependencies
 
-You need `node.js` and `docker`, which are widely available on `apt`, `snap`, `pacman`, etc.
-You also need the `haskell` tool stack, which should be installable on most systems with
+1. `Node.js`
+2. `Docker`
+3. The `haskell` tool stack
+
+`Node.js` and `docker` are widely available, and on most official repositories, i.e. via `apt`, `snap`, `pacman`.
+
+The `haskell` tool stack can be installed on most systems with 
 ```sh
 curl -sSL https://get.haskellstack.org/ | sh
 ```

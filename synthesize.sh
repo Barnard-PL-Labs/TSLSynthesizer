@@ -10,7 +10,7 @@ js="$file_header.js"
 tsltools/tsl2tlsf $file_name | cat > $tlsf
 
 # Build AAG from docker
-sudo docker run --rm -v $(pwd):/files -i strix_v2 /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
+sudo docker run --rm -v $(pwd):/files -i wonhyukchoi/tlsf_to_aag /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
 
 # Change to unix format
 dos2unix $aag 2> /dev/null
