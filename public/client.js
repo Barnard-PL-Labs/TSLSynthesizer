@@ -1,39 +1,3 @@
-//////////
-// HTML //
-//////////
-
-// FIXME
-const htmlLoad = `
-                When
-                <select name="predicate" class="predicate">
-                    <option value=""></option>
-                    <option value="note">Play last played note</option>
-                    <option value="amFreq">Change AMFreq</option>
-                    <option value="toSine">Waveform is Sine</option>
-                </select>
-            <span>&Implies;</span>
-                <select name="action" class="action">
-                    <option value=""></option>
-                    <option value="LFOOn">activate LFO</option>
-                    <option value="LFOOff">deactivate LFO</option>
-                    <option value="FMOn">activate FM Synthesis</option>
-                    <option value="AMOn">activate AM synthesis</option>
-                    <option value="waveform-square">waveform to square</option>
-                    <option value="waveform-sawtooth">waveform to sawtooth</option>
-                    <option value="waveform-sine">waveform to sine</option>
-                    <option value="waveform-triangle">waveform to triangle</option>
-                </select>
-`
-// INITIALIZE SPEC FIELD
-document.addEventListener("DOMContentLoaded", _ => {
-    let specificationBox = document.getElementById("specification");
-    for(let i=0; i<3;i++){
-        const specChild = document.createElement('article');
-        specChild.innerHTML = htmlLoad;
-        specificationBox.appendChild(specChild);
-    }
-});
-
 function removeSharp(str){return str.replace("#", "Sharp");}
 function addSharp(str){return str.replace("Sharp", "#");}
 
@@ -54,7 +18,7 @@ const lastClickHTML = document.getElementById("lastClicked");
 
 function saveLastClicked(e){
     lastClicked = e.target.id;
-    lastClickHTML.innerText = "Last Played Note: " + addSharp(lastClicked);
+    lastClickHTML.innerText = "Last Played Note: " + addSharp(lastClicked) + " (Play to change)";
 }
 
 for(let i=0; i<allKeys.length; i++){
@@ -97,7 +61,11 @@ function synthesize(spec){
 
                     // XXX
                     if(synthesized.toString().search("UNREALIZABLE") !== -1){
-                        synthStatus.innerHTML = "Status: Unrealizable... please try again\t";
+                        synthStatus.innerText = "Status: Unrealizable... please try again\t";
+                    }
+
+                    else if(synthesized.toString().search("ERROR") !== -1){
+                        synthStatus.innerText = "Unknown Error.\t";
                     }
 
                     else {
