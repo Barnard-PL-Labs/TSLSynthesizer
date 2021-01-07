@@ -4,7 +4,8 @@
 
 ## Tutorial
 
-[Outdated demo](https://www.youtube.com/watch?reload=9&v=_RpUpe7DFx0&feature=youtu.be)
+[Demo](https://www.youtube.com/watch?reload=9&v=_RpUpe7DFx0&feature=youtu.be)
+
 
 ## Local installation
 

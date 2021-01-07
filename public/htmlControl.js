@@ -41,7 +41,7 @@ const actionOptions = `
 const untilOptions = `
 <select class="untilOption">
     <option value=""></option> 
-    <option value="">No Condition</option> 
+    <option value="noCond">No Condition</option> 
     <option value="play">Played Note:</option>
     <option value="[waveform <- sine()]">waveform to sine</option>
     <option value="[waveform <- sawtooth()]">waveform to sawtooth</option>
@@ -56,12 +56,21 @@ const untilOptions = `
 </select>
 `
 
-const playNoteOptions = `
+const playNoteOptions1 = `
 <select class="playNoteOptions">
     <option value=""></option> 
-    <option value="play">Selected Note</option>
-    <option value="playBelow">Above Selected Note</option>
-    <option value="playAbove">Below Selected Note</option>
+    <option value="play">Selected Note 1</option>
+    <option value="playAbove">Above Selected Note 1</option>
+    <option value="playBelow">Below Selected Note 1</option>
+</select> 
+`
+
+const playNoteOptions2 = `
+<select class="playNoteOptions">
+    <option value=""></option> 
+    <option value="play">Selected Note 2</option>
+    <option value="playAbove">Above Selected Note 2</option>
+    <option value="playBelow">Below Selected Note 2</option>
 </select> 
 `
 
@@ -70,11 +79,11 @@ const playNoteOptions = `
 const binOperatorOptions = `
 <select class="binOp">
     <option value=""></option> 
-    <option value=" -> ">Implies</option>
-    <option value=" <-> ">Equivalence</option>
-    <option value=" -> X ">Next</option>
-    <option value=" W ">Weak Until</option>
-    <option value=" U ">Until</option>
+    <option value="->">-></option>
+    <option value="<->"><-></option>
+    <option value="-> X">-> X</option>
+    <option value="W">W</option>
+    <option value="U">U</option>
 </select> 
 `
 
@@ -98,7 +107,7 @@ function getActionClauseList(){
     return [
         getWhitespaceSpanNode(),
         strToDOM(actionOptions),
-        getSpanNode(" W "),
+        getSpanNode(" until "),
         strToDOM(untilOptions)
     ];
 }
@@ -115,13 +124,14 @@ function nodesAfterPredicate(predicate){
         case "always":
             break;
         case "play":
-            returnNodes.push(strToDOM(playNoteOptions));
+            returnNodes.push(strToDOM(playNoteOptions1));
             returnNodes.push(getWhitespaceSpanNode());
+            returnNodes.push(strToDOM(binOperatorOptions));
             break;
         default:
+            returnNodes.push(strToDOM(binOperatorOptions));
             break;
     }
-    returnNodes.push(strToDOM(binOperatorOptions));
     returnNodes.push(getWhitespaceSpanNode());
     returnNodes = returnNodes.concat(getActionClauseList());
     return returnNodes;
@@ -181,7 +191,7 @@ function untilEventListener(event){
 
     if(currUntil.value === "play"){
         parent.appendChild(getWhitespaceSpanNode());
-        parent.appendChild(strToDOM(playNoteOptions));
+        parent.appendChild(strToDOM(playNoteOptions2));
     }
 }
 

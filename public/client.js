@@ -13,13 +13,35 @@ document.addEventListener("DOMContentLoaded", _ => {
 ////////////////////////////
 // SAVE LAST CLICKED NOTE //
 ////////////////////////////
-let lastClicked;
-const lastClickHTML = document.getElementById("lastClicked");
+let selectedNotesLock = [false, false];
+let selectedNotesList = [null, null];
+const selectedNotes = document.getElementById("lastClicked");
 
 function saveLastClicked(e){
-    lastClicked = e.target.id;
-    lastClickHTML.innerText = "Selected Note: " + addSharp(lastClicked) + " (Play to change)";
+    const note = e.target.id;
+    for(let i=0; i<selectedNotes.children.length; i++){
+        if(selectedNotesLock[i])
+            continue;
+
+        selectedNotesList[i] = note;
+        selectedNotes.children[i].children[0].innerText = "" +
+            "Selected Note " + (i+1).toString() + ": " + addSharp(note);
+    }
 }
+
+document.addEventListener("DOMContentLoaded", _ => {
+    const selectButtons = document.getElementsByClassName("selectedNoteBtn");
+    for(let i=0; i<selectButtons.length; i++){
+        selectButtons[i].addEventListener("click", _ => {
+            // Save --> Reset
+            if(selectedNotesLock[i]){
+                selectButtons[i].parentNode.children[0].innerText = "" +
+                    "Selected Note " + (i+1).toString() + " None (Play to Change)"
+            }
+            selectedNotesLock[i] = !selectedNotesLock[i];
+        })
+    }
+})
 
 for(let i=0; i<allKeys.length; i++){
     const keyNote = allKeys[i];
@@ -65,7 +87,8 @@ function synthesize(spec){
                     }
 
                     else if(synthesized.toString().search("ERROR") !== -1){
-                        synthStatus.innerText = "Unknown Error.\t";
+                        synthStatus.innerText = "Program Error. Check console log.\t";
+                        console.log(synthesized);
                     }
 
                     else {
@@ -101,11 +124,19 @@ document.getElementById("synthesize-btn").addEventListener(
             prevSynthesized.remove();
 
         synthStatus.innerHTML = "Status: Synthesizing...\t"
-        const spec = getSpecFromDOM();
-        if(!spec){
-            synthStatus.innerHTML = "Status: No specification given\t";
-            return;
+        try{
+            const spec = getSpecFromDOM();
+            if(!spec){
+                synthStatus.innerHTML = "Status: No specification given\t";
+                return;
+            }
+            synthesize(spec);
         }
-        synthesize(spec);
+        catch(err){
+            if(err instanceof UnselectedNoteError)
+                synthStatus.innerHTML = "You did not select notes.\t"
+            else
+                throw err;
+        }
     }
 );

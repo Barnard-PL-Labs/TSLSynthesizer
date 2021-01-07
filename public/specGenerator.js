@@ -1,4 +1,4 @@
-const initially= `
+const initiallyGuarantee= `
 initially guarantee {
     [amSynthesis <- False()];
     [fmSynthesis <- False()];
@@ -7,95 +7,148 @@ initially guarantee {
 }
 `
 
+class UnselectedNoteError extends Error {}
 
-// TODO
-// The spec to DOM function is currently under heavy development.
-// It will change according to changes in the interface.
-// Currently hardcoded for prototype & demonstration purposes.
-function getSpecFromDOM(){
+// XXX
+function whereisUntil(optionList){
+    for(let i=0; i<optionList.length;i++){
+        if(optionList[i].className === "untilOption")
+            return i;
+    }
+    throw "err";
+}
+
+function parseUntilOptions(untilOptionList){
+    let untilSpec = "";
+    switch(untilOptionList[0].value){
+        case "noCond":
+            return "";
+        // Magic numbers...
+        case "play":
+            untilSpec += " W "
+            untilSpec += untilOptionList[1].value;
+            if(!selectedNotesList[1])
+                throw new UnselectedNoteError;
+            untilSpec += ' ' + selectedNotesList[1];
+            break;
+        default:
+            untilSpec += " W "
+            untilSpec += untilOptionList[0].value;
+    }
+    return untilSpec;
+}
+
+function parseBinOpActionOptions(actionOptionList){
+    let actionSpec = actionOptionList[0].value;
+    actionSpec += " (";
+
+    const untilIdx = whereisUntil(actionOptionList);
+
+    let actionClause = actionOptionList.slice(1, untilIdx);
+    actionSpec += actionClause
+        .map(x => x.value)
+        .join(' ');
+
+    actionSpec += parseUntilOptions(actionOptionList.slice(untilIdx));
+    actionSpec += ');';
+    return actionSpec;
+}
+
+function parseAlwaysActionOptions(actionOptionList){
+    const untilIdx = whereisUntil(actionOptionList);
+
+    let actionClause = actionOptionList.slice(0, untilIdx);
+    let actionSpec = actionClause
+                    .map(x => x.value)
+                    .join(' ');
+
+    actionSpec += parseUntilOptions(actionOptionList.slice(untilIdx));
+    actionSpec += ';';
+    return actionSpec;
+}
+
+function returnOnlySelectChildren(domNode){
+    let selectNodeList = [];
+    for(let i=0; i<domNode.children.length; i++){
+        let selectNode = domNode.children[i];
+        if(selectNode.tagName === "SELECT"){
+            if(selectNode.value === "")
+                return [];
+            selectNodeList.push(domNode.children[i]);
+        }
+    }
+    return selectNodeList;
+}
+
+function parseSpecNode(spec){
+    const MIN_SELECTS_PLAY = 5;
+    const MIN_SELECTS_ALWAYS = 0;
+    const MIN_SELECTS_DEFAULT = 0;
+
     let tslSpec = "";
-    let specifications = document.getElementById("specification");
+    let predicate = "";
+    const optionList = returnOnlySelectChildren(spec);
 
-    let predicateList = [];
+    if(optionList.length === 0)
+        return [predicate, tslSpec];
 
-    for(let i=0; i < specifications.children.length; i++){
-        const spec = specifications.children[i];
-
-        // Predicate
-        console.assert(spec.querySelectorAll(".predicate").length === 1);
-        let predicate = spec.querySelector(".predicate").value;
-        let predicateTSL;
-        if(predicate === "note")
-            predicateTSL = `press ${lastClicked}`;
-        else if(predicate === "amFreq")
-            predicateTSL = "change amFreq";
-        else if(predicate === "toSine")
-            predicateTSL = "change waveformControl && [waveform <- sine()]";
-        // else
-        //     throw "Predicate error";
-
-        // Action
-        console.assert(spec.querySelectorAll(".action").length === 1);
-        let action = spec.querySelector(".action").value;
-        let actionTSL;
-        if(action.search("waveform") !== -1){
-            if(action.search("square") !== -1)
-                actionTSL = "[waveform <- square()]";
-            else if(action.search("sine") !== -1)
-                actionTSL = "[waveform <- sine()]";
-            else if(action.search("triangle") !== -1)
-                actionTSL = "[waveform <- triangle()]";
-            else if(action.search("sawtooth") !== -1)
-                actionTSL = "[waveform <- sawtooth()]";
-            // else
-            //     throw "Waveform Error";
-        }
-        else if(action.search("LFO") !== -1){
-            if(action.search("On") !== -1)
-                actionTSL = "[lfo <- True()]";
-            else if(action.search("Off") !== -1)
-                actionTSL = "[lfo <- False()]";
-            // else
-            //     throw "LFO error";
-        }
-        else if(action.search("AM") !== -1)
-            actionTSL = "[amSynthesis <- True()]";
-        else if(action.search("FM") !== -1)
-            actionTSL = "[fmSynthesis <- True()]";
-        // else
-        //     throw "Action error";
-
-        // If spec is incomplete, abort
-        if(!predicate || !action)
-            continue;
-        // Otherwise add the predicate to ALWAYS ASSUME clause
-        else
-            predicateList.push(predicateTSL);
-
-        // Create spec
-        tslSpec += `\t${predicateTSL} -> X ${actionTSL};\n`;
+    switch(optionList[0].value){
+        case "play":
+            console.assert(optionList.length >= MIN_SELECTS_PLAY);
+            tslSpec += optionList[1].value;
+            if(!selectedNotesList[0])
+                throw new UnselectedNoteError;
+            tslSpec += ' ' + selectedNotesList[0] + ' ';
+            predicate = tslSpec;
+            tslSpec += parseBinOpActionOptions(optionList.slice(2))
+            break;
+        case "always":
+            console.assert(optionList.length >= MIN_SELECTS_ALWAYS);
+            break;
+        default:
+            console.assert(optionList.length >= MIN_SELECTS_DEFAULT);
+            tslSpec += optionList[0].value;
+            tslSpec += ' ';
+            tslSpec += parseBinOpActionOptions(optionList.slice(1))
     }
 
-    // If no specs have been initialized
-    if(!tslSpec){
-        console.log("No specs initialized.");
+    return [predicate, tslSpec];
+}
+
+function getSpecFromDOM(){
+    let tslSpecList = [];
+    let specParent = document.getElementById("specification");
+    let predicateList = [];
+
+    for(let i=0; i < specParent.children.length; i++){
+        const specNode = specParent.children[i];
+        if(specNode.tagName !== "ARTICLE")
+            continue;
+        const [predicate, tslSpec] = parseSpecNode(specNode);
+
+        if(!tslSpec)
+            continue;
+
+        tslSpecList.push(tslSpec);
+        if(predicate)
+            predicateList.push(predicate);
+    }
+
+    if(tslSpecList.length === 0){
         return "";
     }
 
-    tslSpec = "always guarantee {\n" + tslSpec + "}";
-
-    // Add ALWAYS ASSUME clause
+    // FIXME: fix always assume clause
+    let alwaysAssume = "";
     if(predicateList.length > 1){
-        let assumeClause = "always assume {\n\t";
-        for(let i=0; i<predicateList.length; i++){
-            const predicate = predicateList[i];
-            assumeClause += "!(" + predicate +") || ";
-        }
-        assumeClause = assumeClause.slice(0, -4) + ";\n}\n";
-        tslSpec = assumeClause + tslSpec;
+        alwaysAssume = "always assume{\n!(" +
+            predicateList.join(" && ") + ");\n}\n"
     }
 
-    tslSpec = initially + tslSpec;
-    console.log(`Got spec from DOM:\n${tslSpec}`);
-    return tslSpec;
+    const alwaysGuarantee = "always guarantee {\n" +
+        tslSpecList.join("\t\n") + "\n}\n";
+
+    const spec = initiallyGuarantee + alwaysAssume + alwaysGuarantee;
+    console.log(`Got spec from DOM: ${spec}`);
+    return spec;
 }
