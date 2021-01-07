@@ -9,7 +9,7 @@
    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<div class="container" style="background:yellow; color:black; width: 800px;">
+<div class="container">
     <h2>The TSL Synthesis Synthesizer</h2>
     <section id="specification">
         <h3> Specifications </h3>
@@ -24,7 +24,7 @@
         <button id="synthesize-btn">Synthesize!    </button>
     </section>
     <br>
-    <section id="controls">
+    <section id="controls" hidden>
         <div>
             <label>Gain
                 <input id="gain" type="range" min="0" max="1" step="0.01">
@@ -61,6 +61,13 @@
     <br>
     <div id="keyboard"></div>
 </div>
+<footer style="width: 1000px; margin:auto;">
+    <p>
+        <a href="https://github.com/Barnard-PL-Labs/TSLSynthesizer">View source on github</a>
+    </p>
+    <!-- FIXME -->
+    <button><a href="local.html">MEETING NOTES</a></button>
+</footer>
 <script src="qwerty-hancock.js"></script>
 <script src="audio.js"></script>
 <script src="htmlControl.js"></script>

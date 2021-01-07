@@ -6,6 +6,7 @@ paper
 tmp*
 tsltools
 media
+local.html
 
 # Sensitive files
 synth_resources

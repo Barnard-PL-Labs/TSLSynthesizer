@@ -117,13 +117,14 @@ function nodesAfterPredicate(predicate){
         case "play":
             returnNodes.push(strToDOM(playNoteOptions));
             returnNodes.push(getWhitespaceSpanNode());
-            returnNodes.push(getSpanNode("⇒"));
             break;
         default:
-            returnNodes.push(strToDOM(binOperatorOptions));
-            returnNodes.push(getWhitespaceSpanNode());
+            break;
     }
-    return returnNodes.concat(getActionClauseList());
+    returnNodes.push(strToDOM(binOperatorOptions));
+    returnNodes.push(getWhitespaceSpanNode());
+    returnNodes = returnNodes.concat(getActionClauseList());
+    return returnNodes;
 }
 
 
@@ -137,12 +138,15 @@ function specificationHTMLInit(){
     for(let i=0; i<NUM_SPECS; i++){
         const singleSpec = document.createElement('article');
         singleSpec.setAttribute("id", "spec-" + i.toString());
+        singleSpec.appendChild(getSpanNode("When  "));
         singleSpec.appendChild(strToDOM(predicateOptions));
         singleSpec.appendChild(getWhitespaceSpanNode());
         root.appendChild(singleSpec);
         root.appendChild(document.createElement("br"));
     }
 }
+
+const NUM_INITIAL = 2;
 
 function predEventListenerInit(){
     const predicates = document.getElementsByClassName("predicateOption");
@@ -152,8 +156,8 @@ function predEventListenerInit(){
         currPred.addEventListener("change", function(){
 
             // Refresh options
-            while(parent.children.length > 1)
-                parent.children[1].remove();
+            while(parent.children.length > NUM_INITIAL)
+                parent.children[NUM_INITIAL].remove();
 
             if(currPred.value === "")
                 return;
@@ -175,8 +179,10 @@ function untilEventListener(event){
     if(lastSibling.classList[0] === "playNoteOptions")
         lastSibling.remove();
 
-    if(currUntil.value === "play")
+    if(currUntil.value === "play"){
+        parent.appendChild(getWhitespaceSpanNode());
         parent.appendChild(strToDOM(playNoteOptions));
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {

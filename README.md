@@ -2,6 +2,10 @@
 
 [Try it live!](http://159.203.73.47:4747)
 
+## Tutorial
+
+[Outdated demo](https://www.youtube.com/watch?reload=9&v=_RpUpe7DFx0&feature=youtu.be)
+
 ## Local installation
 
 ### Dependencies

@@ -18,7 +18,7 @@ const lastClickHTML = document.getElementById("lastClicked");
 
 function saveLastClicked(e){
     lastClicked = e.target.id;
-    lastClickHTML.innerText = "Last Played Note: " + addSharp(lastClicked) + " (Play to change)";
+    lastClickHTML.innerText = "Selected Note: " + addSharp(lastClicked) + " (Play to change)";
 }
 
 for(let i=0; i<allKeys.length; i++){
