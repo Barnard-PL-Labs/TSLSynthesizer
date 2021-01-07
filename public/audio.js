@@ -12,26 +12,26 @@ function getMIDIMessage(message) {
     switch (command) {
         case 144: // note on
             if (velocity > 0) {
-                noteOn(note, velocity);
+                midiNoteOn(note, velocity);
             } else {
-                noteOff(note);
+                midiNoteOff(note);
             }
             break;
         case 128: // note off
-            noteOff(note);
+            midiNoteOff(note);
             break;
 
     }
 }
 
-// Function to handle noteOn messages (ie. key is pressed)
-function noteOn(note, velocity) {
+// Function to handle midiNoteOn messages (ie. key is pressed)
+function midiNoteOn(note, velocity) {
     let noteName = midiNoteToNoteName[note]
     audioKeyDown(noteName, getFrequencyOfNote(noteName))
 }
 
-// Function to handle noteOff messages (ie. key is released)
-function noteOff(note) {
+// Function to handle midiNoteOff messages (ie. key is released)
+function midiNoteOff(note) {
     let noteName = midiNoteToNoteName[note]
     audioKeyUp(noteName, getFrequencyOfNote(noteName))
 }
@@ -85,6 +85,20 @@ let context = new AudioContext(),
 let nodes = [];
 let waveform = 'sine';
 let masterGain = document.getElementById("gain");
+let globalGain = context.createGain();
+globalGain.gain.value = 0.7; //temorary, need to add eventlistener as well
+globalGain.connect(context.destination);
+
+let amSynthesis = false;
+let fmSynthesis = false;
+
+
+let noteNames = ["A2","A#2","B2","C3","C#3","D3","D#3","E3",
+                  "F3","F#3","G3","G#3","A3","A#3","B3","C4",
+                  "C#4","D4","D#4","E4","F4","F#4","G4","G#4",
+                  "A4","A#4","B4","C5","C#5","D5","D#5","E5",
+                  "F5","F#5","G5"];
+
 
 let midiNoteToNoteName = {
       45: "A2",
@@ -121,8 +135,72 @@ let midiNoteToNoteName = {
       76: "E5",
       77: "F5",
       78: "F#5",
-      79: "G5",
+      79: "G5"
+    };
+
+let noteSignals = {};
+noteNames.forEach(function (noteName, index) {
+
+    var nodesDict = {};
+
+    // Oscillator
+    var osc = context.createOscillator();
+    osc.frequency.value = getFrequencyOfNote(noteName);
+    osc.type = waveform;
+
+    // Key Gain
+    var keyGain = context.createGain();
+    // keyGain.gain.setValueAtTime(0.001, context.currentTime);
+    keyGain.gain.value = 0.001;
+
+    // AM Synthesis nodes
+    var amOsc = context.createOscillator();
+    var amGain = context.createGain();
+    if (amSynthesis) {
+      amOsc.frequency.value = parseInt(amFreq.value);
+    } else {
+      amOsc.frequency.value = 0;
     }
+    amGain.gain.value = 0.5;
+    var modulatedGain = context.createGain();
+    modulatedGain.gain.value = 1.0 - amGain.gain.value;
+
+
+    // FM Synthesis nodes
+    var fmOsc = context.createOscillator();
+    var fmGain = context.createGain();
+    if (fmSynthesis) {
+      fmOsc.frequency.value = 100; //Temporary, really we need to let user choose frequency
+    } else {
+      fmOsc.frequency.value = 0;
+    }
+    fmGain.gain.value = 100;
+
+
+    amOsc.connect(amGain);
+    amGain.connect(modulatedGain.gain);
+
+    fmOsc.connect(fmGain);
+    fmGain.connect(osc.frequency);
+
+    osc.connect(modulatedGain);
+
+    modulatedGain.connect(keyGain);
+    keyGain.connect(globalGain);
+
+    osc.start(0);
+    amOsc.start(0);
+    fmOsc.start(0);
+
+    nodesDict["oscillator"] = osc;
+    nodesDict["am"] = [amOsc, amGain, modulatedGain];
+    nodesDict["fm"] = [fmOsc, fmGain];
+    nodesDict["keyGain"] = keyGain;
+
+    noteSignals[noteName] = nodesDict;
+
+});
+
 
 // WAVEFORM
 let waveformControl = document.getElementById("waveform");
@@ -130,26 +208,42 @@ waveformControl.addEventListener("change", _ => {
     waveform = waveformControl.value;
 }, false);
 
-// AM SYNTHESIS
-let amSynthesis = false;
+
+
+// AM Synthesis Parameters
 let amOnBtn = document.getElementById("amOnBtn");
 let amOffBtn = document.getElementById("amOffBtn");
 let amFreq= document.getElementById("amFreq");
 amOnBtn.addEventListener("click", _ => {
     amSynthesis = true;
     fmSynthesis = false;
-});
-amOffBtn.addEventListener("click", _ => {amSynthesis = false;});
 
-// FM SYNTHESIS
-let fmSynthesis = false;
+    noteNames.forEach(function (noteName, index) {
+        noteSignals[noteName]["am"][0].frequency.value = parseInt(amFreq.value);
+    })
+
+});
+amOffBtn.addEventListener("click", _ => {
+    amSynthesis = false;
+
+    noteNames.forEach(function (noteName, index) {
+        noteSignals[noteName]["am"][0].frequency.value = 0;
+    })
+
+});
+
+// FM Synthesis Parameters
 let fmOnBtn = document.getElementById("fmOnBtn");
 let fmOffBtn = document.getElementById("fmOffBtn");
+// NOTE, shouldn't we have a slider for fmFreq?
 fmOnBtn.addEventListener("click", _ => {
     fmSynthesis = true;
     amSynthesis = false;
 });
 fmOffBtn.addEventListener("click", _ => {fmSynthesis = false;});
+
+
+
 
 // LFO
 let lfo = false;
@@ -167,90 +261,22 @@ let carrierMap = {};
 
 
 function audioKeyDown(note, frequency) {
+
+
+    let keyGain = noteSignals[note]["keyGain"];
+    keyGain.gain.setTargetAtTime(0.95, context.currentTime, 0.01)
+
     let oscillator = context.createOscillator();
-    const modulationIndex = context.createGain();
-    oscillator.type = waveform;
-
-    oscillator.frequency.value = frequency;
-    modulationIndex.gain.value = parseFloat(masterGain.value);
-
-    if(amSynthesis){
-        let carrier = context.createOscillator();
-        carrier.frequency.value = parseInt(amFreq.value);
-
-        const modulated = context.createGain();
-        modulated.gain.value = 1.0 - parseFloat(masterGain.value);
-
-        oscillator.connect(modulationIndex).connect(modulated.gain);
-        carrier.connect(modulated);
-        modulated.connect(context.destination);
-        carrier.start(0);
-
-        carrierMap[oscillator] = [carrier];
-    }
-
-    else if(fmSynthesis){
-        modulationIndex.gain.value *= 100;
-        oscillator.connect(modulationIndex);
-
-        let carrier = context.createOscillator();
-        modulationIndex.connect(carrier.frequency);
-
-        carrier.connect(context.destination);
-        carrier.start(0);
-
-        carrierMap[oscillator] = [carrier];
-    }
-
-    else {
-        oscillator.connect(modulationIndex);
-        modulationIndex.connect(context.destination);
-    }
-
-    if(lfo){
-        let vibOsc = context.createOscillator();
-        let vibIdx = context.createGain();
-        vibIdx.gain.value = parseInt(vibDepth.value);
-        vibOsc.frequency.value = parseInt(vibFreq.value);
-
-        vibOsc.connect(vibIdx);
-        vibIdx.connect(oscillator.frequency);
-        vibOsc.start();
-        if(carrierMap[oscillator])
-            carrierMap[oscillator].push(vibOsc);
-        else
-            carrierMap[oscillator] = [vibOsc];
-    }
-
     oscillator.start(0);
-    nodes.push(oscillator);
 
 };
 
 
 function audioKeyUp(note, frequency) {
-    let new_nodes = [];
 
-    for (let i = 0; i < nodes.length; i++) {
-        if (Math.round(nodes[i].frequency.value) === Math.round(frequency)) {
-            nodes[i].stop(0);
-            nodes[i].disconnect();
-            // XXX
-            if(nodes[i] in carrierMap){
-                let auxNodes = carrierMap[nodes[i]];
-                for(let j=0; j < auxNodes.length; j++){
-                    let auxNode = auxNodes[j];
-                    auxNode.stop(0);
-                    auxNode.disconnect(0);
-                }
-                delete carrierMap[nodes[i]];
-            }
-        } else {
-            new_nodes.push(nodes[i]);
-        }
-    }
+    let keyGain = noteSignals[note]["keyGain"];
+    keyGain.gain.setTargetAtTime(0.001, context.currentTime, 0.01)
 
-    nodes = new_nodes;
 };
 
 keyboard.keyDown = audioKeyDown;
