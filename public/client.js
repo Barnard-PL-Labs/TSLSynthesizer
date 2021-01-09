@@ -3,6 +3,7 @@ function addSharp(str){return str.replace("Sharp", "#");}
 
 // TSL lexer does not recognize "#".
 // Must change all ids to "sharp".
+// TODO: change to MIDI note numbers.
 document.addEventListener("DOMContentLoaded", _ => {
     for(let i=0; i<allKeys.length; i++){
         const keyNote = allKeys[i];
@@ -13,9 +14,13 @@ document.addEventListener("DOMContentLoaded", _ => {
 ////////////////////////////
 // SAVE LAST CLICKED NOTE //
 ////////////////////////////
-let selectedNotesLock = [false, false];
-let selectedNotesList = [null, null];
 const selectedNotes = document.getElementById("lastClicked");
+let selectedNotesLock = [];
+let selectedNotesList = [];
+for(let i=0; i<selectedNotes.length; i++){
+    selectedNotesLock.push(false);
+    selectedNotesList.push(null);
+}
 
 function saveLastClicked(e){
     const note = e.target.id;
@@ -140,8 +145,6 @@ document.getElementById("synthesize-btn").addEventListener(
         }
     }
 );
-
-
 
 
 // Request MIDI access

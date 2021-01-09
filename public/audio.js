@@ -290,7 +290,7 @@ function initializeSignals(){
         var amOsc = context.createOscillator();
         var amGain = context.createGain();
         if (amSynthesis) {
-          amOsc.frequency.value = parseInt(amFreq.value);
+          amOsc.frequency.value = parseInt(amFreq);
         } else {
           amOsc.frequency.value = 0;
         }
@@ -463,12 +463,12 @@ function audioKeyDown(note, frequency, velocity) {
                                           context.currentTime, 0.01);
 
     if (amSynthesis) {
-        noteSignals[note]["am"][0].frequency.value = parseInt(amFreq.value);
+        noteSignals[note]["am"][0].frequency.value = amFreq;
     } else {
         noteSignals[note]["am"][0].frequency.value = 0;
     }
     if (fmSynthesis) {
-        noteSignals[note]["fm"][0].frequency.value = parseInt(fmFreq.value);
+        noteSignals[note]["fm"][0].frequency.value = fmFreq;
     } else {
         noteSignals[note]["fm"][0].frequency.value = 0;
     }
