@@ -140,3 +140,32 @@ document.getElementById("synthesize-btn").addEventListener(
         }
     }
 );
+
+
+
+
+// Request MIDI access
+if (navigator.requestMIDIAccess) {
+    console.log('This browser supports WebMIDI!');
+
+    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+
+} else {
+    console.log('WebMIDI is not supported in this browser.');
+}
+
+// Function to run when requestMIDIAccess is successful
+function onMIDISuccess(midiAccess) {
+    var inputs = midiAccess.inputs;
+    var outputs = midiAccess.outputs;
+
+    // Attach MIDI event "listeners" to each input
+    for (var input of midiAccess.inputs.values()) {
+        input.onmidimessage = getMIDIMessage;
+    }
+}
+
+// Function to run when requestMIDIAccess fails
+function onMIDIFailure() {
+    console.log('Error: Could not access MIDI devices.');
+}

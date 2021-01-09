@@ -492,29 +492,35 @@
      * Add event listeners to keyboard.
      * @param {element} keyboard_element
      */
+
+    function qwertyKeyDown(key) {
+        if (isModifierKey(key)) {
+        return;
+        }
+        if (keyboardDown(key, this.keyDown)) {
+            key.preventDefault();
+        }
+    }
+
+    function qwertyKeyUp(key) {
+        if (isModifierKey(key)) {
+        return;
+        }
+        if (keyboardUp(key, this.keyUp)) {
+            key.preventDefault();
+        }
+    }
+
     var addListeners = function (keyboard_element) {
         var that = this;
 
         if (settings.musicalTyping) {
+
             // Key is pressed down on keyboard.
-            globalWindow.addEventListener('keydown', function (key) {
-                if (isModifierKey(key)) {
-                return;
-                }
-                if (keyboardDown(key, that.keyDown)) {
-                    key.preventDefault();
-                }
-            });
+            globalWindow.addEventListener('keydown', qwertyKeyDown);
 
             // Key is released on keyboard.
-            globalWindow.addEventListener('keyup', function (key) {
-                if (isModifierKey(key)) {
-                return;
-                }
-                if (keyboardUp(key, that.keyUp)) {
-                    key.preventDefault();
-                }
-            });
+            globalWindow.addEventListener('keyup', qwertyKeyUp);
         }
 
         // Mouse is clicked down on keyboard element.
@@ -591,7 +597,11 @@
         exports = module.exports = QwertyHancock;
       }
       exports.QwertyHancock = QwertyHancock;
+      exports.lightenUp = lightenUp;
+      exports.darkenDown = darkenDown;
     } else {
       root.QwertyHancock = QwertyHancock;
+      root.lightenUp = lightenUp;
+      root.darkenDown = darkenDown;
     }
 })(this);
