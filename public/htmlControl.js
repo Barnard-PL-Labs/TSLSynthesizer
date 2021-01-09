@@ -59,18 +59,18 @@ const untilOptions = `
 const playNoteOptions1 = `
 <select class="playNoteOptions">
     <option value=""></option> 
-    <option value="play">Selected Note 1</option>
-    <option value="playAbove">Above Selected Note 1</option>
-    <option value="playBelow">Below Selected Note 1</option>
+    <option value="play">Note 1</option>
+    <option value="playAbove">Above Note 1</option>
+    <option value="playBelow">Below Note 1</option>
 </select> 
 `
 
 const playNoteOptions2 = `
 <select class="playNoteOptions">
     <option value=""></option> 
-    <option value="play">Selected Note 2</option>
-    <option value="playAbove">Above Selected Note 2</option>
-    <option value="playBelow">Below Selected Note 2</option>
+    <option value="play">Note 2</option>
+    <option value="playAbove">Above Note 2</option>
+    <option value="playBelow">Below Note 2</option>
 </select> 
 `
 
@@ -79,11 +79,8 @@ const playNoteOptions2 = `
 const binOperatorOptions = `
 <select class="binOp">
     <option value=""></option> 
-    <option value="->">-></option>
-    <option value="<->"><-></option>
-    <option value="-> X">-> X</option>
-    <option value="W">W</option>
-    <option value="U">U</option>
+    <option value="->">simultaneously</option>
+    <option value="-> X">change</option>
 </select> 
 `
 
@@ -156,7 +153,7 @@ function specificationHTMLInit(){
     }
 }
 
-const NUM_INITIAL = 2;
+const NUM_INITIAL_NODES = 2;
 
 function predEventListenerInit(){
     const predicates = document.getElementsByClassName("predicateOption");
@@ -166,8 +163,8 @@ function predEventListenerInit(){
         currPred.addEventListener("change", function(){
 
             // Refresh options
-            while(parent.children.length > NUM_INITIAL)
-                parent.children[NUM_INITIAL].remove();
+            while(parent.children.length > NUM_INITIAL_NODES)
+                parent.children[NUM_INITIAL_NODES].remove();
 
             if(currPred.value === "")
                 return;
