@@ -98,30 +98,30 @@ globalGain.connect(context.destination);
 // AM Synthesis Parameters
 let amSynthesis = false;
 const amFreqControl = document.getElementById("amFreq");
-let amFreq = amFreqControl.value;
+let amFreq = parseInt(amFreqControl.value);
 amFreqControl.addEventListener("change", _ => {
-    amFreq = amFreqControl.value;
+    amFreq = parseInt(amFreqControl.value);
 })
 
 // FM Synthesis Parameters
 let fmSynthesis = false;
 const fmFreqControl = document.getElementById("fmFreq");
-let fmFreq = amFreqControl.value;
+let fmFreq = parseInt(amFreqControl.value);
 fmFreqControl.addEventListener("change", _ => {
-    fmFreq = fmFreqControl.value;
+    fmFreq = parseInt(fmFreqControl.value);
 })
 
 // LFO
 let lfo = false;
 const lfoFreqControl =  document.getElementById("lfoFreq");
 const lfoDepthControl =  document.getElementById("lfoDepth");
-let lfoFreq = lfoFreqControl.value;
-let lfoDepth = lfoDepthControl.value;
+let lfoFreq = parseInt(lfoFreqControl.value);
+let lfoDepth = parseInt(lfoDepthControl.value);
 lfoFreqControl.addEventListener("change", _ => {
-    lfoFreq = lfoFreqControl.value;
+    lfoFreq = parseInt(lfoFreqControl.value);
 })
 lfoDepthControl.addEventListener("change", _ => {
-    lfoDepth = lfoDepthControl.value;
+    lfoDepth = parseInt(lfoDepthControl.value);
 })
 
 let noteNames = ["A2","A#2","B2","C3","C#3","D3","D#3","E3",
@@ -239,7 +239,6 @@ for (midiNote in midiNoteToNoteName) {
 //     "A#7":  new Set(["A#","D","F","G#"])
 //     "B7":   new Set(["B","D#","F#","A"])
 // }
-
 
 let noteSignals = {};
 
