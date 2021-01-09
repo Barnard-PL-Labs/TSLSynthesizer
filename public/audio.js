@@ -26,14 +26,18 @@ function getMIDIMessage(message) {
 
 // Function to handle midiNoteOn messages (ie. key is pressed)
 function midiNoteOn(note, velocity) {
-    let noteName = midiNoteToNoteName[note]
-    audioKeyDown(noteName, getFrequencyOfNote(noteName), velocity)
+    let noteName = midiNoteToNoteName[note];
+    audioKeyDown(noteName, getFrequencyOfNote(noteName), velocity);
+    let elementName = noteName.replace("#", "Sharp");
+    lightenUp(document.getElementById(elementName));
 }
 
 // Function to handle midiNoteOff messages (ie. key is released)
 function midiNoteOff(note) {
-    let noteName = midiNoteToNoteName[note]
-    audioKeyUp(noteName, getFrequencyOfNote(noteName))
+    let noteName = midiNoteToNoteName[note];
+    audioKeyUp(noteName, getFrequencyOfNote(noteName));
+    let elementName = noteName.replace("#", "Sharp");
+    darkenDown(document.getElementById(elementName));
 }
 
 
@@ -143,6 +147,72 @@ let noteNameToMidiNote = {};
 for (midiNote in midiNoteToNoteName) {
     noteNameToMidiNote[midiNoteToNoteName[midiNote]] = midiNote;
 }
+
+// let chords = {
+//
+//     "CM":   new Set(["C","E","G"])
+//     "Cm":   new Set(["C","D#","G"])
+//     "C#M":  new Set(["C#","F","G#"])
+//     "C#m":  new Set(["C#","E","G#"])
+//     "DM":   new Set(["D","F#","A"])
+//     "Dm":   new Set(["D","F","A"])
+//     "D#M":  new Set(["D#","G","A#"])
+//     "D#m":  new Set(["D#","F#","A#"])
+//     "EM":   new Set(["E","G#","A"])
+//     "Em":   new Set(["E","G","A"])
+//     "FM":   new Set(["F","A","C"])
+//     "Fm":   new Set(["F","G#","C"])
+//     "F#M":  new Set(["F#","A#","C#"])
+//     "F#m":  new Set(["F#","A","C#"])
+//     "GM":   new Set(["G","B","D"])
+//     "Gm":   new Set(["G","A#","D"])
+//     "G#M":  new Set(["G#","C","D#"])
+//     "G#m":  new Set(["G#","B","D#"])
+//     "AM":   new Set(["A","C#","E"])
+//     "Am":   new Set(["A","C","E"])
+//     "A#M":  new Set(["A#","D","F"])
+//     "A#m":  new Set(["A#","C#","F"])
+//     "BM":   new Set(["B","D#","F#"])
+//     "Bm":   new Set(["B","D","F#"])
+//
+//     "CM7":  new Set(["C","E","G","B"])
+//     "Cm7":  new Set(["C","D#","G","A#"])
+//     "C#M7": new Set(["C#","F","G#","C"])
+//     "C#m7": new Set(["C#","E","G#","B"])
+//     "DM7":  new Set(["D","F#","A","C#"])
+//     "Dm7":  new Set(["D","F","A","C"])
+//     "D#M7": new Set(["D#","G","A#","D"])
+//     "D#m7": new Set(["D#","F#","A#","C#"])
+//     "EM7":  new Set(["E","G#","A","D#"])
+//     "Em7":  new Set(["E","G","A","D"])
+//     "FM7":  new Set(["F","A","C","E"])
+//     "Fm7":  new Set(["F","G#","C","D#"])
+//     "F#M7": new Set(["F#","A#","C#","F"])
+//     "F#m7": new Set(["F#","A","C#","E"])
+//     "GM7":  new Set(["G","B","D","F#"])
+//     "Gm7":  new Set(["G","A#","D","F"])
+//     "G#M7": new Set(["G#","C","D#","G"])
+//     "G#m7": new Set(["G#","B","D#","F#"])
+//     "AM7":  new Set(["A","C#","E","G#"])
+//     "Am7":  new Set(["A","C","E","G"])
+//     "A#M7": new Set(["A#","D","F","A"])
+//     "A#m7": new Set(["A#","C#","F","G#"])
+//     "BM7":  new Set(["B","D#","F#","A#"])
+//     "Bm7":  new Set(["B","D","F#","A"])
+//
+//     "C7":   new Set(["C","E","G","A#"])
+//     "C#7":  new Set(["C#","F","G#","B"])
+//     "D7":   new Set(["D","F#","A","C"])
+//     "D#7":  new Set(["D#","G","A#","C#"])
+//     "E7":   new Set(["E","G#","A","D"])
+//     "F7":   new Set(["F","A","C","D#"])
+//     "F#7":  new Set(["F#","A#","C#","E"])
+//     "G7":   new Set(["G","B","D","F"])
+//     "G#7":  new Set(["G#","C","D#","F#"])
+//     "A7":   new Set(["A","C#","E","G"])
+//     "A#7":  new Set(["A#","D","F","G#"])
+//     "B7":   new Set(["B","D#","F#","A"])
+// }
 
 
 let noteSignals = {};
@@ -282,6 +352,19 @@ function noteInSetIsActive(noteSet){
     return intersection.size > 0;
 }
 
+
+function allOfNoteSetIsActive(noteSet){
+    let intersection = new Set([...activeNotes].filter(x => noteSet.has(x)));
+    return intersection.size == noteSet.size;
+}
+
+function onlyNoteSetIsActive(noteSet){
+    let intersection = new Set([...activeNotes].filter(x => noteSet.has(x)));
+    return intersection.size == noteSet.size &&
+                  activeNotes.size == intersection.size;
+}
+
+
 // Not including octave
 function pitchClassInSetIsActive(noteSet){
     let activePitches = new Set();
@@ -299,17 +382,51 @@ function pitchClassInSetIsActive(noteSet){
     return intersection.size > 0;
 }
 
+// Not including octave and exclusive
+function onlyPitchSetIsActive(noteSet){
+    let activePitches = new Set();
+    for (e of activeNotes) {
+	     activePitches.add(e.slice(0,-1));
+    }
 
-function allOfNoteSetIsActive(noteSet){
-    let intersection = new Set([...activeNotes].filter(x => noteSet.has(x)));
-    return intersection.size == noteSet.size;
+    let checkPitches = new Set();
+    for (e of noteSet) {
+	     checkPitches.add(e.slice(0,-1));
+    }
+
+    let intersection = new Set([...activePitches].filter
+                                              (x => checkPitches.has(x)));
+    return intersection.size == activePitches.size;
 }
 
-function onlyNoteSetIsActive(noteSet){
-    let intersection = new Set([...activeNotes].filter(x => noteSet.has(x)));
-    return intersection.size == noteSet.size &&
-                  activeNotes.size == intersection.size;
+// Not including octave and non-exclusive
+function allOfPitchSetIsActive(noteSet){
+    let activePitches = new Set();
+    for (e of activeNotes) {
+	     activePitches.add(e.slice(0,-1));
+    }
+
+    let checkPitches = new Set();
+    for (e of noteSet) {
+	     checkPitches.add(e.slice(0,-1));
+    }
+
+    let intersection = new Set([...activePitches].filter
+                                              (x => checkPitches.has(x)));
+    return intersection.size <= activePitches.size;
 }
+
+
+function allOfChordIsActive(chord){
+    let chordSet = chords[chord];
+    return allOfPitchSetIsActive(chordSet);
+}
+
+function onlyChordIsActive(chord){
+    let chordSet = chords[chord];
+    return onlyPitchSetIsActive(chordSet);
+}
+
 
 function noteWaveformIs(noteName, waveform){
     return noteSignals[noteName]["oscillator"].type == waveform;
