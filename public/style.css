@@ -20,8 +20,10 @@ h2 {
 }
 
 .container {
-    width: 600px;
+    width: 1000px;
     margin: 40px auto;
+    color: black;
+    background-color: yellow;
 }
 
 .keyboard {
