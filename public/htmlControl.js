@@ -227,6 +227,67 @@ function updateVarsToUI(){
     showEffectStatus("lfo", lfo);
 }
 
+////////////////////////////
+// SAVE LAST CLICKED NOTE //
+////////////////////////////
+const selectedNotes = document.getElementById("lastClicked");
+const selectButtons = document.getElementsByClassName("selectedNoteBtn");
+let selectedNotesLock = [];
+let selectedNotesList = [];
+for(let i=0; i<selectedNotes.length; i++){
+    selectedNotesLock.push(false);
+    selectedNotesList.push(null);
+}
+
+function saveLastClicked(e){
+    const note = e.target.id;
+    for(let i=0; i<selectedNotes.children.length; i++){
+        if(selectedNotesLock[i])
+            continue;
+
+        selectedNotesList[i] = note;
+        selectedNotes.children[i].children[0].innerText = "" +
+            "Selected Note " + (i+1).toString() + ": " + addSharp(note);
+    }
+}
+
+function resetIthSelectedNote(idx, buttonNode){
+    const SPAN_LABEL_IDX = 0;
+    buttonNode.parentNode.children[SPAN_LABEL_IDX].innerText = "" +
+        "Selected Note " + (idx+1).toString() + ": None (Play to Change)"
+    selectedNotesLock[idx] = false;
+}
+
+function resetAllSelectedNotes(){
+    for(let i=0; i<selectedNotesList.length; i++)
+        resetIthSelectedNote(i, selectButtons[i]);
+}
+
+function lockAllSelectedNotes(){
+    for(let i=0; i<selectedNotesLock.length; i++)
+        selectedNotesLock[i] = true;
+}
+
+document.addEventListener("DOMContentLoaded", _ => {
+    for(let i=0; i<selectButtons.length; i++){
+        selectButtons[i].addEventListener("click", _ => {
+            // Save --> Reset
+            if(selectedNotesLock[i]){
+                const selectedButton = selectButtons[i];
+                resetIthSelectedNote(i, selectedButton);
+            }
+            else{ //  --> Save
+                selectedNotesLock[i] = true;
+            }
+        })
+    }
+})
+
+for(let i=0; i<allKeys.length; i++){
+    const keyNote = allKeys[i];
+    keyNote.addEventListener("click", e => saveLastClicked(e), false);
+}
+
 /////////////////////////////
 //  SPECIFICATION HELPERS  //
 /////////////////////////////
@@ -239,6 +300,7 @@ function rebootSpecs(){
         specRootNode.children[specRootNode.children.length - 1].remove();
     }
     bootSpecs();
+    resetAllSelectedNotes();
 }
 
 /////////////////////////////////////////////////
