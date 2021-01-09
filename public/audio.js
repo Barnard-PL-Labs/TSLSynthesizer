@@ -1,8 +1,6 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 
-
-
 // Function to parse the MIDI messages we receive
 function getMIDIMessage(message) {
     var command = message.data[0];
@@ -63,13 +61,6 @@ function getFrequencyOfNote(note) {
     return 440 * Math.pow(2, (key_number - 49) / 12);
 };
 
-
-
-
-
-
-
-
 let context = new AudioContext(),
     settings = {
         id: 'keyboard',
@@ -87,13 +78,19 @@ let context = new AudioContext(),
 
 // VARIABLE INIT
 let activeNotes = new Set();
-let waveform = 'sine';
+// TODO: add eventListener to gain
 let masterGain = document.getElementById("gain");
 let globalGain = context.createGain();
 let userGainLevel = 0.8 //temorary, need to add eventlistener as well
 globalGain.gain.value = userGainLevel;
 globalGain.connect(context.destination);
 
+// Waveform
+let waveform = 'sine';
+const waveformControl = document.getElementById("waveform");
+waveformControl.addEventListener("change", _ => {
+    waveform = waveformControl.value;
+})
 
 // AM Synthesis Parameters
 let amSynthesis = false;
@@ -102,6 +99,16 @@ let amFreq = parseInt(amFreqControl.value);
 amFreqControl.addEventListener("change", _ => {
     amFreq = parseInt(amFreqControl.value);
 })
+let amOnBtn = document.getElementById("amOnBtn");
+let amOffBtn = document.getElementById("amOffBtn");
+amOnBtn.addEventListener("click", _ => {
+    if(amSynthesis) return;
+    amSynthesis = true;
+})
+amOffBtn.addEventListener("click", _ => {
+    if(!amSynthesis) return;
+    amSynthesis = false;
+})
 
 // FM Synthesis Parameters
 let fmSynthesis = false;
@@ -109,6 +116,16 @@ const fmFreqControl = document.getElementById("fmFreq");
 let fmFreq = parseInt(amFreqControl.value);
 fmFreqControl.addEventListener("change", _ => {
     fmFreq = parseInt(fmFreqControl.value);
+})
+let fmOnBtn = document.getElementById("fmOnBtn");
+let fmOffBtn = document.getElementById("fmOffBtn");
+fmOnBtn.addEventListener("click", _ => {
+    if(fmSynthesis) return;
+    fmSynthesis = true;
+})
+fmOffBtn.addEventListener("click", _ => {
+    if(!fmSynthesis) return;
+    fmSynthesis = false;
 })
 
 // LFO
@@ -123,6 +140,18 @@ lfoFreqControl.addEventListener("change", _ => {
 lfoDepthControl.addEventListener("change", _ => {
     lfoDepth = parseInt(lfoDepthControl.value);
 })
+let lfoOnBtn = document.getElementById("lfoOnBtn");
+let lfoOffBtn = document.getElementById("lfoOffBtn");
+lfoOnBtn.addEventListener("click", _ => {
+    if(lfo) return;
+    lfo = true;
+})
+lfoOffBtn.addEventListener("click", _ => {
+    if(!lfo) return;
+    lfo = false;
+})
+
+
 
 let noteNames = ["A2","A#2","B2","C3","C#3","D3","D#3","E3",
                   "F3","F#3","G3","G#3","A3","A#3","B3","C4",
