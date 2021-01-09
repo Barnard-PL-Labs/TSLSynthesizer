@@ -94,9 +94,35 @@ let userGainLevel = 0.8 //temorary, need to add eventlistener as well
 globalGain.gain.value = userGainLevel;
 globalGain.connect(context.destination);
 
-let amSynthesis = false;
-let fmSynthesis = false;
 
+// AM Synthesis Parameters
+let amSynthesis = false;
+const amFreqControl = document.getElementById("amFreq");
+let amFreq = amFreqControl.value;
+amFreqControl.addEventListener("change", _ => {
+    amFreq = amFreqControl.value;
+})
+
+// FM Synthesis Parameters
+let fmSynthesis = false;
+const fmFreqControl = document.getElementById("fmFreq");
+let fmFreq = amFreqControl.value;
+fmFreqControl.addEventListener("change", _ => {
+    fmFreq = fmFreqControl.value;
+})
+
+// LFO
+let lfo = false;
+const lfoFreqControl =  document.getElementById("lfoFreq");
+const lfoDepthControl =  document.getElementById("lfoDepth");
+let lfoFreq = lfoFreqControl.value;
+let lfoDepth = lfoDepthControl.value;
+lfoFreqControl.addEventListener("change", _ => {
+    lfoFreq = lfoFreqControl.value;
+})
+lfoDepthControl.addEventListener("change", _ => {
+    lfoDepth = lfoDepthControl.value;
+})
 
 let noteNames = ["A2","A#2","B2","C3","C#3","D3","D#3","E3",
                   "F3","F#3","G3","G#3","A3","A#3","B3","C4",
@@ -281,52 +307,6 @@ function initializeSignals(){
     });
 }
 initializeSignals();
-
-
-
-// WAVEFORM
-let waveformControl = document.getElementById("waveform");
-waveformControl.addEventListener("change", _ => {
-    waveform = waveformControl.value;
-}, false);
-
-
-
-// AM Synthesis Parameters
-let amOnBtn = document.getElementById("amOnBtn");
-let amOffBtn = document.getElementById("amOffBtn");
-let amFreq= document.getElementById("amFreq");
-amOnBtn.addEventListener("click", _ => {
-    amSynthesis = true;
-    fmSynthesis = false;
-});
-amOffBtn.addEventListener("click", _ => {
-    amSynthesis = false;
-});
-
-// FM Synthesis Parameters
-let fmOnBtn = document.getElementById("fmOnBtn");
-let fmOffBtn = document.getElementById("fmOffBtn");
-// NOTE, shouldn't we have a slider for fmFreq?
-fmOnBtn.addEventListener("click", _ => {
-    fmSynthesis = true;
-    amSynthesis = false;
-});
-fmOffBtn.addEventListener("click", _ => {fmSynthesis = false;});
-
-
-
-
-// LFO
-let lfo = false;
-let vibFreq =  document.getElementById("lfoFreq");
-let vibDepth =  document.getElementById("lfoDepth");
-let lfoOnBtn = document.getElementById("lfoOnBtn");
-let lfoOffBtn = document.getElementById("lfoOffBtn");
-lfoOnBtn.addEventListener("click", _ => {lfo = true;});
-lfoOffBtn.addEventListener("click", _ => {lfo = false;});
-
-let carrierMap = {};
 
 
 
