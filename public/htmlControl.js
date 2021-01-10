@@ -107,6 +107,7 @@ function getActionClauseList(){
     ];
 }
 
+
 ////////////////////////////
 //  DYNAMIC HTML LOADING  //
 ////////////////////////////
@@ -227,6 +228,9 @@ function updateVarsToUI(){
     showEffectStatus("lfo", lfo);
 }
 
+document.addEventListener("click", updateVarsToUI, false);
+
+
 ////////////////////////////
 // SAVE LAST CLICKED NOTE //
 ////////////////////////////
@@ -246,15 +250,17 @@ function saveLastClicked(e){
             continue;
 
         selectedNotesList[i] = note;
+        const noteNum = note.slice(4);
         selectedNotes.children[i].children[0].innerText = "" +
-            "Selected Note " + (i+1).toString() + ": " + addSharp(note);
+            "Note " + (i+1).toString() + ": MIDI note " + 
+            noteNum + " (" + midiNoteToNoteName[noteNum] + ")";
     }
 }
 
 function resetIthSelectedNote(idx, buttonNode){
     const SPAN_LABEL_IDX = 0;
     buttonNode.parentNode.children[SPAN_LABEL_IDX].innerText = "" +
-        "Selected Note " + (idx+1).toString() + ": None (Play to Change)"
+        "Note " + (idx+1).toString() + ": None (Play to Change)"
     selectedNotesLock[idx] = false;
 }
 
@@ -350,7 +356,3 @@ function generateRandSpec(){
         }
     }
 }
-
-
-// FIXME: Remove later; bake this into tsltools
-function f_inc10(arg){return arg+10;}

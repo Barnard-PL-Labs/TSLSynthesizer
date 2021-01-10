@@ -28,6 +28,7 @@ function midiNoteOn(note, velocity) {
     audioKeyDown(noteName, getFrequencyOfNote(noteName), velocity);
     let elementName = noteName.replace("#", "Sharp");
     lightenUp(document.getElementById(elementName));
+    reactiveUpdateOnMIDI(note, velocity);
 }
 
 // Function to handle midiNoteOff messages (ie. key is released)
@@ -510,4 +511,19 @@ keyboard.keyUp = audioKeyUp;
 
 keyboard = new QwertyHancock(settings);
 
+// This function will be removed once synthesized.
+function reactiveUpdateOnMIDI(note, velocity){}
+
+//////////////////////////////////
+//  CHANGE KEYBOARD ID TO MIDI  //
+//////////////////////////////////
+
 const allKeys = document.getElementById("keyboard").children[0].children;
+
+document.addEventListener("DOMContentLoaded", _ => {
+    for(let i=0; i<allKeys.length; i++){
+        const keyNote = allKeys[i],
+              midiNoteName = "note" + noteNameToMidiNote[keyNote.getAttribute("id")];
+        keyNote.setAttribute("id", midiNoteName);
+    }
+})

@@ -1,17 +1,3 @@
-function removeSharp(str){return str.replace("#", "Sharp");}
-function addSharp(str){return str.replace("Sharp", "#");}
-
-// TSL lexer does not recognize "#".
-// Must change all ids to "sharp".
-// TODO: change to MIDI note numbers.
-document.addEventListener("DOMContentLoaded", _ => {
-    for(let i=0; i<allKeys.length; i++){
-        const keyNote = allKeys[i];
-        keyNote.setAttribute("id", removeSharp(keyNote.id));
-    }
-})
-
-
 ////////////////////////////
 // SERVER HANDSHAKE LOGIC //
 ////////////////////////////
