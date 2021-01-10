@@ -289,11 +289,12 @@ function initializeSignals(){
         // AM Synthesis nodes
         var amOsc = context.createOscillator();
         var amGain = context.createGain();
-        if (amSynthesis) {
-          amOsc.frequency.value = parseInt(amFreq.value);
-        } else {
-          amOsc.frequency.value = 0;
-        }
+        // if (amSynthesis) {
+        //   amOsc.frequency.value = parseInt(amFreq.value);
+        // } else {
+        //   amOsc.frequency.value = 0;
+        // }
+        amOsc.frequency.value = 0;
         amGain.gain.value = 0.5;
         var modulatedGain = context.createGain();
         modulatedGain.gain.value = 1.0 - amGain.gain.value;
@@ -302,12 +303,19 @@ function initializeSignals(){
         // FM Synthesis nodes
         var fmOsc = context.createOscillator();
         var fmGain = context.createGain();
-        if (fmSynthesis) {
-          fmOsc.frequency.value = 100; //Temporary, really we need to let user choose frequency
-        } else {
-          fmOsc.frequency.value = 0;
-        }
+        // if (fmSynthesis) {
+        //   fmOsc.frequency.value = 100; //Temporary, really we need to let user choose frequency
+        // } else {
+        //   fmOsc.frequency.value = 0;
+        // }
+        fmOsc.frequency.value = 0;
         fmGain.gain.value = 100;
+
+        // LFO nodes
+        var lfoOsc = context.createOscillator();
+        var lfoGain = context.createGain();
+        lfoOsc.frequency.value = 0;
+        lfoGain.gain.value = lfoDepth;
 
 
         amOsc.connect(amGain);
@@ -315,6 +323,9 @@ function initializeSignals(){
 
         fmOsc.connect(fmGain);
         fmGain.connect(osc.frequency);
+
+        lfoOsc.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
 
         osc.connect(modulatedGain);
 
@@ -324,10 +335,12 @@ function initializeSignals(){
         osc.start(0);
         amOsc.start(0);
         fmOsc.start(0);
+        lfoOsc.start(0);
 
         nodesDict["oscillator"] = osc;
         nodesDict["am"] = [amOsc, amGain, modulatedGain];
         nodesDict["fm"] = [fmOsc, fmGain];
+        nodesDict["lfo"] = [lfoOsc, lfoGain];
         nodesDict["keyGain"] = keyGain;
 
         noteSignals[noteName] = nodesDict;
@@ -454,10 +467,6 @@ function noteIsBelow(note, reference){
 
 function audioKeyDown(note, frequency, velocity) {
 
-    // if (typeof noteSignals.size == 'undefined') {
-    //     initializeSignals();
-    // }
-
     activeNotes.add(note);
     globalGain.gain.setTargetAtTime(userGainLevel/activeNotes.size,
                                           context.currentTime, 0.01);
@@ -472,6 +481,12 @@ function audioKeyDown(note, frequency, velocity) {
     } else {
         noteSignals[note]["fm"][0].frequency.value = 0;
     }
+    if (lfo) {
+        noteSignals[note]["lfo"][0].frequency.value = lfoFreq;
+        noteSignals[note]["lfo"][1].gain.value = lfoDepth;
+    } else {
+        noteSignals[note]["lfo"][0].frequency.value = 0;
+    }
 
 
     let keyGain = noteSignals[note]["keyGain"];
@@ -481,7 +496,7 @@ function audioKeyDown(note, frequency, velocity) {
         var amp = 0.95;
     }
 
-    console.assert(amp <= 1, amp, velocity)
+    console.assert(amp <= 1, amp, velocity);
     keyGain.gain.setTargetAtTime(amp, context.currentTime, 0.01)
 
 
@@ -492,6 +507,7 @@ function audioKeyDown(note, frequency, velocity) {
     //they literally do nothing. the oscillator isn't connected to anything.
     let oscillator = context.createOscillator();
     oscillator.start(0);
+
 
 };
 
