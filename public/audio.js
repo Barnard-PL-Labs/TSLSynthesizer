@@ -152,15 +152,31 @@ lfoOffBtn.addEventListener("click", _ => {
 })
 
 
+// FILTER
+let filterOn = false;
+let filterType = "low-pass"
+let filterCutoff = 20000;
+let filterQ = 1;
 
-let noteNames = ["A2","A#2","B2","C3","C#3","D3","D#3","E3",
-                  "F3","F#3","G3","G#3","A3","A#3","B3","C4",
-                  "C#4","D4","D#4","E4","F4","F#4","G4","G#4",
-                  "A4","A#4","B4","C5","C#5","D5","D#5","E5",
-                  "F5","F#5","G5"];
+
+// HARMONIZER
+let harmonizerOn = false;
+let harmonizerInterval = -5;
 
 
 let midiNoteToNoteName = {
+      33: "A1",
+      34: "A#1",
+      35: "B1",
+      36: "C2",
+      37: "C#2",
+      38: "D2",
+      39: "D#2",
+      40: "E2",
+      41: "F2",
+      42: "F#2",
+      43: "G2",
+      44: "G#2",
       45: "A2",
       46: "A#2",
       47: "B2",
@@ -195,13 +211,32 @@ let midiNoteToNoteName = {
       76: "E5",
       77: "F5",
       78: "F#5",
-      79: "G5"
+      79: "G5",
+      80: "G#5",
+      81: "A5",
+      82: "A#5",
+      83: "B5",
+      84: "C6",
+      85: "C#6",
+      86: "D6",
+      87: "D#6",
+      88: "E6",
+      89: "F6",
+      90: "F#6",
+      91: "G6"
 };
 
 let noteNameToMidiNote = {};
 for (midiNote in midiNoteToNoteName) {
-    noteNameToMidiNote[midiNoteToNoteName[midiNote]] = midiNote;
+    noteNameToMidiNote[midiNoteToNoteName[parseInt(midiNote)]] = parseInt(midiNote);
 }
+
+
+let noteNames = [];
+for (midiNote in midiNoteToNoteName) {
+    noteNames.push(midiNoteToNoteName[parseInt(midiNote)]);
+}
+
 
 // let chords = {
 //
@@ -318,6 +353,14 @@ function initializeSignals(){
         lfoGain.gain.value = lfoDepth;
 
 
+        var filter = context.createBiquadFilter();
+        filter.type = filterType;
+        filter.frequency.value = filterCutoff;
+        filter.Q.value = filterQ;
+
+
+
+
         amOsc.connect(amGain);
         amGain.connect(modulatedGain.gain);
 
@@ -329,7 +372,9 @@ function initializeSignals(){
 
         osc.connect(modulatedGain);
 
-        modulatedGain.connect(keyGain);
+        modulatedGain.connect(filter);
+
+        filter.connect(keyGain);
         keyGain.connect(globalGain);
 
         osc.start(0);
@@ -341,6 +386,7 @@ function initializeSignals(){
         nodesDict["am"] = [amOsc, amGain, modulatedGain];
         nodesDict["fm"] = [fmOsc, fmGain];
         nodesDict["lfo"] = [lfoOsc, lfoGain];
+        nodesDict["filter"] = filter;
         nodesDict["keyGain"] = keyGain;
 
         noteSignals[noteName] = nodesDict;
@@ -464,10 +510,42 @@ function noteIsBelow(note, reference){
 }
 
 
+function toggleHarmonizer() {
+    if (!harmonizerOn) {
+        for (noteName of activeNotes) {
+            let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
+            playNote(harmNote);
+        }
+        harmonizerOn = true;
+    } else {
+        for (noteName of activeNotes) {
+            let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
+            stopNote(harmNote);
+        }
+        harmonizerOn = false;
+    }
+}
 
-function audioKeyDown(note, frequency, velocity) {
+function changeHarmonizerInterval(newInterval) {
+    if (harmonizerOn) {
+        for (noteName of activeNotes) {
+            let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
+            stopNote(harmNote);
+        }
+        harmonizerInterval = newInterval;
+        for (noteName of activeNotes) {
+            let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
+            playNote(harmNote);
+        }
+    } else {
+        harmonizerInterval = newInterval;
+    }
+}
 
-    activeNotes.add(note);
+
+
+//Helper function to make sure harmonizing doesn't cause an infinite loop
+function playNote(note, velocity){
     globalGain.gain.setTargetAtTime(userGainLevel/activeNotes.size,
                                           context.currentTime, 0.01);
 
@@ -487,6 +565,19 @@ function audioKeyDown(note, frequency, velocity) {
     } else {
         noteSignals[note]["lfo"][0].frequency.value = 0;
     }
+    if (filterOn) {
+        noteSignals[note]["filter"].type = filterType;
+        noteSignals[note]["filter"].frequency.value = filterCutoff;
+        noteSignals[note]["filter"].Q.value = filterQ;
+    } else {
+        noteSignals[note]["filter"].type = "low-pass";
+        noteSignals[note]["filter"].frequency.value = 20000;
+        noteSignals[note]["filter"].Q.value = 1;
+    }
+
+
+
+    noteSignals[note]["oscillator"].type = waveform;
 
 
     let keyGain = noteSignals[note]["keyGain"];
@@ -499,9 +590,26 @@ function audioKeyDown(note, frequency, velocity) {
     console.assert(amp <= 1, amp, velocity);
     keyGain.gain.setTargetAtTime(amp, context.currentTime, 0.01)
 
+}
+
+function stopNote(note){
+    // globalGain.gain.setTargetAtTime(userGainLevel/activeNotes.size,
+    //                                       context.currentTime, 0.01);
+
+    let keyGain = noteSignals[note]["keyGain"];
+    keyGain.gain.setTargetAtTime(0.00001, context.currentTime, 0.01)
+}
 
 
+function audioKeyDown(note, frequency, velocity) {
 
+    activeNotes.add(note);
+    playNote(note, velocity);
+
+    if (harmonizerOn) {
+        let harmNote = midiNoteToNoteName[noteNameToMidiNote[note] + harmonizerInterval];
+        playNote(harmNote);
+    }
 
     //for some reason it won't play without these two lines.
     //they literally do nothing. the oscillator isn't connected to anything.
@@ -513,12 +621,13 @@ function audioKeyDown(note, frequency, velocity) {
 
 
 function audioKeyUp(note, frequency) {
-
     activeNotes.delete(note);
+    stopNote(note);
 
-    let keyGain = noteSignals[note]["keyGain"];
-    keyGain.gain.setTargetAtTime(0.00001, context.currentTime, 0.01)
-
+    if (harmonizerOn) {
+        let harmNote = midiNoteToNoteName[noteNameToMidiNote[note] + harmonizerInterval];
+        stopNote(harmNote);
+    }
 };
 
 keyboard.keyDown = audioKeyDown;
