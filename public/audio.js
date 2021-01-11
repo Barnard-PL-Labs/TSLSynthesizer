@@ -28,6 +28,7 @@ function midiNoteOn(note, velocity) {
     audioKeyDown(noteName, getFrequencyOfNote(noteName), velocity);
     let elementName = noteName.replace("#", "Sharp");
     lightenUp(document.getElementById(elementName));
+    reactiveUpdateOnMIDI(note, velocity);
 }
 
 // Function to handle midiNoteOff messages (ie. key is released)
@@ -290,7 +291,7 @@ function initializeSignals(){
         var amOsc = context.createOscillator();
         var amGain = context.createGain();
         if (amSynthesis) {
-          amOsc.frequency.value = parseInt(amFreq.value);
+          amOsc.frequency.value = parseInt(amFreq);
         } else {
           amOsc.frequency.value = 0;
         }
@@ -463,12 +464,12 @@ function audioKeyDown(note, frequency, velocity) {
                                           context.currentTime, 0.01);
 
     if (amSynthesis) {
-        noteSignals[note]["am"][0].frequency.value = parseInt(amFreq.value);
+        noteSignals[note]["am"][0].frequency.value = amFreq;
     } else {
         noteSignals[note]["am"][0].frequency.value = 0;
     }
     if (fmSynthesis) {
-        noteSignals[note]["fm"][0].frequency.value = parseInt(fmFreq.value);
+        noteSignals[note]["fm"][0].frequency.value = fmFreq;
     } else {
         noteSignals[note]["fm"][0].frequency.value = 0;
     }
@@ -510,4 +511,19 @@ keyboard.keyUp = audioKeyUp;
 
 keyboard = new QwertyHancock(settings);
 
+// This function will be removed once synthesized.
+function reactiveUpdateOnMIDI(note, velocity){}
+
+//////////////////////////////////
+//  CHANGE KEYBOARD ID TO MIDI  //
+//////////////////////////////////
+
 const allKeys = document.getElementById("keyboard").children[0].children;
+
+document.addEventListener("DOMContentLoaded", _ => {
+    for(let i=0; i<allKeys.length; i++){
+        const keyNote = allKeys[i],
+              midiNoteName = "note" + noteNameToMidiNote[keyNote.getAttribute("id")];
+        keyNote.setAttribute("id", midiNoteName);
+    }
+})
