@@ -1,53 +1,3 @@
-function removeSharp(str){return str.replace("#", "Sharp");}
-function addSharp(str){return str.replace("Sharp", "#");}
-
-// TSL lexer does not recognize "#".
-// Must change all ids to "sharp".
-document.addEventListener("DOMContentLoaded", _ => {
-    for(let i=0; i<allKeys.length; i++){
-        const keyNote = allKeys[i];
-        keyNote.setAttribute("id", removeSharp(keyNote.id));
-    }
-})
-
-////////////////////////////
-// SAVE LAST CLICKED NOTE //
-////////////////////////////
-let selectedNotesLock = [false, false];
-let selectedNotesList = [null, null];
-const selectedNotes = document.getElementById("lastClicked");
-
-function saveLastClicked(e){
-    const note = e.target.id;
-    for(let i=0; i<selectedNotes.children.length; i++){
-        if(selectedNotesLock[i])
-            continue;
-
-        selectedNotesList[i] = note;
-        selectedNotes.children[i].children[0].innerText = "" +
-            "Selected Note " + (i+1).toString() + ": " + addSharp(note);
-    }
-}
-
-document.addEventListener("DOMContentLoaded", _ => {
-    const selectButtons = document.getElementsByClassName("selectedNoteBtn");
-    for(let i=0; i<selectButtons.length; i++){
-        selectButtons[i].addEventListener("click", _ => {
-            // Save --> Reset
-            if(selectedNotesLock[i]){
-                selectButtons[i].parentNode.children[0].innerText = "" +
-                    "Selected Note " + (i+1).toString() + " None (Play to Change)"
-            }
-            selectedNotesLock[i] = !selectedNotesLock[i];
-        })
-    }
-})
-
-for(let i=0; i<allKeys.length; i++){
-    const keyNote = allKeys[i];
-    keyNote.addEventListener("click", e => saveLastClicked(e), false);
-}
-
 ////////////////////////////
 // SERVER HANDSHAKE LOGIC //
 ////////////////////////////
@@ -111,10 +61,8 @@ function synthesize(spec){
         .catch(function(error){
             console.log(error);
         });
-
-
-
 }
+
 
 document.getElementById("synthesize-btn").addEventListener(
     "click", _ => {
@@ -122,6 +70,7 @@ document.getElementById("synthesize-btn").addEventListener(
         let prevSynthesized = document.getElementById("synthesizedScript");
         if(prevSynthesized)
             prevSynthesized.remove();
+        lockAllSelectedNotes();
 
         synthStatus.innerHTML = "Status: Synthesizing...\t"
         try{
@@ -140,8 +89,6 @@ document.getElementById("synthesize-btn").addEventListener(
         }
     }
 );
-
-
 
 
 // Request MIDI access
