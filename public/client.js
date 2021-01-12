@@ -84,8 +84,10 @@ document.getElementById("synthesize-btn").addEventListener(
         catch(err){
             if(err instanceof UnselectedNoteError)
                 synthStatus.innerHTML = "You did not select notes.\t"
-            else
+            else{
+                synthStatus.innerText = "Program Error. Check console log.\t";
                 throw err;
+            }
         }
     }
 );

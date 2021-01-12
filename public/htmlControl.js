@@ -5,18 +5,26 @@ NUM_SPECS = 4
 ////////////////////////////
 
 const specRootNode = document.getElementById("specification");
-const specNodeList = [];
+let specNodeList = [];
 
 function changeYoungerSibling(node, optionMap){
+    if(!node.value)
+        return;
     const parentNode = node.parentNode,
           oldSibling = node.nextSibling,
-          newSibling = optionMap[node.value];
-    parentNode.insertBefore(newSibling, oldSibling);
-    oldSibling.remove();
+          newSibling = strToDOM(optionMap[node.value]);
+    if(oldSibling){
+        parentNode.insertBefore(newSibling, oldSibling);
+        oldSibling.remove();
+    }
+    else{
+        parentNode.appendChild(newSibling);
+    }
 }
 
 function changeBinOp(node, termType){
-    const binOpNode = node.parentNode.getElementsByClassName("binOp")[0];
+    const grandparent = node.parentNode.parentNode,
+          binOpNode = grandparent.getElementsByClassName("binOp")[0];
     binOpNode.innerText = binOpMap[termType];
 }
 
@@ -26,12 +34,18 @@ function removeSiblingsAfterIth(node, idx){
         parentNode.lastChild.remove();
 }
 
+function createOptionSpan(){
+    const spanNode = document.createElement("span");
+    spanNode.setAttribute("class", "specOption");
+    return spanNode;
+}
+
 function createSingleSpec(idx){
-    const spec = document.createElement("div");
+    const spec = document.createElement("article");
     spec.setAttribute("id", "spec-" + idx.toString());
     spec.appendChild(getSpanNode("When "));
 
-    const whileNode = document.createElement("span"),
+    const whileNode = createOptionSpan(),
           whileSelectNode = strToDOM(whileSelector);
     whileSelectNode.addEventListener("change", e => {
         changeYoungerSibling(e.target, predicateSelectMap)
@@ -39,13 +53,10 @@ function createSingleSpec(idx){
     whileNode.appendChild(whileSelectNode);
     whileNode.appendChild(strToDOM(dummyOptions));
 
-    const predNode = document.createElement("span"),
-          predSelectNode = strToDOM(predicateSelector),
-          binOpNode = getSpanNode(" ... ");
+    const predNode = createOptionSpan(),
+          predSelectNode = strToDOM(predicateSelector);
     predNode.appendChild(predSelectNode);
     predNode.appendChild(strToDOM(dummyOptions));
-    binOpNode.setAttribute("class", "binOp");
-    predNode.appendChild(binOpNode);
     // FIXME: unreadable mess
     predSelectNode.addEventListener("change", e => {
         const node     = e.target,
@@ -57,9 +68,12 @@ function createSingleSpec(idx){
         grandparent.appendChild(getActionNode(termType));
     });
 
+    const binOpNode = getSpanNode(" ... ");
+    binOpNode.setAttribute("class", "binOp");
+
     function getActionNode(termType){
-        const actionNode = document.createElement("span"),
-            actionSelectNode = strToDOM(updateSelector);
+        const actionNode = createOptionSpan(),
+              actionSelectNode = strToDOM(updateSelector);
         actionSelectNode.addEventListener("change", e => {
             let updateSelectorMap;
             if(termType === "predicate")
@@ -79,11 +93,12 @@ function createSingleSpec(idx){
     spec.appendChild(whileNode);
     spec.appendChild(getSpanNode(" , "));
     spec.appendChild(predNode);
+    spec.appendChild(binOpNode);
     spec.appendChild(tempActionNode);
     return spec;
 }
 
-function specFieldsInit(){
+function bootSpecs(){
     for(let i=0; i<NUM_SPECS; i++){
         const singleSpec = createSingleSpec(i);
         specRootNode.appendChild(singleSpec);
@@ -92,15 +107,12 @@ function specFieldsInit(){
     }
 }
 
-function bootSpecs(){
-    specFieldsInit();
-}
-
 function rebootSpecs(){
     // Remove everything prior
     while(specRootNode.children.length > 0){
         specRootNode.children[specRootNode.children.length - 1].remove();
     }
+    specNodeList = [];
     bootSpecs();
     resetAllSelectedNotes();
 }
@@ -143,17 +155,44 @@ clearSpecBtn.addEventListener("click", rebootSpecs, false);
 const randomSpecBtn = document.getElementById("randomSpec");
 randomSpecBtn.addEventListener("click", generateRandSpec, false);
 
+function onlySpecChildren(domNode){
+    let selectNodeList = [];
+    for(let i=0; i<domNode.children.length; i++){
+        let selectNode = domNode.children[i];
+        if(selectNode.className === "specOption"){
+            if(selectNode.value === "")
+                return [];
+            selectNodeList.push(domNode.children[i]);
+        }
+    }
+    return selectNodeList;
+}
+
 // https://gist.github.com/kerimdzhanov/7529623
 function randInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
 function chooseRandOption(selectNode){
+    const numOptions = selectNode.children.length,
+        randIdx = randInt(1,numOptions);
+    if(numOptions === 1)
+        return "";
+    return selectNode.children[randIdx].value;
 }
 
 function generateRandSpec(){
     rebootSpecs();
     for(let i=0; i < specNodeList.length; i++) {
+        const selectNodeList = onlySpecChildren(specNodeList[i]);
+        for(let j=0; j < selectNodeList.length; j++){
+            const specNode = onlySpecChildren(specNodeList[i])[j];
+            specNode.firstChild.value = chooseRandOption(specNode.firstChild);
+            const evt = document.createEvent("HTMLEvents");
+            evt.initEvent("change", false, true);
+            specNode.firstChild.dispatchEvent(evt);
+            specNode.lastChild.value = chooseRandOption(specNode.lastChild);
+        }
     }
 }
 
