@@ -137,6 +137,22 @@ function makeAlwaysAssume(predicateList){
     return alwaysAssume;
 }
 
+// BUTTON SPECS
+const btnAssumes = `
+	!(press amOnBtn && press amOffBtn);
+	!(press fmOnBtn && press fmOffBtn);
+	!(press lfoOnBtn && press lfoOffBtn);
+`
+
+const btnGuarantees = `
+    press amOnBtn   -> X [amSynthesis <- True()];
+    press amOffBtn  -> X [amSynthesis <- False()];
+    press fmOnBtn   -> X [fmSynthesis <- True()];
+    press fmOffBtn  -> X [fmSynthesis <- False()];
+    press lfoOnBtn  -> X [lfo <- True()];
+    press lfoOffBtn -> X [lfo <- False()];
+`
+
 function getSpecFromDOM(){
     let tslSpecList = [];
     let specParent = document.getElementById("specification");
@@ -162,7 +178,7 @@ function getSpecFromDOM(){
 
     const alwaysAssume = makeAlwaysAssume(predicateList);
     const alwaysGuarantee = "always guarantee {\n" +
-        "\t" + tslSpecList.join("\n\t") + "\n}\n";
+        "\t" + tslSpecList.join("\n\t") + btnGuarantees + "\n}\n";
 
     const spec = alwaysAssume + alwaysGuarantee;
     console.log(`Got spec from DOM: \n${spec}`);

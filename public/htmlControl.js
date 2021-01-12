@@ -1,215 +1,116 @@
-///////////////////
-//  HTML FIELDS  //
-///////////////////
-
 NUM_SPECS = 4
-
-const predicateOptions = `
-<select class="predicateOption">
-    <option value=""></option> 
-    <option value="always">Always</option> 
-    <option value="play">Played Note:</option>
-    <option value="[waveform <- sine()]">waveform changes to sine</option>
-    <option value="[waveform <- sawtooth()]">waveform changes to sawtooth</option>
-    <option value="[waveform <- square()]">waveform changes to square</option>
-    <option value="[waveform <- triangle()]">waveform changes to triangle</option>
-    <option value="[amSynthesis <- True()]">AM turned on</option> 
-    <option value="[amSynthesis <- False()]">AM turned off</option> 
-    <option value="[fmSynthesis <- True()]">FM turned on</option> 
-    <option value="[fmSynthesis <- False()]">FM turned off</option> 
-    <option value="[lfo <- True()]">LFO turned on</option> 
-    <option value="[lfo <- False()]">LFO turned off</option>
-</select>
-`
-
-const actionOptions = `
-<select class="actionSelect">
-    <option value=""></option> 
-    <option value="[waveform <- sine()]">waveform to sine</option>
-    <option value="[waveform <- sawtooth()]">waveform to sawtooth</option>
-    <option value="[waveform <- square()]">waveform to square</option>
-    <option value="[waveform <- triangle()]">waveform to triangle</option>
-    <option value="[amSynthesis <- True()]">turn AM on</option> 
-    <option value="[amSynthesis <- False()]">turn AM off</option> 
-    <option value="[fmSynthesis <- True()]">turn FM on</option> 
-    <option value="[fmSynthesis <- False()]">turn FM off</option> 
-    <option value="[lfo <- True()]">turn LFO on</option> 
-    <option value="[lfo <- False()]">turn LFO off</option>
-    <option value="[amFreq <- inc10 amFreq ]">inc amFreq by 10</option>
-</select> 
-`
-
-const untilOptions = `
-<select class="untilOption">
-    <option value=""></option> 
-    <option value="noCond">No Condition</option> 
-    <option value="play">Played Note:</option>
-    <option value="[waveform <- sine()]">waveform to sine</option>
-    <option value="[waveform <- sawtooth()]">waveform to sawtooth</option>
-    <option value="[waveform <- square()]">waveform to square</option>
-    <option value="[waveform <- triangle()]">waveform to triangle</option>
-    <option value="[amSynthesis <- True()]">AM on</option> 
-    <option value="[amSynthesis <- False()]">AM off</option> 
-    <option value="[fmSynthesis <- True()]">FM on</option> 
-    <option value="[fmSynthesis <- False()]">FM off</option> 
-    <option value="[lfo <- True()]">LFO on</option> 
-    <option value="[lfo <- False()]">LFO off</option>
-</select>
-`
-
-const playNoteOptions = `
-<select class="playNoteOptions">
-    <option value=""></option> 
-    <option value="0">Note 1</option>
-    <option value="1">Note 2</option>
-    <option value="2">Note 3</option>
-</select> 
-`
-
-const binOperatorOptions = `
-<select class="binOp">
-    <option value=""></option> 
-    <option value="->">simultaneously</option>
-    <option value="-> X">change</option>
-</select> 
-`
-
-// XXX
-const predicateBinOperatorOptions = `
-<select class="binOp">
-    <option value=""></option> 
-    <option value="-> X">change</option>
-</select> 
-`
-
-function strToDOM(html){
-    const domNode = document.createElement("template");
-    domNode.innerHTML = html.trim();
-    return domNode.content.firstChild;
-}
-
-function getSpanNode(innerText){
-    const spanNode = document.createElement("span");
-    spanNode.innerText = innerText;
-    return spanNode;
-}
-
-function getWhitespaceSpanNode(){
-    return getSpanNode("    ");
-}
-
-function getActionClauseList(){
-    return [
-        getWhitespaceSpanNode(),
-        strToDOM(actionOptions),
-        getSpanNode(" until "),
-        strToDOM(untilOptions)
-    ];
-}
-
 
 ////////////////////////////
 //  DYNAMIC HTML LOADING  //
 ////////////////////////////
 
-function nodesAfterPredicate(predicate){
-    let returnNodes = [];
-    switch(predicate.value){
-        case "":
-            return returnNodes;
-        case "always":
-            break;
-        case "play":
-            returnNodes.push(strToDOM(playNoteOptions));
-            returnNodes.push(getWhitespaceSpanNode());
-            returnNodes.push(strToDOM(predicateBinOperatorOptions));
-            break;
-        default:
-            returnNodes.push(strToDOM(binOperatorOptions));
-            break;
-    }
-    returnNodes.push(getWhitespaceSpanNode());
-    returnNodes = returnNodes.concat(getActionClauseList());
-    return returnNodes;
-}
-
-
-///////////////////////////////////////////
-//  EVENT LISTENERS AND INITIALIZATIONS  //
-///////////////////////////////////////////
-
 const specRootNode = document.getElementById("specification");
 const specNodeList = [];
 
-function specificationHTMLInit(){
+function changeYoungerSibling(node, optionMap){
+    const parentNode = node.parentNode,
+          oldSibling = node.nextSibling,
+          newSibling = optionMap[node.value];
+    parentNode.insertBefore(newSibling, oldSibling);
+    oldSibling.remove();
+}
+
+function changeBinOp(node, termType){
+    const binOpNode = node.parentNode.getElementsByClassName("binOp")[0];
+    binOpNode.innerText = binOpMap[termType];
+}
+
+function removeSiblingsAfterIth(node, idx){
+    const parentNode = node.parentNode;
+    while(parentNode.children.length > idx)
+        parentNode.lastChild.remove();
+}
+
+function createSingleSpec(idx){
+    const spec = document.createElement("div");
+    spec.setAttribute("id", "spec-" + idx.toString());
+    spec.appendChild(getSpanNode("When "));
+
+    const whileNode = document.createElement("span"),
+          whileSelectNode = strToDOM(whileSelector);
+    whileSelectNode.addEventListener("change", e => {
+        changeYoungerSibling(e.target, predicateSelectMap)
+    }, false);
+    whileNode.appendChild(whileSelectNode);
+    whileNode.appendChild(strToDOM(dummyOptions));
+
+    const predNode = document.createElement("span"),
+          predSelectNode = strToDOM(predicateSelector),
+          binOpNode = getSpanNode(" ... ");
+    predNode.appendChild(predSelectNode);
+    predNode.appendChild(strToDOM(dummyOptions));
+    binOpNode.setAttribute("class", "binOp");
+    predNode.appendChild(binOpNode);
+    // FIXME: unreadable mess
+    predSelectNode.addEventListener("change", e => {
+        const node     = e.target,
+              termType = binOpCategories[node.value],
+              grandparent = node.parentNode.parentNode;
+        changeYoungerSibling(node, predicateSelectMap);
+        changeBinOp(node, termType);
+        grandparent.lastChild.remove();
+        grandparent.appendChild(getActionNode(termType));
+    });
+
+    function getActionNode(termType){
+        const actionNode = document.createElement("span"),
+            actionSelectNode = strToDOM(updateSelector);
+        actionSelectNode.addEventListener("change", e => {
+            let updateSelectorMap;
+            if(termType === "predicate")
+                updateSelectorMap = nextUpdateSelectorMap;
+            else if(termType === "update")
+                updateSelectorMap = impliesUpdateSelectorMap;
+            else
+                throw new Error("Enumerable Type Exhausted.");
+            changeYoungerSibling(e.target, updateSelectorMap);
+        }, false);
+        actionNode.appendChild(actionSelectNode);
+        actionNode.appendChild(strToDOM(dummyOptions));
+        return actionNode;
+    }
+    const tempActionNode = getActionNode("predicate");
+
+    spec.appendChild(whileNode);
+    spec.appendChild(getSpanNode(" , "));
+    spec.appendChild(predNode);
+    spec.appendChild(tempActionNode);
+    return spec;
+}
+
+function specFieldsInit(){
     for(let i=0; i<NUM_SPECS; i++){
-        const singleSpec = document.createElement('article');
-        singleSpec.setAttribute("id", "spec-" + i.toString());
-        singleSpec.appendChild(getSpanNode("When  "));
-        singleSpec.appendChild(strToDOM(predicateOptions));
-        singleSpec.appendChild(getWhitespaceSpanNode());
+        const singleSpec = createSingleSpec(i);
         specRootNode.appendChild(singleSpec);
         specNodeList.push(singleSpec);
         specRootNode.appendChild(document.createElement("br"));
     }
 }
 
-const NUM_INITIAL_NODES = 2;
-
-function createSiblingOptionsFromPredicate(predicateNode){
-    const parent = predicateNode.parentNode;
-
-    // Refresh options
-    while(parent.children.length > NUM_INITIAL_NODES)
-        parent.children[NUM_INITIAL_NODES].remove();
-
-    if(predicateNode.value === "")
-        return;
-
-    parent.appendChild(getWhitespaceSpanNode());
-
-    const nodesAfter = nodesAfterPredicate(predicateNode);
-    for(let j=0; j<nodesAfter.length; j++)
-        parent.appendChild(nodesAfter[j]);
-}
-
-function initAllPredEventListeners(){
-    const predicates = document.getElementsByClassName("predicateOption");
-    for(let i=0; i<predicates.length; i++){
-        let currPred = predicates[i];
-        currPred.addEventListener("change", _ => {
-            createSiblingOptionsFromPredicate(currPred)
-        })
-    }
-}
-
-function addNoteSelectOptionChild(parentNode){
-    parentNode.appendChild(getWhitespaceSpanNode());
-    parentNode.appendChild(strToDOM(playNoteOptions));
-}
-
-function createUntilEventListener(event){
-    const currUntil = event.target;
-    const parent = currUntil.parentNode;
-    const lastSibling = parent.children[parent.children.length-1];
-
-    if(lastSibling.classList[0] === "playNoteOptions")
-        lastSibling.remove();
-
-    if(currUntil.value === "play")
-        addNoteSelectOptionChild(parent);
-}
-
 function bootSpecs(){
-    specificationHTMLInit();
-    initAllPredEventListeners();
+    specFieldsInit();
 }
+
+function rebootSpecs(){
+    // Remove everything prior
+    while(specRootNode.children.length > 0){
+        specRootNode.children[specRootNode.children.length - 1].remove();
+    }
+    bootSpecs();
+    resetAllSelectedNotes();
+}
+
 document.addEventListener("DOMContentLoaded", bootSpecs, false);
 
-document.addEventListener("change", function(e){
-    if(e.target.className === "untilOption")
-        createUntilEventListener(e);
-})
+
+//////////////////
+//  UI UPDATES  //
+//////////////////
 
 function showEffectStatus(effect, statusVar){
     const domNode = document.getElementById(effect + "Status");
@@ -230,6 +131,31 @@ function updateVarsToUI(){
 
 document.addEventListener("click", updateVarsToUI, false);
 
+
+/////////////////////////////
+//  SPECIFICATION HELPERS  //
+/////////////////////////////
+
+const clearSpecBtn = document.getElementById("clearSpec");
+clearSpecBtn.addEventListener("click", rebootSpecs, false);
+
+// RANDOM SPEC
+const randomSpecBtn = document.getElementById("randomSpec");
+randomSpecBtn.addEventListener("click", generateRandSpec, false);
+
+// https://gist.github.com/kerimdzhanov/7529623
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+function chooseRandOption(selectNode){
+}
+
+function generateRandSpec(){
+    rebootSpecs();
+    for(let i=0; i < specNodeList.length; i++) {
+    }
+}
 
 ////////////////////////////
 // SAVE LAST CLICKED NOTE //
@@ -294,65 +220,3 @@ for(let i=0; i<allKeys.length; i++){
     keyNote.addEventListener("click", e => saveLastClicked(e), false);
 }
 
-/////////////////////////////
-//  SPECIFICATION HELPERS  //
-/////////////////////////////
-
-const clearSpecBtn = document.getElementById("clearSpec");
-clearSpecBtn.addEventListener("click", rebootSpecs, false);
-function rebootSpecs(){
-    // Remove everything prior
-    while(specRootNode.children.length > 0){
-        specRootNode.children[specRootNode.children.length - 1].remove();
-    }
-    bootSpecs();
-    resetAllSelectedNotes();
-}
-
-/////////////////////////////////////////////////
-//  AUTOMATIC RANDOM SPECIFICATION GENERATION  //
-/////////////////////////////////////////////////
-
-const randomSpecBtn = document.getElementById("randomSpec");
-randomSpecBtn.addEventListener("click", generateRandSpec, false);
-
-// https://gist.github.com/kerimdzhanov/7529623
-function randInt(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
-}
-
-function chooseRandOption(selectNode){
-    if(selectNode.tagName !== "SELECT")
-        throw new TypeError("Input should be a SELECT DOM Node");
-
-    const numOptions = selectNode.children.length,
-          randIdx = randInt(1,numOptions);
-    return selectNode.children[randIdx].value;
-}
-
-function generateRandSpec(){
-    const PREDICATE_IDX = 1;
-    for(let i=0; i < specNodeList.length; i++){
-        const specParentNode = specNodeList[i],
-              predNode = specParentNode.children[PREDICATE_IDX];
-
-        // Choose random predicate
-        predNode.value = chooseRandOption(predNode);
-        createSiblingOptionsFromPredicate(predNode);
-
-        // Choose random values for other options
-        for(let j=PREDICATE_IDX+1; j<specParentNode.children.length; j++){
-            const optionNode = specParentNode.children[j];
-            if(optionNode.tagName !== "SELECT")
-                continue;
-            optionNode.value = chooseRandOption(optionNode);
-        }
-
-        // Check last until clause
-        if(specParentNode.children[specParentNode.children.length-1].value === "play"){
-            addNoteSelectOptionChild(specParentNode);
-            const noteSelectNode = specParentNode.children[specParentNode.children.length - 1];
-            noteSelectNode.value = chooseRandOption(noteSelectNode);
-        }
-    }
-}
