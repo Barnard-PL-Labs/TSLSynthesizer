@@ -6,80 +6,80 @@ NUM_SPECS = 4
 
 const predicateOptions = `
 <select class="predicateOption">
-    <option value=""></option> 
-    <option value="always">Always</option> 
+    <option value=""></option>
+    <option value="always">Always</option>
     <option value="play">Played Note:</option>
     <option value="[waveform <- sine()]">waveform changes to sine</option>
     <option value="[waveform <- sawtooth()]">waveform changes to sawtooth</option>
     <option value="[waveform <- square()]">waveform changes to square</option>
     <option value="[waveform <- triangle()]">waveform changes to triangle</option>
-    <option value="[amSynthesis <- True()]">AM turned on</option> 
-    <option value="[amSynthesis <- False()]">AM turned off</option> 
-    <option value="[fmSynthesis <- True()]">FM turned on</option> 
-    <option value="[fmSynthesis <- False()]">FM turned off</option> 
-    <option value="[lfo <- True()]">LFO turned on</option> 
+    <option value="[amSynthesis <- True()]">AM turned on</option>
+    <option value="[amSynthesis <- False()]">AM turned off</option>
+    <option value="[fmSynthesis <- True()]">FM turned on</option>
+    <option value="[fmSynthesis <- False()]">FM turned off</option>
+    <option value="[lfo <- True()]">LFO turned on</option>
     <option value="[lfo <- False()]">LFO turned off</option>
 </select>
 `
 
 const actionOptions = `
 <select class="actionSelect">
-    <option value=""></option> 
+    <option value=""></option>
     <option value="[waveform <- sine()]">waveform to sine</option>
     <option value="[waveform <- sawtooth()]">waveform to sawtooth</option>
     <option value="[waveform <- square()]">waveform to square</option>
     <option value="[waveform <- triangle()]">waveform to triangle</option>
-    <option value="[amSynthesis <- True()]">turn AM on</option> 
-    <option value="[amSynthesis <- False()]">turn AM off</option> 
-    <option value="[fmSynthesis <- True()]">turn FM on</option> 
-    <option value="[fmSynthesis <- False()]">turn FM off</option> 
-    <option value="[lfo <- True()]">turn LFO on</option> 
+    <option value="[amSynthesis <- True()]">turn AM on</option>
+    <option value="[amSynthesis <- False()]">turn AM off</option>
+    <option value="[fmSynthesis <- True()]">turn FM on</option>
+    <option value="[fmSynthesis <- False()]">turn FM off</option>
+    <option value="[lfo <- True()]">turn LFO on</option>
     <option value="[lfo <- False()]">turn LFO off</option>
     <option value="[amFreq <- inc10 amFreq ]">inc amFreq by 10</option>
-</select> 
+</select>
 `
 
 const untilOptions = `
 <select class="untilOption">
-    <option value=""></option> 
-    <option value="noCond">No Condition</option> 
+    <option value=""></option>
+    <option value="noCond">No Condition</option>
     <option value="play">Played Note:</option>
     <option value="[waveform <- sine()]">waveform to sine</option>
     <option value="[waveform <- sawtooth()]">waveform to sawtooth</option>
     <option value="[waveform <- square()]">waveform to square</option>
     <option value="[waveform <- triangle()]">waveform to triangle</option>
-    <option value="[amSynthesis <- True()]">AM on</option> 
-    <option value="[amSynthesis <- False()]">AM off</option> 
-    <option value="[fmSynthesis <- True()]">FM on</option> 
-    <option value="[fmSynthesis <- False()]">FM off</option> 
-    <option value="[lfo <- True()]">LFO on</option> 
+    <option value="[amSynthesis <- True()]">AM on</option>
+    <option value="[amSynthesis <- False()]">AM off</option>
+    <option value="[fmSynthesis <- True()]">FM on</option>
+    <option value="[fmSynthesis <- False()]">FM off</option>
+    <option value="[lfo <- True()]">LFO on</option>
     <option value="[lfo <- False()]">LFO off</option>
 </select>
 `
 
 const playNoteOptions = `
 <select class="playNoteOptions">
-    <option value=""></option> 
+    <option value=""></option>
     <option value="0">Note 1</option>
     <option value="1">Note 2</option>
     <option value="2">Note 3</option>
-</select> 
+</select>
 `
 
 const binOperatorOptions = `
 <select class="binOp">
-    <option value=""></option> 
+    <option value=""></option>
     <option value="->">simultaneously</option>
     <option value="-> X">change</option>
-</select> 
+</select>
 `
 
 // XXX
 const predicateBinOperatorOptions = `
 <select class="binOp">
-    <option value=""></option> 
+    <option value=""></option>
     <option value="-> X">change</option>
-</select> 
+</select>
 `
 
 function strToDOM(html){
@@ -226,6 +226,9 @@ function updateVarsToUI(){
     showEffectStatus("am", amSynthesis);
     showEffectStatus("fm", fmSynthesis);
     showEffectStatus("lfo", lfo);
+    showEffectStatus("filter", filterOn);
+    showEffectStatus("harmonizer", harmonizerOn);
+    showEffectStatus("arpeggiator", arpeggiatorOn);
 }
 
 document.addEventListener("click", updateVarsToUI, false);
@@ -252,7 +255,7 @@ function saveLastClicked(e){
         selectedNotesList[i] = note;
         const noteNum = note.slice(4);
         selectedNotes.children[i].children[0].innerText = "" +
-            "Note " + (i+1).toString() + ": MIDI note " + 
+            "Note " + (i+1).toString() + ": MIDI note " +
             noteNum + " (" + midiNoteToNoteName[noteNum] + ")";
     }
 }

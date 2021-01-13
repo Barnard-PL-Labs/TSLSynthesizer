@@ -127,6 +127,7 @@ fmOnBtn.addEventListener("click", _ => {
 fmOffBtn.addEventListener("click", _ => {
     if(!fmSynthesis) return;
     fmSynthesis = false;
+    resetOscillatorFrequencies();
 })
 
 // LFO
@@ -155,22 +156,87 @@ lfoOffBtn.addEventListener("click", _ => {
 
 // FILTER
 let filterOn = false;
-let filterType = "low-pass"
+let filterType = "lowpass"
 let filterCutoff = 20000;
 let filterQ = 1;
+
+const filterCutoffControl =  document.getElementById("filterCutoff");
+filterCutoffControl.addEventListener("change", _ => {
+    filterCutoff = parseInt(filterCutoffControl.value);
+})
+
+const filterQControl =  document.getElementById("filterQ");
+filterQControl.addEventListener("change", _ => {
+    filterQ = Math.pow(10, parseInt(filterQControl.value));
+})
+
+
+const filterTypeControl =  document.getElementById("filterTypeDropdown");
+filterTypeControl.addEventListener("change", _ => {
+    filterType = filterTypeControl.value;
+})
+
+let filterOnBtn = document.getElementById("filterOnBtn");
+let filterOffBtn = document.getElementById("filterOffBtn");
+filterOnBtn.addEventListener("click", _ => {
+    if(filterOn) return;
+    filterOn = true;
+})
+filterOffBtn.addEventListener("click", _ => {
+    if(!filterOn) return;
+    filterOn = false;
+})
 
 
 // HARMONIZER
 let harmonizerOn = false;
 let harmonizerInterval = -5;
 
+const harmonizerIntervalControl =  document.getElementById("harmonizerIntervalDropdown");
+harmonizerIntervalControl.addEventListener("change", _ => {
+    harmonizerInterval = parseInt(harmonizerIntervalControl.value);
+})
+
+let harmonizerOnBtn = document.getElementById("harmonizerOnBtn");
+let harmonizerOffBtn = document.getElementById("harmonizerOffBtn");
+harmonizerOnBtn.addEventListener("click", _ => {
+    if(harmonizerOn) return;
+    harmonizerOn = true;
+})
+harmonizerOffBtn.addEventListener("click", _ => {
+    if(!harmonizerOn) return;
+    harmonizerOn = false;
+})
+
+
+
 
 // ARPEGGIATOR
 let arpeggiatorOn = false;
 let arpeggiatorStyle = "up";
 let arpeggiatorRate = 6;
-let arpeggiatorInterval;
+// let _arpeggiatorInterval;
 
+const arpeggiatorRateControl =  document.getElementById("arpeggiatorRate");
+arpeggiatorRateControl.addEventListener("change", _ => {
+    arpeggiatorRate = parseInt(arpeggiatorRateControl.value);
+})
+
+const arpeggiatorStyleControl =  document.getElementById("arpeggiatorStyleDropdown");
+arpeggiatorStyleControl.addEventListener("change", _ => {
+    arpeggiatorStyle = arpeggiatorStyleControl.value;
+})
+
+let arpeggiatorOnBtn = document.getElementById("arpeggiatorOnBtn");
+let arpeggiatorOffBtn = document.getElementById("arpeggiatorOffBtn");
+arpeggiatorOnBtn.addEventListener("click", _ => {
+    if(arpeggiatorOn) return;
+    arpeggiatorOn = true;
+})
+arpeggiatorOffBtn.addEventListener("click", _ => {
+    if(!arpeggiatorOn) return;
+    arpeggiatorOn = false;
+})
 
 
 let midiNoteToNoteName = {
@@ -404,6 +470,11 @@ function initializeSignals(){
 initializeSignals();
 
 
+function resetOscillatorFrequencies() {
+    for (noteName of noteNames) {
+        noteSignals[noteName]["oscillator"].frequency.value = getFrequencyOfNote(noteName);
+    }
+}
 
 
 // Triggger boolean functions
@@ -555,7 +626,9 @@ let _arpNotes;
 let _arpIndex;
 let _notePlaying;
 let _arpAscending;
+let _arpeggiatorInterval;
 let _arpeggiating = false;
+
 
 
 function removeNoteFromArpNotes(note) {
@@ -612,7 +685,7 @@ function arpeggiate() {
         _arpIndex = Math.floor(Math.random() * _arpNotes.length);
     }
     _arpeggiating = true;
-    arpeggiatorInterval = setInterval(playArpNote, timeInterval);
+    _arpeggiatorInterval = setInterval(playArpNote, timeInterval);
 }
 
 function playArpNote() {
@@ -678,7 +751,7 @@ function playNote(note, velocity){
         noteSignals[note]["filter"].frequency.value = filterCutoff;
         noteSignals[note]["filter"].Q.value = filterQ;
     } else {
-        noteSignals[note]["filter"].type = "low-pass";
+        noteSignals[note]["filter"].type = "lowpass";
         noteSignals[note]["filter"].frequency.value = 20000;
         noteSignals[note]["filter"].Q.value = 1;
     }
@@ -722,7 +795,7 @@ function audioKeyDown(note, frequency, velocity) {
         if (_arpeggiating) {
             insertNoteToArpNotes(note);
         } else {
-          clearInterval(arpeggiatorInterval);
+          clearInterval(_arpeggiatorInterval);
           arpeggiate();
           _arpeggiating = true;
         }
@@ -757,7 +830,7 @@ function audioKeyUp(note, frequency) {
         if (_arpeggiating && activeNotes.size > 1) {
             removeNoteFromArpNotes(note);
         } else {
-            clearInterval(arpeggiatorInterval);
+            clearInterval(_arpeggiatorInterval);
             _arpeggiating = false;
         }
     }
