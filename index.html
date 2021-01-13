@@ -84,12 +84,82 @@
             <span id="amStatus">AM: Off</span>
         </div>
         <div class="synth-control" id="fmControl">
-            <label for="fmFreq">AM frequency
+            <label for="fmFreq">FM frequency
                 <input id="fmFreq" type="range" min="0" max="1000">
             </label>
             <button id="fmOnBtn"> FM On </button>
             <button id="fmOffBtn"> FM Off </button>
             <span id="fmStatus">FM: Off</span>
+        </div>
+        <div class="synth-control" id="filterControl">
+            <label for="filterCutoff"> FILTER cutoff
+                <input id="filterCutoff" type="range" min="20" max="20000" value="20000">
+            </label>
+            <label for="filterQ"> Q
+                <input id="filterQ" type="range" min="-4.0" max="3.0" step="0.01" value="0">
+            </label>
+            <label for="filterTypeDropdown"> Type
+              <select name="filterType" id="filterTypeDropdown">
+                <option value="lowpass">low-pass</option>
+                <option value="highpass">high-pass</option>
+                <option value="bandpass">band-pass</option>
+              </select>
+            </label>
+            <button id="filterOnBtn"> FILTER On </button>
+            <button id="filterOffBtn"> FILTER Off </button>
+            <span id="filterStatus">FILTER: Off</span>
+        </div>
+        <div class="synth-control" id="harmonizerControl">
+            <label for="harmonizerIntervalDropdown"> HARMONIZER Interval
+              <select name="harmonizerInterval" id="harmonizerIntervalDropdown">
+                <option value="-12">-12</option>
+                <option value="-11">-11</option>
+                <option value="-10">-10</option>
+                <option value="-9">-9</option>
+                <option value="-8">-8</option>
+                <option value="-7">-7</option>
+                <option value="-6">-6</option>
+                <option selected value="-5">-5</option>
+                <option value="-4">-4</option>
+                <option value="-3">-3</option>
+                <option value="-2">-2</option>
+                <option value="-1">-1</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+
+
+              </select>
+            </label>
+            <button id="harmonizerOnBtn"> HARMONIZER On </button>
+            <button id="harmonizerOffBtn"> HARMONIZER Off </button>
+            <span id="harmonizerStatus">HARMONIZER: Off</span>
+        </div>
+        <div class="synth-control" id="arpeggiatorControl">
+            <label for="arpeggiatorRate"> ARPEGGIATOR rate
+                <input id="arpeggiatorRate" type="range" min="1" max="60" value="6">
+            </label>
+            <label for="arpeggiatorStyleDropdown"> Style
+              <select name="arpeggiatorStyle" id="arpeggiatorStyleDropdown">
+                <option value="up">up</option>
+                <option value="up-down">up-down</option>
+                <option value="down">down</option>
+                <option value="down-up">down-up</option>
+              </select>
+            </label>
+            <button id="arpeggiatorOnBtn"> ARPEGGIATOR On </button>
+            <button id="arpeggiatorOffBtn"> ARPEGGIATOR Off </button>
+            <span id="arpeggiatorStatus">ARPEGGIATOR: Off</span>
         </div>
     </section>
     <br>
