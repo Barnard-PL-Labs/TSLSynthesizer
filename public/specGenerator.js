@@ -12,39 +12,20 @@ function getSelectedNote(noteOption){
         return selectedNote;
 }
 
-// XXX: huge hardcoded hack
 function buildFormulaFromParts(optionList, formulaList){
-    let tslSpec = "",
-        weakUntilClause = null;
-    if(optionList[0].firstChild.value !== "always"){
-        tslSpec += formulaList[0];
+    let tslSpec = formulaList[0];
+    if(binOpCategories[optionList[0].firstChild.value] === "update")
         tslSpec += " -> ";
-        weakUntilClause = weakUntilMap(optionList[0]);
-    }
-    tslSpec += "(";
-    tslSpec += "(";
-    tslSpec += formulaList[1];
-    if(binOpCategories[optionList[1].firstChild.value] === "update")
-        tslSpec += " -> ";
-    else if(binOpCategories[optionList[1].firstChild.value] === "predicate")
+    else if(binOpCategories[optionList[0].firstChild.value] === "predicate")
         tslSpec += " -> X ";
     else
         throw new Error("A wild error has appeared.");
-
-    tslSpec += formulaList[2];
-    tslSpec += ")";
-
-    if(weakUntilClause){
-        tslSpec += " W ";
-        tslSpec += weakUntilClause;
-    }
-
-    tslSpec += ")";
+    tslSpec += formulaList[1];
     return tslSpec;
 }
 
 function parseSpecNode(spec){
-    const PREDICATE_IDX = 1,
+    const PREDICATE_IDX = 0,
           optionList =  onlySpecChildren(spec);
 
     if(optionList.length === 0)
@@ -75,44 +56,8 @@ function parseSpecNode(spec){
     return [predicate, tslSpec];
 }
 
-const termVars = `
-amBtnPresses  = press amOnBtn || press amOffBtn;
-fmBtnPresses  = press fmOnBtn || press fmOffBtn;
-lfoBtnPresses = press lfoOnBtn || press lfoOffBtn;
-filterBtnPresses = press filterOnBtn || filterOffBtn;
-harmonBtnPresses = press harmonizerOnBtn || harmonizerOffBtn;
-arpBtnPresses = press arpeggiatorOnBtn || arpeggiatorOffBtn;
-anyBtnPresses1 = amBtnPresses || fmBtnPresses || lfoBtnPresses || change waveformControl;
-anyBtnPresses2 = filterBtnPresses || harmonBtnPresses || arpBtnPresses;
-anyBtnPresses = anyBtnPresses1 || anyBtnPresses2;
-`
-const btnAssumes = `
-	!(press amOnBtn && press amOffBtn);
-	!(press fmOnBtn && press fmOffBtn);
-	!(press lfoOnBtn && press lfoOffBtn);
-	!(press filterOnBtn && press filterOffBtn);
-	!(press harmonizerOnBtn && press harmonizerOffBtn);
-	!(press arpOnBtn && press arpOffBtn);
-`
-const btnGuarantees = `
-    press amOnBtn   -> X [amSynthesis <- True()];
-    press amOffBtn  -> X [amSynthesis <- False()];
-    press fmOnBtn   -> X [fmSynthesis <- True()];
-    press fmOffBtn  -> X [fmSynthesis <- False()];
-    press lfoOnBtn  -> X [lfo <- True()];
-    press lfoOffBtn -> X [lfo <- False()];
-    press filterOnBtn  -> X [filterOn <- True()];
-    press filterOffBtn -> X [filterOn <- False()];
-    press harmonizerOnBtn  -> X [harmonizerOn <- True()];
-    press harmonizerOffBtn -> X [harmonizerOn <- False()];
-    press arpeggiatorOnBtn  -> X [arpeggiatorOn <- True()];
-    press arpeggiatorOffBtn -> X [arpeggiatorOn <- False()];
-	change waveformControl -> X [waveform <- getWavefromVal()];
-`
-
-// TODO
 function makeAlwaysAssume(predicateList){
-    let alwaysAssume = "always assume{" + btnAssumes + "\n";
+    let alwaysAssume = "always assume{" + "\n";
 
     if(predicateList.length < 1)
         return alwaysAssume + "}";
@@ -123,12 +68,8 @@ function makeAlwaysAssume(predicateList){
             predicateList.join(" && ") +
             ");\n";
     }
-    const noBtnSimul = "\t" + predicateList.map(x =>
-        "!(" + x + " && anyBtnPresses);"
-    ).join("\n\t");
 
     alwaysAssume += noPredSimul;
-    alwaysAssume += noBtnSimul;
     alwaysAssume += "\n}\n";
 
     return alwaysAssume;
@@ -160,9 +101,9 @@ function getSpecFromDOM(){
     const predicateList = [...predicateSet];
     const alwaysAssume = makeAlwaysAssume(predicateList);
     const alwaysGuarantee = "always guarantee {\n" +
-        "\t" + tslSpecList.join("\n\t") + btnGuarantees + "\n}\n";
+        "\t" + tslSpecList.join("\n\t") + "\n}\n";
 
-    const spec = termVars + alwaysAssume + alwaysGuarantee;
+    const spec = alwaysAssume + alwaysGuarantee;
     console.log(`Got spec from DOM: \n${spec}`);
 
     return spec;

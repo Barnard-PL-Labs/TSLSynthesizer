@@ -43,15 +43,6 @@ function createOptionSpan(){
 function createSingleSpec(idx){
     const spec = document.createElement("article");
     spec.setAttribute("id", "spec-" + idx.toString());
-    spec.appendChild(getSpanNode("When "));
-
-    const whileNode = createOptionSpan(),
-          whileSelectNode = strToDOM(whileSelector);
-    whileSelectNode.addEventListener("change", e => {
-        changeYoungerSibling(e.target, predicateSelectMap)
-    }, false);
-    whileNode.appendChild(whileSelectNode);
-    whileNode.appendChild(strToDOM(dummyOptions));
 
     const predNode = createOptionSpan(),
           predSelectNode = strToDOM(predicateSelector);
@@ -93,8 +84,7 @@ function createSingleSpec(idx){
     }
     const tempActionNode = getActionNode("predicate");
 
-    spec.appendChild(whileNode);
-    spec.appendChild(getSpanNode(" , "));
+    spec.appendChild(getSpanNode("Updating "));
     spec.appendChild(predNode);
     spec.appendChild(binOpNode);
     spec.appendChild(tempActionNode);
