@@ -26,7 +26,8 @@ function getMIDIMessage(message) {
 function midiNoteOn(note, velocity) {
     let noteName = midiNoteToNoteName[note];
     audioKeyDown(noteName, getFrequencyOfNote(noteName), velocity);
-    let elementName = noteName.replace("#", "Sharp");
+    // let elementName = noteName.replace("#", "Sharp");
+    let elementName = "note" + note.toString()
     lightenUp(document.getElementById(elementName));
     reactiveUpdateOnMIDI(note, velocity);
 }
@@ -35,7 +36,8 @@ function midiNoteOn(note, velocity) {
 function midiNoteOff(note) {
     let noteName = midiNoteToNoteName[note];
     audioKeyUp(noteName, getFrequencyOfNote(noteName));
-    let elementName = noteName.replace("#", "Sharp");
+    // let elementName = noteName.replace("#", "Sharp");
+    let elementName = "note" + note.toString()
     darkenDown(document.getElementById(elementName));
 }
 
