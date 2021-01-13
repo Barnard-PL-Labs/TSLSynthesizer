@@ -165,7 +165,7 @@ let harmonizerInterval = -5;
 
 
 // ARPEGGIATOR
-let arpeggiatorOn = true;
+let arpeggiatorOn = false;
 let arpeggiatorStyle = "up";
 let arpeggiatorRate = 6;
 let arpeggiatorInterval;
