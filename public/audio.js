@@ -651,7 +651,7 @@ function insertNoteToArpNotes(note) {
     let idx = 0;
     while (idx < midiNotes.length) {
         //if the note is already present, do nothing
-        if (midiNotes[idx] == insertMidiNote) {
+        if (midiNotes[idx] === insertMidiNote) {
             return;
         }
         //if note at this index is greater than insertion note, insert

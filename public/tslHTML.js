@@ -1,73 +1,3 @@
-///////////////////
-//  UPDATE TERMS //
-///////////////////
-function freqUpdateTerms(varName){
-    const freqTerm = varName + "Freq";
-    return {
-        "on": `[${varName} <- True()]`,
-        "off": `[${varName} <- False()]`,
-        "inc10": `[${freqTerm} <- inc10 ${freqTerm}]`,
-        "dec10": `[${freqTerm} <- dec10 ${freqTerm}]`
-    }
-}
-
-const waveformUpdateMap = {
-    "sine": "[waveform <- sine()]",
-    "sawtooth": "[waveform <- sawtooth()]",
-    "square": "[waveform <- square()]",
-    "triangle": "[waveform <- triangle()]"
-};
-
-const updateMap = {
-    am: freqUpdateTerms("amSynthesis"),
-    fm: freqUpdateTerms("fmSynthesis"),
-    lfo: function(){
-        const lfoUpdates = freqUpdateTerms("lfo");
-        const lfoDepth = {
-            "inc10Depth": `[lfoDepth <- inc10 lfoDepth]`,
-            "dec10Depth": `[lfoDepth <- dec10 lfoDepth]`
-        };
-        return {...lfoUpdates, ...lfoDepth};
-    }(),
-    waveform: waveformUpdateMap
-};
-
-///////////////////////
-//  PREDICATE TERMS  //
-//////////////////////
-function freqPredicateTerms(varName, minFreq, maxFreq){
-    const midFreq = Math.floor((minFreq + maxFreq)/2),
-        freqPreds = {};
-    freqPreds[`${varName} > ${midFreq}`] = `isAbove ${midFreq} ${varName}`;
-    freqPreds[`${varName} < ${midFreq}`] = `isBelow ${midFreq} ${varName}`;
-    return freqPreds;
-}
-
-function playNotePredicates(){
-    return {
-        "Note 1": selectedNotesList[0].toString(),
-        "Note 2": selectedNotesList[1].toString(),
-        "Note 3": selectedNotesList[2].toString()
-    }
-}
-
-function concatDict(dict1, dict2){
-    return {...dict1, ...dict2};
-}
-
-function concatDict3(dict1, dict2, dict3){
-    return {...dict1, ...dict2, ...dict3};
-}
-
-const predicateMap = {
-    am: concatDict(updateMap["am"], freqPredicateTerms("amFreq", 0, 1000)),
-    fm: concatDict(updateMap["fm"], freqPredicateTerms("fmFreq", 0, 1000)),
-    lfo: concatDict3(updateMap["lfo"],
-        freqPredicateTerms("lfoFreq", 0, 100),
-        freqPredicateTerms("lfoDepth", 0, 20)),
-    waveform: updateMap["waveform"]
-}
-
 ////////////////
 //  RAW HTML  //
 ////////////////
@@ -77,6 +7,9 @@ const updateSelector = `
     <option value="am">AM</option>
     <option value="fm">FM</option>
     <option value="lfo">LFO</option>
+    <option value="filter">filter</option>
+    <option value="harmon">harmonizer</option>
+    <option value="arp">arpeggiator</option>
     <option value="waveform">waveform</option>
 </select>
 `
@@ -100,6 +33,17 @@ const lfoUpdates = `
     <option value="depthDec10">Decrease depth by 1</option>
 </select>
 `
+const arpUpdates = `
+<select>
+    <option value=""></option>
+    <option value="on">on</option>
+    <option value="off">off</option>
+    <option value="up">up</option>
+    <option value="upDown">up-down</option>
+    <option value="down">down</option>
+    <option value="downUp">down-up</option>
+</select>
+`
 const waveformUpdates = `
 <select>
     <option value=""></option>
@@ -116,6 +60,9 @@ const whileSelector = `
     <option value="am">AM</option>
     <option value="fm">FM</option>
     <option value="lfo">LFO</option>
+    <option value="filter">filter</option>
+    <option value="harmon">harmonizer</option>
+    <option value="arp">arpeggiator</option>
     <option value="waveform">waveform</option>
 </select>
 `
@@ -130,17 +77,21 @@ const predicateSelector = `
     <option value="am">AM</option>
     <option value="fm">FM</option>
     <option value="lfo">LFO</option>
+    <option value="filter">filter</option>
+    <option value="harmon">harmonizer</option>
+    <option value="arp">arpeggiator</option>
     <option value="waveform">waveform</option>
     <option value="playing">playing</option>
 </select>
 `
-const freqPredicates = `
+const onOffPredicates = `
 <select>
     <option value=""></option>
     <option value="on">On</option>
     <option value="off">Off</option>
 </select>
 `
+const arpPredicates = arpUpdates;
 const waveformPredicates = waveformUpdates;
 const playingPredicates = `
 <select>
@@ -155,9 +106,12 @@ const playingPredicates = `
 
 const predicateSelectMap = {
     always: dummyOptions,
-    am: freqPredicates,
-    fm: freqPredicates,
-    lfo: freqPredicates,
+    am: onOffPredicates,
+    fm: onOffPredicates,
+    lfo: onOffPredicates,
+    filter: onOffPredicates,
+    harmon: onOffPredicates,
+    arp: arpPredicates,
     waveform: waveformPredicates,
     playing: playingPredicates
 }
@@ -167,6 +121,9 @@ const binOpCategories = {
     am: "update",
     fm: "update",
     lfo: "update",
+    filter: "update",
+    harmon: "update",
+    arp: "update",
     waveform: "update",
     playing: "predicate"
 }
@@ -177,17 +134,13 @@ const binOpMap = {
     predicate: " changes "
 }
 
-const impliesUpdateSelectorMap = {
-    am: freqPredicates,
-    fm: freqPredicates,
-    lfo: freqPredicates,
-    waveform: waveformUpdates
-}
-
 const nextUpdateSelectorMap = {
     am: amfmUpdates,
     fm: amfmUpdates,
     lfo: lfoUpdates,
+    filter: onOffPredicates,
+    harmon: onOffPredicates,
+    arp: arpUpdates,
     waveform: waveformUpdates
 }
 
@@ -247,6 +200,47 @@ function formulaMap(termType, action){
                 default:
                     throw new Error("Out of switch cases");
             }
+        case "filter":
+            switch(action){
+                case "":
+                    return "";
+                case "on":
+                    return "[filterOn <- True()]";
+                case "off":
+                    return "[filterOn <- False()]";
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "harmon":
+            switch(action){
+                case "":
+                    return "";
+                case "on":
+                    return "[harmonizerOn <- True()]";
+                case "off":
+                    return "[harmonizerOn <- False()]";
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "arp":
+            switch(action){
+                case "":
+                    return "";
+                case "on":
+                    return "[arpeggiatorOn <- True()]";
+                case "off":
+                    return "[arpeggiatorOn <- False()]";
+                case "up":
+                    return "[arpeggiatorStyle <- upStyle()]";
+                case "down":
+                    return "[arpeggiatorStyle <- downStyle()]";
+                case "upDown":
+                    return "[arpeggiatorStyle <- upDownStyle()]";
+                case "downUp":
+                    return "[arpeggiatorStyle <- downUpStyle()]";
+                default:
+                    throw new Error("Out of switch cases");
+            }
         case "waveform":
             switch(action){
                 case "":
@@ -281,6 +275,9 @@ function formulaMap(termType, action){
 
 // XXX: Abomination #2
 function weakUntilMap(specOptionNode){
+    function orAll(arg1, arg2, arg3){
+        return "(" + [arg1, arg2, arg3].join(" || ") + ")";
+    }
     const termType = specOptionNode.firstChild.value,
           action   = specOptionNode.lastChild.value;
     switch(termType){
@@ -304,12 +301,51 @@ function weakUntilMap(specOptionNode){
                 default:
                     throw new Error("Out of switch cases");
             }
+        case "filter":
+            switch(action){
+                case "on":
+                    return "[filterOn <- False()]"
+                case "off":
+                    return "[filterOn <- True()]"
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "harmon":
+            switch(action){
+                case "on":
+                    return "[harmonizerOn <- False()]"
+                case "off":
+                    return "[harmonizerOn <- True()]"
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "arp":
+            const up = "[arpeggiatorStyle <- upStyle()]",
+                  down = "[arpeggiatorStyle <- downStyle()]",
+                  upDown = "[arpeggiatorStyle <- upDownStyle()]",
+                  downUp = "[arpeggiatorStyle <- downUpStyle()]";
+            switch(action){
+                case "on":
+                    return "[arpeggiatorOn <- False()]";
+                case "off":
+                    return "[arpeggiatorOn <- True()]";
+                case "up":
+                    return orAll(down, upDown, downUp);
+                case "down":
+                    return orAll(up, upDown, downUp);
+                case "upDown":
+                    return orAll(up, down, downUp);
+                case "downUp":
+                    return orAll(up, down, upDown);
+                default:
+                    throw new Error("Out of switch cases");
+            }
         case "lfo":
             switch(action){
                 case "on":
-                    return "[lfo <- False()]"
+                    return "[lfo <- False()]";
                 case "off":
-                    return "[lfo <- True()]"
+                    return "[lfo <- True()]";
                 default:
                     throw new Error("Out of switch cases");
             }
@@ -318,9 +354,6 @@ function weakUntilMap(specOptionNode){
                   sawtooth = "[waveform <- sawtooth()]",
                   square = "[waveform <- square()]",
                   triangle = "[waveform <- triangle()]";
-            function orAll(arg1, arg2, arg3){
-                return "(" + [arg1, arg2, arg3].join(" || ") + ")";
-            }
             switch(action){
                 case "sine":
                     return orAll(sawtooth, square, triangle);

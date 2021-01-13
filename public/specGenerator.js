@@ -79,12 +79,20 @@ const termVars = `
 amBtnPresses  = press amOnBtn || press amOffBtn;
 fmBtnPresses  = press fmOnBtn || press fmOffBtn;
 lfoBtnPresses = press lfoOnBtn || press lfoOffBtn;
-anyBtnPresses = amBtnPresses || fmBtnPresses || lfoBtnPresses || change waveformControl;
+filterBtnPresses = press filterOnBtn || filterOffBtn;
+harmonBtnPresses = press harmonizerOnBtn || harmonizerOffBtn;
+arpBtnPresses = press arpeggiatorOnBtn || arpeggiatorOffBtn;
+anyBtnPresses1 = amBtnPresses || fmBtnPresses || lfoBtnPresses || change waveformControl;
+anyBtnPresses2 = filterBtnPresses || harmonBtnPresses || arpBtnPresses;
+anyBtnPresses = anyBtnPresses1 || anyBtnPresses2;
 `
 const btnAssumes = `
 	!(press amOnBtn && press amOffBtn);
 	!(press fmOnBtn && press fmOffBtn);
 	!(press lfoOnBtn && press lfoOffBtn);
+	!(press filterOnBtn && press filterOffBtn);
+	!(press harmonizerOnBtn && press harmonizerOffBtn);
+	!(press arpOnBtn && press arpOffBtn);
 `
 const btnGuarantees = `
     press amOnBtn   -> X [amSynthesis <- True()];
@@ -93,7 +101,13 @@ const btnGuarantees = `
     press fmOffBtn  -> X [fmSynthesis <- False()];
     press lfoOnBtn  -> X [lfo <- True()];
     press lfoOffBtn -> X [lfo <- False()];
-	change waveformControl -> X [waveform <- getWavefomVal()];
+    press filterOnBtn  -> X [filterOn <- True()];
+    press filterOffBtn -> X [filterOn <- False()];
+    press harmonizerOnBtn  -> X [harmonizerOn <- True()];
+    press harmonizerOffBtn -> X [harmonizerOn <- False()];
+    press arpeggiatorOnBtn  -> X [arpeggiatorOn <- True()];
+    press arpeggiatorOffBtn -> X [arpeggiatorOn <- False()];
+	change waveformControl -> X [waveform <- getWavefromVal()];
 `
 
 // TODO
