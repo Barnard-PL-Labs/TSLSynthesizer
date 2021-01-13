@@ -143,6 +143,9 @@ function updateVarsToUI(){
     showEffectStatus("am", amSynthesis);
     showEffectStatus("fm", fmSynthesis);
     showEffectStatus("lfo", lfo);
+    showEffectStatus("filter", filterOn);
+    showEffectStatus("harmonizer", harmonizerOn);
+    showEffectStatus("arpeggiator", arpeggiatorOn);
 }
 
 document.addEventListener("click", updateVarsToUI, false);
@@ -221,7 +224,7 @@ function saveLastClicked(e){
         selectedNotesList[i] = note;
         const noteNum = note.slice(4);
         selectedNotes.children[i].children[0].innerText = "" +
-            "Note " + (i+1).toString() + ": MIDI note " + 
+            "Note " + (i+1).toString() + ": MIDI note " +
             noteNum + " (" + midiNoteToNoteName[noteNum] + ")";
     }
 }
@@ -263,3 +266,65 @@ for(let i=0; i<allKeys.length; i++){
     keyNote.addEventListener("click", e => saveLastClicked(e), false);
 }
 
+/////////////////////////////
+//  SPECIFICATION HELPERS  //
+/////////////////////////////
+
+const clearSpecBtn = document.getElementById("clearSpec");
+clearSpecBtn.addEventListener("click", rebootSpecs, false);
+function rebootSpecs(){
+    // Remove everything prior
+    while(specRootNode.children.length > 0){
+        specRootNode.children[specRootNode.children.length - 1].remove();
+    }
+    bootSpecs();
+    resetAllSelectedNotes();
+}
+
+/////////////////////////////////////////////////
+//  AUTOMATIC RANDOM SPECIFICATION GENERATION  //
+/////////////////////////////////////////////////
+
+const randomSpecBtn = document.getElementById("randomSpec");
+randomSpecBtn.addEventListener("click", generateRandSpec, false);
+
+// https://gist.github.com/kerimdzhanov/7529623
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+function chooseRandOption(selectNode){
+    if(selectNode.tagName !== "SELECT")
+        throw new TypeError("Input should be a SELECT DOM Node");
+
+    const numOptions = selectNode.children.length,
+          randIdx = randInt(1,numOptions);
+    return selectNode.children[randIdx].value;
+}
+
+function generateRandSpec(){
+    const PREDICATE_IDX = 1;
+    for(let i=0; i < specNodeList.length; i++){
+        const specParentNode = specNodeList[i],
+              predNode = specParentNode.children[PREDICATE_IDX];
+
+        // Choose random predicate
+        predNode.value = chooseRandOption(predNode);
+        createSiblingOptionsFromPredicate(predNode);
+
+        // Choose random values for other options
+        for(let j=PREDICATE_IDX+1; j<specParentNode.children.length; j++){
+            const optionNode = specParentNode.children[j];
+            if(optionNode.tagName !== "SELECT")
+                continue;
+            optionNode.value = chooseRandOption(optionNode);
+        }
+
+        // Check last until clause
+        if(specParentNode.children[specParentNode.children.length-1].value === "play"){
+            addNoteSelectOptionChild(specParentNode);
+            const noteSelectNode = specParentNode.children[specParentNode.children.length - 1];
+            noteSelectNode.value = chooseRandOption(noteSelectNode);
+        }
+    }
+}
