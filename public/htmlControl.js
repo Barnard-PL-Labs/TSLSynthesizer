@@ -80,6 +80,10 @@ function createSingleSpec(idx){
                 updateSelectorMap = nextUpdateSelectorMap;
             else if(termType === "update")
                 updateSelectorMap = impliesUpdateSelectorMap;
+            // XXX
+            else if(termType === "reset"){
+                updateSelectorMap = impliesUpdateSelectorMap;
+            }
             else
                 throw new Error("Enumerable Type Exhausted.");
             changeYoungerSibling(e.target, updateSelectorMap);

@@ -163,6 +163,7 @@ const predicateSelectMap = {
 }
 
 const binOpCategories = {
+    "": "reset",
     am: "update",
     fm: "update",
     lfo: "update",
@@ -171,6 +172,7 @@ const binOpCategories = {
 }
 
 const binOpMap = {
+    reset: " ... ",
     update: " always means ",
     predicate: " changes "
 }

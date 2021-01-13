@@ -79,7 +79,7 @@ const termVars = `
 amBtnPresses  = press amOnBtn || press amOffBtn;
 fmBtnPresses  = press fmOnBtn || press fmOffBtn;
 lfoBtnPresses = press lfoOnBtn || press lfoOffBtn;
-anyBtnPresses = amBtnPresses || fmBtnPresses || lfoBtnPresses;
+anyBtnPresses = amBtnPresses || fmBtnPresses || lfoBtnPresses || change waveformControl;
 `
 const btnAssumes = `
 	!(press amOnBtn && press amOffBtn);
@@ -93,6 +93,7 @@ const btnGuarantees = `
     press fmOffBtn  -> X [fmSynthesis <- False()];
     press lfoOnBtn  -> X [lfo <- True()];
     press lfoOffBtn -> X [lfo <- False()];
+	change waveformControl -> X [waveform <- getWavefomVal()];
 `
 
 // TODO
