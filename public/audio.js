@@ -697,12 +697,21 @@ function arpeggiate() {
 function playArpNote() {
     if (typeof _notePlaying !== 'undefined') {
         stopNote(_notePlaying);
+        if (harmonizerOn) {
+            let harmNote = midiNoteToNoteName[noteNameToMidiNote[_notePlaying] + harmonizerInterval];
+            stopNote(harmNote);
+        }
     }
     if (_arpIndex >= _arpNotes.length) {
         _arpIndex = _arpNotes.length - 1;
     }
     _notePlaying = _arpNotes[_arpIndex];
     playNote(_notePlaying);
+
+    if (harmonizerOn) {
+        let harmNote = midiNoteToNoteName[noteNameToMidiNote[_notePlaying] + harmonizerInterval];
+        playNote(harmNote);
+    }
 
     if (arpeggiatorStyle === "up") {
         _arpIndex = (_arpIndex+1) % _arpNotes.length;
@@ -845,6 +854,9 @@ function audioKeyUp(note, frequency) {
         } else {
             clearInterval(_arpeggiatorInterval);
             _arpeggiating = false;
+            for (noteName of activeNotes) {
+                playNote(noteName);
+            }
         }
     }
 
