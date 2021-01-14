@@ -742,8 +742,16 @@ function playNote(note, velocity){
     }
     if (fmSynthesis) {
         noteSignals[note]["fm"][0].frequency.value = fmFreq;
+        noteSignals[note]["fm"][1].gain.setTargetAtTime(
+                                        100,
+                                        context.currentTime,
+                                        0.01);
     } else {
         noteSignals[note]["fm"][0].frequency.value = 0;
+        noteSignals[note]["fm"][1].gain.setTargetAtTime(
+                                        0,
+                                        context.currentTime,
+                                        0.01);
     }
     if (lfo) {
         noteSignals[note]["lfo"][0].frequency.value = lfoFreq;
