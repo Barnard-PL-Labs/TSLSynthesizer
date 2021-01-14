@@ -84,7 +84,7 @@ let activeNotes = new Set();
 // TODO: add eventListener to gain
 let masterGain = document.getElementById("gain");
 let globalGain = context.createGain();
-let userGainLevel = 0.8 //temorary, need to add eventlistener as well
+let userGainLevel = 0.8
 globalGain.gain.value = userGainLevel;
 globalGain.connect(context.destination);
 
@@ -93,6 +93,10 @@ let waveform = 'sine';
 const waveformControl = document.getElementById("waveform");
 waveformControl.addEventListener("change", _ => {
     waveform = waveformControl.value;
+})
+const gainControl = document.getElementById("gain");
+gainControl.addEventListener("change", _ => {
+    userGainLevel = gainControl.value
 })
 
 // AM Synthesis Parameters
