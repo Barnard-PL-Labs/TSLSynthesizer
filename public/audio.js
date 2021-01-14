@@ -84,7 +84,7 @@ let activeNotes = new Set();
 // TODO: add eventListener to gain
 let masterGain = document.getElementById("gain");
 let globalGain = context.createGain();
-let userGainLevel = 0.8 //temorary, need to add eventlistener as well
+let userGainLevel = 0.8
 globalGain.gain.value = userGainLevel;
 globalGain.connect(context.destination);
 
@@ -93,6 +93,10 @@ let waveform = 'sine';
 const waveformControl = document.getElementById("waveform");
 waveformControl.addEventListener("change", _ => {
     waveform = waveformControl.value;
+})
+const gainControl = document.getElementById("gain");
+gainControl.addEventListener("change", _ => {
+    userGainLevel = gainControl.value
 })
 
 // AM Synthesis Parameters
@@ -680,7 +684,7 @@ function arpeggiate() {
     if (arpeggiatorStyle === "up" || arpeggiatorStyle === "up-down"){
         _arpIndex = 0;
         _arpAscending = 1;
-    } else if (arpeggiatorStyle === "down" || arpeggiatorStyle === "down-up") {
+    } else if (arpeggiatorStyle === "down") {
         _arpIndex = _arpNotes.length - 1;
         _arpAscending = 0;
     } else {
@@ -693,6 +697,10 @@ function arpeggiate() {
 function playArpNote() {
     if (typeof _notePlaying !== 'undefined') {
         stopNote(_notePlaying);
+        if (harmonizerOn) {
+            let harmNote = midiNoteToNoteName[noteNameToMidiNote[_notePlaying] + harmonizerInterval];
+            stopNote(harmNote);
+        }
     }
     if (_arpIndex >= _arpNotes.length) {
         _arpIndex = _arpNotes.length - 1;
@@ -700,10 +708,14 @@ function playArpNote() {
     _notePlaying = _arpNotes[_arpIndex];
     playNote(_notePlaying);
 
+    if (harmonizerOn) {
+        let harmNote = midiNoteToNoteName[noteNameToMidiNote[_notePlaying] + harmonizerInterval];
+        playNote(harmNote);
+    }
+
     if (arpeggiatorStyle === "up") {
         _arpIndex = (_arpIndex+1) % _arpNotes.length;
-    } else if (arpeggiatorStyle === "up-down" ||
-                arpeggiatorStyle === "down-up") {
+    } else if (arpeggiatorStyle === "up-down") {
         if (_arpIndex === 0 && !_arpAscending) {
             _arpAscending = 1 - _arpAscending;
         } else if (_arpIndex === _arpNotes.length - 1 && _arpAscending) {
@@ -739,8 +751,16 @@ function playNote(note, velocity){
     }
     if (fmSynthesis) {
         noteSignals[note]["fm"][0].frequency.value = fmFreq;
+        noteSignals[note]["fm"][1].gain.setTargetAtTime(
+                                        100,
+                                        context.currentTime,
+                                        0.01);
     } else {
         noteSignals[note]["fm"][0].frequency.value = 0;
+        noteSignals[note]["fm"][1].gain.setTargetAtTime(
+                                        0,
+                                        context.currentTime,
+                                        0.01);
     }
     if (lfo) {
         noteSignals[note]["lfo"][0].frequency.value = lfoFreq;
@@ -834,6 +854,9 @@ function audioKeyUp(note, frequency) {
         } else {
             clearInterval(_arpeggiatorInterval);
             _arpeggiating = false;
+            for (noteName of activeNotes) {
+                playNote(noteName);
+            }
         }
     }
 
