@@ -684,7 +684,7 @@ function arpeggiate() {
     if (arpeggiatorStyle === "up" || arpeggiatorStyle === "up-down"){
         _arpIndex = 0;
         _arpAscending = 1;
-    } else if (arpeggiatorStyle === "down" || arpeggiatorStyle === "down-up") {
+    } else if (arpeggiatorStyle === "down") {
         _arpIndex = _arpNotes.length - 1;
         _arpAscending = 0;
     } else {
@@ -706,8 +706,7 @@ function playArpNote() {
 
     if (arpeggiatorStyle === "up") {
         _arpIndex = (_arpIndex+1) % _arpNotes.length;
-    } else if (arpeggiatorStyle === "up-down" ||
-                arpeggiatorStyle === "down-up") {
+    } else if (arpeggiatorStyle === "up-down") {
         if (_arpIndex === 0 && !_arpAscending) {
             _arpAscending = 1 - _arpAscending;
         } else if (_arpIndex === _arpNotes.length - 1 && _arpAscending) {
