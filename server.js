@@ -4,14 +4,6 @@ const fs = require('fs');
 const https = require('https');
 const app = express();
 
-const httpsOptions = {
-	cert: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/fullchain.pem"), 
-//	ca: fs.readFileSync(""),
-	key: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/privkey.pem")
-};
-
-const httpsServer = https.createServer(httpsOptions, app);
-
 app.use(express.json());
 
 const PORT = 4747;
@@ -22,8 +14,21 @@ let tslFile;
 //https://gist.github.com/aerrity/fd393e5511106420fba0c9602cc05d35
 app.use(express.static("./public"));
 
+
 // Start the express web server listening on 8080
+
+//try with https, if files found, go to app.listen
+const httpsOptions = {
+	cert: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/fullchain.pem"), 
+//	ca: fs.readFileSync(""),
+	key: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/privkey.pem")
+};
+
+const httpsServer = https.createServer(httpsOptions, app);
+
 httpsServer.listen(443, 'tslsynthesissynthesizer.com');
+
+//to run locally
 /*app.listen(PORT, () => {
     console.log(`Service started on port ${PORT}.`);
 });*/
