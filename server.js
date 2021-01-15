@@ -1,12 +1,13 @@
 const {exec, execFile} = require('child_process');
 const express = require('express');
 const fs = require('fs');
+const https = require('https');
 const app = express();
 
 const httpsOptions = {
-	cert = fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/fullchain.pem"), 
-	ca = fs.readFileSync(""),
-	key = fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/privkey.pem")
+	cert: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/fullchain.pem"), 
+//	ca: fs.readFileSync(""),
+	key: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/privkey.pem")
 };
 
 const httpsServer = https.createServer(httpsOptions, app);
