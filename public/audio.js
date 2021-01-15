@@ -767,6 +767,10 @@ function playNote(note, velocity){
         noteSignals[note]["lfo"][1].gain.value = lfoDepth;
     } else {
         noteSignals[note]["lfo"][0].frequency.value = 0;
+        noteSignals[note]["lfo"][1].gain.setTargetAtTime(
+                                        0,
+                                        context.currentTime,
+                                        0.01);
     }
     if (filterOn) {
         noteSignals[note]["filter"].type = filterType;
@@ -868,10 +872,13 @@ function audioKeyUp(note, frequency) {
     }
 };
 
+
 keyboard.keyDown = audioKeyDown;
 keyboard.keyUp = audioKeyUp;
 
-keyboard = new QwertyHancock(settings);
+
+
+// keyboard = new QwertyHancock(settings);
 
 // This function will be removed once synthesized.
 function reactiveUpdateOnMIDI(note, velocity){}
@@ -889,3 +896,189 @@ document.addEventListener("DOMContentLoaded", _ => {
         keyNote.setAttribute("id", midiNoteName);
     }
 })
+
+
+document.addEventListener("keydown", function (event) {
+    let elementName;
+    switch(event.key) {
+      case ';':
+          audioKeyDown("C5", getFrequencyOfNote("C5"));
+          elementName = "note" + noteNameToMidiNote["C5"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'l':
+          audioKeyDown("B4", getFrequencyOfNote("B4"));
+          elementName = "note" + noteNameToMidiNote["B4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'o':
+          audioKeyDown("A#4", getFrequencyOfNote("A#4"));
+          elementName = "note" + noteNameToMidiNote["A#4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'k':
+          audioKeyDown("A4", getFrequencyOfNote("A4"));
+          elementName = "note" + noteNameToMidiNote["A4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'i':
+          audioKeyDown("G#4", getFrequencyOfNote("G#4"));
+          elementName = "note" + noteNameToMidiNote["G#4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'j':
+          audioKeyDown("G4", getFrequencyOfNote("G4"));
+          elementName = "note" + noteNameToMidiNote["G4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'u':
+          audioKeyDown("F#4", getFrequencyOfNote("F#4"));
+          elementName = "note" + noteNameToMidiNote["F#4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'h':
+          audioKeyDown("F4", getFrequencyOfNote("F4"));
+          elementName = "note" + noteNameToMidiNote["F4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'g':
+          audioKeyDown("E4", getFrequencyOfNote("E4"));
+          elementName = "note" + noteNameToMidiNote["E4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 't':
+          audioKeyDown("D#4", getFrequencyOfNote("D#4"));
+          elementName = "note" + noteNameToMidiNote["D#4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'f':
+          audioKeyDown("D4", getFrequencyOfNote("D4"));
+          elementName = "note" + noteNameToMidiNote["D4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'r':
+          audioKeyDown("C#4", getFrequencyOfNote("C#4"));
+          elementName = "note" + noteNameToMidiNote["C#4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'd':
+          audioKeyDown("C4", getFrequencyOfNote("C4"));
+          elementName = "note" + noteNameToMidiNote["C4"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 's':
+          audioKeyDown("B3", getFrequencyOfNote("B3"));
+          elementName = "note" + noteNameToMidiNote["B3"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'w':
+          audioKeyDown("A#3", getFrequencyOfNote("A#3"));
+          elementName = "note" + noteNameToMidiNote["A#3"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+      case 'a':
+          audioKeyDown("A3", getFrequencyOfNote("A3"));
+          elementName = "note" + noteNameToMidiNote["A3"].toString();
+          lightenUp(document.getElementById(elementName));
+          break;
+
+      default:
+        break;
+    }
+
+})
+
+
+document.addEventListener("keyup", function (event) {
+    let elementName;
+    switch(event.key) {
+      case ';':
+          audioKeyUp("C5", getFrequencyOfNote("C5"));
+          elementName = "note" + noteNameToMidiNote["C5"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'l':
+          audioKeyUp("B4", getFrequencyOfNote("B4"));
+          elementName = "note" + noteNameToMidiNote["B4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'o':
+          audioKeyUp("A#4", getFrequencyOfNote("A#4"));
+          elementName = "note" + noteNameToMidiNote["A#4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'k':
+          audioKeyUp("A4", getFrequencyOfNote("A4"));
+          elementName = "note" + noteNameToMidiNote["A4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'i':
+          audioKeyUp("G#4", getFrequencyOfNote("G#4"));
+          elementName = "note" + noteNameToMidiNote["G#4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'j':
+          audioKeyUp("G4", getFrequencyOfNote("G4"));
+          elementName = "note" + noteNameToMidiNote["G4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'u':
+          audioKeyUp("F#4", getFrequencyOfNote("F#4"));
+          elementName = "note" + noteNameToMidiNote["F#4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'h':
+          audioKeyUp("F4", getFrequencyOfNote("F4"));
+          elementName = "note" + noteNameToMidiNote["F4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'g':
+          audioKeyUp("E4", getFrequencyOfNote("E4"));
+          elementName = "note" + noteNameToMidiNote["E4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 't':
+          audioKeyUp("D#4", getFrequencyOfNote("D#4"));
+          elementName = "note" + noteNameToMidiNote["D#4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'f':
+          audioKeyUp("D4", getFrequencyOfNote("D4"));
+          elementName = "note" + noteNameToMidiNote["D4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'r':
+          audioKeyUp("C#4", getFrequencyOfNote("C#4"));
+          elementName = "note" + noteNameToMidiNote["C#4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'd':
+          audioKeyUp("C4", getFrequencyOfNote("C4"));
+          elementName = "note" + noteNameToMidiNote["C4"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 's':
+          audioKeyUp("B3", getFrequencyOfNote("B3"));
+          elementName = "note" + noteNameToMidiNote["B3"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'w':
+          audioKeyUp("A#3", getFrequencyOfNote("A#3"));
+          elementName = "note" + noteNameToMidiNote["A#3"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+      case 'a':
+          audioKeyUp("A3", getFrequencyOfNote("A3"));
+          elementName = "note" + noteNameToMidiNote["A3"].toString();
+          darkenDown(document.getElementById(elementName));
+          break;
+
+      default:
+        break;
+    }
+
+})
+
+
+
+// comment
