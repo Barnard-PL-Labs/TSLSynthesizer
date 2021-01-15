@@ -17,7 +17,7 @@ function buildFormulaFromParts(optionList, formulaList){
     if(binOpCategories[optionList[0].firstChild.value] === "update")
         tslSpec += " -> ";
     else if(binOpCategories[optionList[0].firstChild.value] === "predicate")
-        tslSpec += " -> X ";
+        tslSpec += " -> ";
     else
         throw new Error("A wild error has appeared.");
     tslSpec += formulaList[1];
@@ -56,23 +56,47 @@ function parseSpecNode(spec){
     return [predicate, tslSpec];
 }
 
-function makeAlwaysAssume(predicateList){
-    let alwaysAssume = "always assume{" + "\n";
-
-    if(predicateList.length < 1)
-        return alwaysAssume + "}";
-
-    let noPredSimul = ""
-    if(predicateList.length >= 2){
-        noPredSimul = "\t!(" +
-            predicateList.join(" && ") +
-            ");\n";
+function makePairs(arr){
+    let pairList = [];
+    for(let i=0; i<arr.length; i++){
+        for(let j=0; j<i; j++){
+            pairList.push([arr[i], arr[j]]);
+        }
     }
+    return pairList;
+}
 
-    alwaysAssume += noPredSimul;
-    alwaysAssume += "\n}\n";
+function getOnlyNotePlays(predicatePairs){
+    let returnList = [];
+    function containsPlay(str){
+        return str.search("play") !== -1;
+    }
+    for(let i=0; i<predicatePairs.length; i++){
+        const fst = predicatePairs[i][0],
+              snd = predicatePairs[i][1];
+        if(containsPlay(fst) && containsPlay(snd))
+            returnList.push(predicatePairs[i]);
+    }
+    return returnList;
+}
 
-    return alwaysAssume;
+function nandPairAssumeClause(pair){
+    const fst = pair[0], snd = pair[1];
+    return `!(${fst} && ${snd});`;
+}
+
+function makeAlwaysAssume(predicateList){
+    if(predicateList.length <= 1)
+        return "";
+
+    const velocityAssume = "\t!(veloBelow50 noteVelocity && veloAbove50 noteVelocity);\n"
+
+    const pairLists = makePairs(predicateList),
+          notePlayedPairs = getOnlyNotePlays(pairLists),
+          assumeList = notePlayedPairs.map(nandPairAssumeClause),
+          noSimulPresses = "\t" + assumeList.join('\n\t');
+
+    return "always assume{\n" + velocityAssume + noSimulPresses + "\n}\n";
 }
 
 function getSpecFromDOM(){

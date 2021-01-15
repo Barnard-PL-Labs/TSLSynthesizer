@@ -44,23 +44,11 @@ function createSingleSpec(idx){
     const spec = document.createElement("article");
     spec.setAttribute("id", "spec-" + idx.toString());
 
-    const predNode = createOptionSpan(),
-          predSelectNode = strToDOM(predicateSelector);
-    predNode.appendChild(predSelectNode);
-    predNode.appendChild(strToDOM(dummyOptions));
-    // FIXME: unreadable mess
-    predSelectNode.addEventListener("change", e => {
-        const node     = e.target,
-              termType = binOpCategories[node.value],
-              grandparent = node.parentNode.parentNode;
-        changeYoungerSibling(node, predicateSelectMap);
-        changeBinOp(node, termType);
-        grandparent.lastChild.remove();
-        grandparent.appendChild(getActionNode(termType));
-    });
+    const predNode = createOptionSpan();
+    predNode.appendChild(strToDOM(hackEmptyOption));
+    predNode.appendChild(strToDOM(playingPredicates));
 
     const binOpNode = getSpanNode(" ... ");
-    binOpNode.setAttribute("class", "binOp");
 
     function getActionNode(termType){
         const actionNode = createOptionSpan(),
@@ -84,7 +72,7 @@ function createSingleSpec(idx){
     }
     const tempActionNode = getActionNode("predicate");
 
-    spec.appendChild(getSpanNode("Updating "));
+    spec.appendChild(getSpanNode("Playing "));
     spec.appendChild(predNode);
     spec.appendChild(binOpNode);
     spec.appendChild(tempActionNode);
