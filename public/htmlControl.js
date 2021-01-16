@@ -165,9 +165,11 @@ function randInt(min, max) {
 function chooseRandOption(selectNode){
     const numOptions = selectNode.children.length,
         randIdx = randInt(1,numOptions);
+
     if(numOptions === 1)
-        return "";
-    return selectNode.children[randIdx].value;
+        return selectNode.children[0].value;
+    else
+        return selectNode.children[randIdx].value;
 }
 
 function generateRandSpec(){
