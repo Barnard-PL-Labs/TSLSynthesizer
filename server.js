@@ -18,20 +18,20 @@ app.use(express.static("./public"));
 // Start the express web server listening on 8080
 
 //try with https, if files found, go to app.listen
-const httpsOptions = {
-	cert: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/fullchain.pem"), 
-//	ca: fs.readFileSync(""),
-	key: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/privkey.pem")
-};
+// const httpsOptions = {
+// 	cert: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/fullchain.pem"), 
+// //	ca: fs.readFileSync(""),
+// 	key: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/privkey.pem")
+// };
 
-const httpsServer = https.createServer(httpsOptions, app);
+// const httpsServer = https.createServer(httpsOptions, app);
 
-httpsServer.listen(443, 'tslsynthesissynthesizer.com');
+// httpsServer.listen(443, 'tslsynthesissynthesizer.com');
 
 //to run locally
-/*app.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Service started on port ${PORT}.`);
-});*/
+});
 
 // Serve the homepage
 app.get('/', (req, res) => {
