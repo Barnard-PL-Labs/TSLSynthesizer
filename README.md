@@ -1,6 +1,12 @@
 # The TSL Synthesis Synthesizer
 
-[Try it live!](http://159.203.73.47:4747)
+[Try it live!](https://tslsynthesissynthesizer.com/)
+
+This is the TSL Synthesis Synthesizer, a keyboard synthesizer that can dynamically apply effects depending on users' specifications. 
+
+Recommended usage is through a MIDI controller. Connect your MIDI device to your computer, load the website, and start playing!
+
+Synthesis uses [Temporal Stream Logic](https://link.springer.com/chapter/10.1007/978-3-030-25540-4_35), a logic for reactive synthesis that separates control and data. 
 
 ## Tutorial
 
