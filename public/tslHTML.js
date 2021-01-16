@@ -31,16 +31,33 @@ const lfoUpdates = `
     <option value="depthDec10">decreases depth by 10</option>
 </select>
 `
+const filterUpdates = `
+<select>
+    <option value=""></option>
+    <option value="toggle">toggle</option>
+    <option value="inc1000">increase cutoff by 1000</option>
+    <option value="dec1000">decrease rate by 1000</option>
+    <option value="inc1">increase Q by 1</option>
+    <option value="dec1">decrease Q by 1</option>
+    <option value="lowpass">low-pass</option>
+    <option value="highpass">high-pass</option>
+    <option value="bandpass">band-pass</option>
+</select>
+`
+
 const arpUpdates = `
 <select>
     <option value=""></option>
     <option value="toggle">toggle</option>
+    <option value="inc10">increase rate by 10</option>
+    <option value="dec10">decrease rate by 10</option>
     <option value="up">up</option>
     <option value="upDown">up-down</option>
     <option value="down">down</option>
     <option value="random">random</option>
 </select>
 `
+
 const waveformUpdates = `
 <select>
     <option value=""></option>
@@ -98,7 +115,7 @@ const predicateSelectMap = {
     am: toggleOption,
     fm: toggleOption,
     lfo: toggleOption,
-    filter: toggleOption,
+    filter: filterUpdates,
     harmon: toggleOption,
     arp: arpPredicates,
     waveform: waveformPredicates,
@@ -127,7 +144,7 @@ const nextUpdateSelectorMap = {
     am: amfmUpdates,
     fm: amfmUpdates,
     lfo: lfoUpdates,
-    filter: toggleOption,
+    filter: filterUpdates,
     harmon: toggleOption,
     arp: arpUpdates,
     waveform: waveformUpdates
@@ -189,6 +206,20 @@ function formulaMap(termType, action){
                     return "";
                 case "toggle":
                     return "[filterOn <- toggle filterOn]";
+                case "inc1000":
+                    return "[filterCutoff <- inc1000 filterCutoff]";
+                case "dec1000":
+                    return "[filterCutoff <- dec1000 filterCutoff]";
+                case "inc1":
+                    return "[filterQ <- inc1 filterQ]";
+                case "dec1":
+                    return "[filterQ <- dec1 filterQ]";
+                case "lowpass":
+                    return "[filterType <- lowpass()]";
+                case "highpass":
+                    return "[filterType <- highpass()]";
+                case "bandpass":
+                    return "[filterType <- bandpass()]";
                 default:
                     throw new Error("Out of switch cases");
             }
@@ -207,6 +238,10 @@ function formulaMap(termType, action){
                     return "";
                 case "toggle":
                     return "[arpeggiatorOn <- toggle arpeggiatorOn]";
+                case "inc10":
+                    return "[arpeggiatorRate <- inc10 arpeggiatorRate]";
+                case "dec10":
+                    return "[arpeggiatorRate <- dec10 arpeggiatorRate]";
                 case "up":
                     return "[arpeggiatorStyle <- upStyle()]";
                 case "down":

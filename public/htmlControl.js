@@ -117,6 +117,11 @@ function updateVarsToUI(){
     lfoFreqControl.value = lfoFreq;
     amFreqControl.value = amFreq;
     fmFreqControl.value = fmFreq;
+    filterQControl.value = filterQ;
+    filterTypeControl.value = filterType;
+    filterCutoffControl.value = filterCutoff;
+    arpeggiatorStyleControl.value = arpeggiatorStyle;
+    arpeggiatorRateControl.value = arpeggiatorRate;
     showEffectStatus("am", amSynthesis);
     showEffectStatus("fm", fmSynthesis);
     showEffectStatus("lfo", lfo);

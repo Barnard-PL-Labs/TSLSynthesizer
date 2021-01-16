@@ -1,3 +1,4 @@
+
 const {exec, execFile} = require('child_process');
 const express = require('express');
 const fs = require('fs');
@@ -5,8 +6,6 @@ const https = require('https');
 const app = express();
 
 app.use(express.json());
-
-const PORT = 4747;
 
 let tmpFileHeader;
 let tslFile;
@@ -16,9 +15,9 @@ app.use(express.static("./public"));
 
 //try with https, if files found, go to app.listen
 const httpsOptions = {
-	cert: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/fullchain.pem"),
-	// ca: fs.readFileSync(""),
-	key: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/privkey.pem")
+    cert: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/fullchain.pem"),
+//	ca: fs.readFileSync(""),
+    key: fs.readFileSync("/etc/letsencrypt/live/tslsynthesissynthesizer.com/privkey.pem")
 };
 
 const httpsServer = https.createServer(httpsOptions, app);
@@ -26,9 +25,10 @@ const httpsServer = https.createServer(httpsOptions, app);
 httpsServer.listen(443, 'tslsynthesissynthesizer.com');
 
 //to run locally
-// app.listen(PORT, () => {
-//     console.log(`Service started on port ${PORT}.`);
-// });
+//const PORT = 4747;
+/*app.listen(PORT, () => {
+    console.log(`Service started on port ${PORT}.`);
+});*/
 
 // Serve the homepage
 app.get('/', (req, res) => {
