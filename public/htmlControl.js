@@ -120,6 +120,7 @@ function updateVarsToUI(){
     filterQControl.value = filterQ;
     filterTypeControl.value = filterType;
     filterCutoffControl.value = filterCutoff;
+    harmonizerIntervalControl.value = harmonizerInterval;
     arpeggiatorStyleControl.value = arpeggiatorStyle;
     arpeggiatorRateControl.value = arpeggiatorRate;
     showEffectStatus("am", amSynthesis);
