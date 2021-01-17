@@ -195,7 +195,7 @@ const selectedNotes = document.getElementById("lastClicked");
 const selectButtons = document.getElementsByClassName("selectedNoteBtn");
 let selectedNotesLock = [];
 let selectedNotesList = [];
-for(let i=0; i<selectedNotes.length; i++){
+for(let i=0; i<selectedNotes.children.length; i++){
     selectedNotesLock.push(false);
     selectedNotesList.push(null);
 }

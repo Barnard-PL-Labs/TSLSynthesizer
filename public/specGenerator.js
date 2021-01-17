@@ -128,7 +128,7 @@ function getSpecFromDOM(){
         "\t" + tslSpecList.join("\n\t") + "\n}\n";
 
     const spec = alwaysAssume + alwaysGuarantee;
-    console.log(`Got spec from DOM: \n${spec}`);
+    // console.log(`Got spec from DOM: \n${spec}`);
 
     return spec;
 }
