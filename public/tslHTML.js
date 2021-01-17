@@ -99,8 +99,7 @@ const playingPredicates = `
     <option value="0">Note 1</option>
     <option value="1">Note 2</option>
     <option value="2">Note 3</option>
-    <option value="veloLow">with velocity < 50</option>
-    <option value="veloHigh">with velocity > 50</option>
+    <option value="3">Note 4</option>
 </select>
 `
 
