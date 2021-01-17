@@ -10,7 +10,7 @@ Synthesis uses [Temporal Stream Logic](https://link.springer.com/chapter/10.1007
 
 ## Tutorial
 
-[Demo](https://www.youtube.com/watch?reload=9&v=_RpUpe7DFx0&feature=youtu.be)
+[Demo](https://youtu.be/RGoYLjd1ebQ)
 
 
 ## Local installation
