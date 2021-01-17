@@ -198,7 +198,7 @@ filterOffBtn.addEventListener("click", _ => {
 let harmonizerOn = false;
 let harmonizerInterval = -5;
 
-const harmonizerIntervalControl =  document.getElementById("harmonizerIntervalDropdown");
+const harmonizerIntervalControl =  document.getElementById("harmonizerInterval");
 harmonizerIntervalControl.addEventListener("change", _ => {
     harmonizerInterval = parseInt(harmonizerIntervalControl.value);
 })
