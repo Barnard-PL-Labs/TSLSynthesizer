@@ -7,5 +7,13 @@ with open("log.txt", "r") as f:
 
 assert len(data) == 1000
 
+data.sort()
+outlier_idx = 975
+data = data[:outlier_idx]
+
 plt.hist(data)
+plt.title("Distribution of synthesis times")
+plt.ylabel("Num. synthesis requests")
+plt.xlabel("Time taken (milliseconds)")
+
 plt.savefig("synthesis_time.svg", format="svg")
