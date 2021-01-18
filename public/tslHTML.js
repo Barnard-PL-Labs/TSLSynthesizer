@@ -58,6 +58,14 @@ const arpUpdates = `
 </select>
 `
 
+const harmonUpdates = `
+<select>
+    <option value=""></option>
+    <option value="toggle">toggle</option>
+    <option value="inc1">increase interval by 1</option>
+    <option value="dec1">decrease interval by 1</option>
+</select>
+`
 const waveformUpdates = `
 <select>
     <option value=""></option>
@@ -114,7 +122,7 @@ const predicateSelectMap = {
     am: toggleOption,
     fm: toggleOption,
     lfo: toggleOption,
-    filter: filterUpdates,
+    filter: toggleOption,
     harmon: toggleOption,
     arp: arpPredicates,
     waveform: waveformPredicates,
@@ -144,7 +152,7 @@ const nextUpdateSelectorMap = {
     fm: amfmUpdates,
     lfo: lfoUpdates,
     filter: filterUpdates,
-    harmon: toggleOption,
+    harmon: harmonUpdates,
     arp: arpUpdates,
     waveform: waveformUpdates
 }
@@ -228,6 +236,10 @@ function formulaMap(termType, action){
                     return "";
                 case "toggle":
                     return "[harmonizerOn <- toggle harmonizerOn]";
+                case "inc1":
+                    return "[harmonizerInterval <- inc1max12 harmonizerInterval]";
+                case "dec1":
+                    return "[harmonizerInterval <- dec1min12 harmonizerInterval]";
                 default:
                     throw new Error("Out of switch cases");
             }

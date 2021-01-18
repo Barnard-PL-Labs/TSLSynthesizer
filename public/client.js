@@ -19,43 +19,42 @@ function synthesize(spec){
         .then(function(response){
             if(response.ok){
                 console.log('POST success.');
-            // GET
-            fetch('/synthesized', {method: 'GET'})
-                .then(function(response){
-                    if(response.ok){
-                        console.log("GET success.");
-                        return response.json();
-                    }
-                    throw new Error('GET failed.');
-                })
-                .then(function(data){
-                    let synthesized = data.result;
+                // GET
+                fetch('/synthesized', {method: 'GET'})
+                    .then(function(response){
+                        if(response.ok){
+                            console.log("GET success.");
+                            return response.json();
+                        }
+                        throw new Error('GET failed.');
+                    })
+                    .then(function(data){
+                        let synthesized = data.result;
 
-                    // XXX
-                    if(synthesized.toString().search("UNREALIZABLE") !== -1){
-                        synthStatus.innerText = "Status: Unrealizable... please try again\t";
-                    }
+                        // XXX
+                        if(synthesized.toString().search("UNREALIZABLE") !== -1){
+                            synthStatus.innerText = "Status: Unrealizable... please try again\t";
+                        }
 
-                    else if(synthesized.toString().search("ERROR") !== -1){
-                        synthStatus.innerText = "Program Error. Check console log.\t";
-                        console.log(synthesized);
-                    }
+                        else if(synthesized.toString().search("ERROR") !== -1){
+                            synthStatus.innerText = "Program Error. Check console log.\t";
+                            console.log(synthesized);
+                        }
+                        else {
+                            let script = document.createElement("script");
+                            script.text = synthesized;
+                            script.setAttribute("id", "synthesizedScript");
+                            document.body.appendChild(script);
+                            synthStatus.innerHTML = "Status: Synthesis Complete!\t"
+                        }
 
-                    else {
-                        let script = document.createElement("script");
-                        script.text = synthesized;
-                        script.setAttribute("id", "synthesizedScript");
-                        document.body.appendChild(script);
-                        synthStatus.innerHTML = "Status: Synthesis Complete!\t"
-                    }
-
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-                return;
-            }
-            else
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+                    return;
+                }
+           else
                 throw new Error('POST failed.');
         })
         .catch(function(error){
