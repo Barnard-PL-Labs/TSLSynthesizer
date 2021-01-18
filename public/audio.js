@@ -163,7 +163,7 @@ lfoOffBtn.addEventListener("click", _ => {
 // FILTER
 let filterOn = false;
 let filterType = "lowpass"
-let filterCutoff = 20000;
+let filterCutoff = 10000;
 let filterQ = 1;
 
 const filterCutoffControl =  document.getElementById("filterCutoff");
@@ -825,7 +825,7 @@ function playNote(note, velocity){
         noteSignals[note]["filter"].Q.value = filterQ;
     } else {
         noteSignals[note]["filter"].type = "lowpass";
-        noteSignals[note]["filter"].frequency.value = 20000;
+        noteSignals[note]["filter"].frequency.value = 10000;
         noteSignals[note]["filter"].Q.value = 1;
     }
 
