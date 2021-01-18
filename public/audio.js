@@ -197,6 +197,7 @@ filterOffBtn.addEventListener("click", _ => {
 // HARMONIZER
 let harmonizerOn = false;
 let harmonizerInterval = -5;
+let harmonizerNoteSet = new Set();
 
 const harmonizerIntervalControl =  document.getElementById("harmonizerInterval");
 harmonizerIntervalControl.addEventListener("change", _ => {
@@ -206,12 +207,14 @@ harmonizerIntervalControl.addEventListener("change", _ => {
 let harmonizerOnBtn = document.getElementById("harmonizerOnBtn");
 let harmonizerOffBtn = document.getElementById("harmonizerOffBtn");
 harmonizerOnBtn.addEventListener("click", _ => {
-    if(harmonizerOn) return;
-    harmonizerOn = true;
+    // if(harmonizerOn) return;
+    // harmonizerOn = true;
+    toggleHarmonizer(1);
 })
 harmonizerOffBtn.addEventListener("click", _ => {
-    if(!harmonizerOn) return;
-    harmonizerOn = false;
+    // if(!harmonizerOn) return;
+    // harmonizerOn = false;
+    toggleHarmonizer(0);
 })
 
 
@@ -594,20 +597,57 @@ function noteIsBelow(note, reference){
     return noteNameToMidiNote[note] < noteNameToMidiNote[reference]
 }
 
+function playHarmNoteOfNoteName(noteName) {
+    let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
+    playNote(harmNote);
+    harmonizerNoteSet.add(harmNote);
+}
 
-function toggleHarmonizer() {
-    if (!harmonizerOn) {
-        for (noteName of activeNotes) {
-            let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
-            playNote(harmNote);
+function stopHarmNoteOfNoteName(noteName) {
+    let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
+    if (!activeNotes.has(harmNote)) {
+       stopNote(harmNote);
+    }
+    harmonizerNoteSet.delete(harmNote);
+}
+
+function toggleHarmonizer(on=-1) {
+
+    if (on === -1) {
+        if (!harmonizerOn) {
+            for (noteName of activeNotes) {
+                playHarmNoteOfNoteName(noteName);
+            }
+            harmonizerOn = true;
+        } else {
+            for (noteName of activeNotes) {
+                stopHarmNoteOfNoteName(noteName);
+            }
+            harmonizerOn = false;
         }
-        harmonizerOn = true;
+    } else if (on) {
+        if (!harmonizerOn) {
+            for (noteName of activeNotes) {
+                playHarmNoteOfNoteName(noteName);
+            }
+            harmonizerOn = true;
+        }
     } else {
-        for (noteName of activeNotes) {
-            let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
-            stopNote(harmNote);
+        if (harmonizerOn) {
+            for (noteName of activeNotes) {
+                stopHarmNoteOfNoteName(noteName);
+            }
+            harmonizerOn = false;
         }
-        harmonizerOn = false;
+    }
+}
+
+function clearHarmonizerNoteSet() {
+    for (noteName of harmonizerNoteSet) {
+        if (!activeNotes.has(noteName)) {
+            stopNote(noteName);
+        }
+        harmonizerNoteSet.delete(noteName);
     }
 }
 
@@ -616,14 +656,20 @@ function changeHarmonizerInterval(newInterval) {
         for (noteName of activeNotes) {
             let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
             stopNote(harmNote);
+            harmonizerNoteSet.delete(harmNote);
         }
         harmonizerInterval = newInterval;
         for (noteName of activeNotes) {
-            let harmNote = midiNoteToNoteName[noteNameToMidiNote[noteName] + harmonizerInterval];
-            playNote(harmNote);
+            playHarmNoteOfNoteName(noteName);
         }
     } else {
         harmonizerInterval = newInterval;
+        for (noteName of harmonizerNoteSet) {
+            if (!activeNotes.has(noteName)) {
+              stopNote(harmNote);
+              harmonizerNoteSet.delete(harmNote);
+            }
+        }
     }
 }
 
@@ -709,8 +755,9 @@ function playArpNote() {
     playNote(_notePlaying);
 
     if (harmonizerOn) {
-        let harmNote = midiNoteToNoteName[noteNameToMidiNote[_notePlaying] + harmonizerInterval];
-        playNote(harmNote);
+        playHarmNoteOfNoteName(_notePlaying);
+    } else {
+        stopHarmNoteOfNoteName(_notePlaying);
     }
 
     if (arpeggiatorStyle === "up") {
@@ -831,8 +878,9 @@ function audioKeyDown(note, frequency, velocity) {
     playNote(note, velocity);
 
     if (harmonizerOn) {
-        let harmNote = midiNoteToNoteName[noteNameToMidiNote[note] + harmonizerInterval];
-        playNote(harmNote);
+        playHarmNoteOfNoteName(note);
+    } else {
+        clearHarmonizerNoteSet();
     }
 
     //for some reason it won't play without these two lines.
@@ -867,8 +915,9 @@ function audioKeyUp(note, frequency) {
     stopNote(note);
 
     if (harmonizerOn) {
-        let harmNote = midiNoteToNoteName[noteNameToMidiNote[note] + harmonizerInterval];
-        stopNote(harmNote);
+        stopHarmNoteOfNoteName(note);
+    } else {
+        clearHarmonizerNoteSet();
     }
 };
 
