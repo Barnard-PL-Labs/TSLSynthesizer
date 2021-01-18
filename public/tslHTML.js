@@ -35,8 +35,8 @@ const filterUpdates = `
 <select>
     <option value=""></option>
     <option value="toggle">toggle</option>
-    <option value="inc1000">increase cutoff by 1000</option>
-    <option value="dec1000">decrease rate by 1000</option>
+    <option value="inc100">increase cutoff by 100</option>
+    <option value="dec100">decrease cutoff by 100</option>
     <option value="inc1">increase Q by 1</option>
     <option value="dec1">decrease Q by 1</option>
     <option value="lowpass">low-pass</option>
@@ -213,10 +213,10 @@ function formulaMap(termType, action){
                     return "";
                 case "toggle":
                     return "[filterOn <- toggle filterOn]";
-                case "inc1000":
-                    return "[filterCutoff <- inc1000 filterCutoff]";
-                case "dec1000":
-                    return "[filterCutoff <- dec1000 filterCutoff]";
+                case "inc100":
+                    return "[filterCutoff <- inc100 filterCutoff]";
+                case "dec100":
+                    return "[filterCutoff <- dec100 filterCutoff]";
                 case "inc1":
                     return "[filterQ <- inc1 filterQ]";
                 case "dec1":
