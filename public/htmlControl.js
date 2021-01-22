@@ -79,12 +79,29 @@ function createSingleSpec(idx){
     return spec;
 }
 
+// Frontend change stuff
+let isDropdown = true;
+const swapFrontendBtn = document.getElementById("frontendSwap");
+swapFrontendBtn.addEventListener("click", _ => {
+    isDropdown = !isDropdown;
+    rebootSpecs();
+}, false);
+
 function bootSpecs(){
-    for(let i=0; i<NUM_SPECS; i++){
-        const singleSpec = createSingleSpec(i);
-        specRootNode.appendChild(singleSpec);
-        specNodeList.push(singleSpec);
-        specRootNode.appendChild(document.createElement("br"));
+    if(isDropdown){
+        for(let i=0; i<NUM_SPECS; i++){
+            const singleSpec = createSingleSpec(i);
+            specRootNode.appendChild(singleSpec);
+            specNodeList.push(singleSpec);
+            specRootNode.appendChild(document.createElement("br"));
+        }
+    }
+    else {
+        const textArea = document.createElement("textarea");
+        textArea.setAttribute("id", "specText");
+        textArea.setAttribute("cols", "70");
+        textArea.setAttribute("rows", "20");
+        specRootNode.appendChild(textArea);
     }
 }
 
@@ -195,7 +212,7 @@ const selectedNotes = document.getElementById("lastClicked");
 const selectButtons = document.getElementsByClassName("selectedNoteBtn");
 let selectedNotesLock = [];
 let selectedNotesList = [];
-for(let i=0; i<selectedNotes.length; i++){
+for(let i=0; i<selectedNotes.children.length; i++){
     selectedNotesLock.push(false);
     selectedNotesList.push(null);
 }
