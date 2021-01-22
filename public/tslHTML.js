@@ -312,4 +312,3 @@ function strToDOM(html){
     domNode.innerHTML = html.trim();
     return domNode.content.firstChild;
 }
-

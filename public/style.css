@@ -49,3 +49,9 @@ h3 {
 pre {
     margin-left: 0;
 }
+
+#specification, #specHelper,
+#synthStatus,
+#lastClicked, #controls{
+    margin: 0 10px;
+}

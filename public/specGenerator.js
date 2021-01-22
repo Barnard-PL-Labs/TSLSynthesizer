@@ -100,35 +100,40 @@ function makeAlwaysAssume(predicateList){
 }
 
 function getSpecFromDOM(){
-    let tslSpecList = [];
-    let specParent = document.getElementById("specification");
-    let predicateSet = new Set();
+    let spec;
+    if(isDropdown){
+        let tslSpecList = [];
+        let predicateSet = new Set();
 
-    for(let i=0; i < specParent.children.length; i++){
-        const specNode = specParent.children[i];
-        if(specNode.tagName !== "ARTICLE")
-            continue;
-        const [predicate, tslSpec] = parseSpecNode(specNode);
+        for(let i=0; i < specRootNode.children.length; i++){
+            const specNode = specRootNode.children[i];
+            if(specNode.tagName !== "ARTICLE")
+                continue;
+            const [predicate, tslSpec] = parseSpecNode(specNode);
 
-        if(!tslSpec)
-            continue;
+            if(!tslSpec)
+                continue;
 
-        tslSpecList.push(tslSpec);
-        if(predicate)
-            predicateSet.add(predicate);
+            tslSpecList.push(tslSpec);
+            if(predicate)
+                predicateSet.add(predicate);
+        }
+
+        if(tslSpecList.length === 0){
+            return "";
+        }
+
+        const predicateList = [...predicateSet];
+        const alwaysAssume = makeAlwaysAssume(predicateList);
+        const alwaysGuarantee = "always guarantee {\n" +
+            "\t" + tslSpecList.join("\n\t") + "\n}\n";
+
+        spec = alwaysAssume + alwaysGuarantee;
     }
-
-    if(tslSpecList.length === 0){
-        return "";
+    else {
+        spec = document.getElementById("specText").value;
     }
-
-    const predicateList = [...predicateSet];
-    const alwaysAssume = makeAlwaysAssume(predicateList);
-    const alwaysGuarantee = "always guarantee {\n" +
-        "\t" + tslSpecList.join("\n\t") + "\n}\n";
-
-    const spec = alwaysAssume + alwaysGuarantee;
-    // console.log(`Got spec from DOM: \n${spec}`);
+    console.log(`Got spec from DOM: \n${spec}`);
 
     return spec;
 }
