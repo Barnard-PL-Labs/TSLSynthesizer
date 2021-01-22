@@ -9,6 +9,7 @@ media
 local.html
 *.prdx
 TODO
+__pycache__
 
 # Sensitive files
 synth_resources
