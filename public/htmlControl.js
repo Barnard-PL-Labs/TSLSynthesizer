@@ -101,6 +101,13 @@ function bootSpecs(){
         textArea.setAttribute("id", "specText");
         textArea.setAttribute("cols", "70");
         textArea.setAttribute("rows", "20");
+		const defaultSpec = `
+		always guarantee{
+     		play note67 <-> [fmSynthesis <- toggle fmSynthesis];
+     		play note64 <-> [lfo <- toggle lfo];
+		}
+		`
+		textArea.value = defaultSpec;
         specRootNode.appendChild(textArea);
     }
 }
