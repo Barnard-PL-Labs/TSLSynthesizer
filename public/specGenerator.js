@@ -15,9 +15,9 @@ function getSelectedNote(noteOption){
 function buildFormulaFromParts(optionList, formulaList){
     let tslSpec = formulaList[0];
     if(binOpCategories[optionList[0].firstChild.value] === "update")
-        tslSpec += " -> ";
+        tslSpec += " <-> ";
     else if(binOpCategories[optionList[0].firstChild.value] === "predicate")
-        tslSpec += " -> ";
+        tslSpec += " <-> ";
     else
         throw new Error("A wild error has appeared.");
     tslSpec += formulaList[1];
