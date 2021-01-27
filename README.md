@@ -5,6 +5,7 @@
 This is the TSL Synthesis Synthesizer, a keyboard synthesizer that can dynamically apply effects depending on users' specifications. 
 
 Recommended usage is through a MIDI controller. Connect your MIDI device to your computer, load the website, and start playing!
+Note, however, that [WebMIDI](https://developer.mozilla.org/en-US/docs/Web/API/MIDIAccess) is only currently supported for Google Chrome, MS Edge and Opera -- it will not work on Firefox and Safari. You can still use the UI keyboard, as [WebAudio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) is supported by all major browsers.
 
 Synthesis uses [Temporal Stream Logic](https://link.springer.com/chapter/10.1007/978-3-030-25540-4_35), a logic for reactive synthesis that separates control and data. 
 
