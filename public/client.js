@@ -125,7 +125,7 @@ function genRandSpec(){
 	randomSpecBtn.click();
 }
 
-function runRandomSpecs(times){
+function genManyRandSpecs(times){
     const specs = [];
     for(let i=0; i<times; i++){
         genRandSpec();
@@ -133,4 +133,14 @@ function runRandomSpecs(times){
     }
     return specs
 }
+
+function concatManyRandSpecs(times){
+	const specList = genManyRandSpecs(times);
+	return specList.join('\n***\n\n');
+}
+
+
+
+
+
 
