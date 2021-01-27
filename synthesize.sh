@@ -11,8 +11,28 @@ start=$(date +%s%N | cut -b1-13)
 tsltools/tsl2tlsf $file_name | cat > $tlsf
 
 # Build AAG from docker
-sudo docker run --rm -v $(pwd):/files -i wonhyukchoi/tlsf_to_aag /Strix/scripts/strix_tlsf.sh files/$tlsf > /dev/null
+sudo docker run --rm -v $(pwd):/files -i wonhyukchoi/tlsf_to_aag /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
 
 end=$(date +%s%N | cut -b1-13)
 elapsed=$[ end - start ]
-echo $elapsed >> log.txt
+
+# Change to unix format
+dos2unix $aag 2> /dev/null
+
+# Check for realizability
+is_realizable=$(head -n1 $aag)
+
+realizable="y"
+if [ "$is_realizable" = "UNREALIZABLE" ]; then
+	realizable="n"	
+fi
+
+result="$elapsed+$realizable"
+
+echo $result >> log.txt
+
+
+
+
+
+
