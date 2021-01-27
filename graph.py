@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import numpy as np
 from matplotlib import pyplot as plt
 from collections import namedtuple, Counter
 DataPoint = namedtuple("DataPoint", ("time", "real"))
@@ -16,6 +17,8 @@ assert len(data) == 1000
 times = [x.time for x in data]
 realizables = [x.real for x in data]
 print(Counter(realizables))
+print("median", np.median(times))
+print("mean", np.mean(times))
 
 times.sort()
 outlier_idx = 975
