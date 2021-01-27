@@ -1,6 +1,0 @@
-always assume{
-}always guarantee {
-	[fmSynthesis <- True()] -> (([amSynthesis <- False()] -> [harmonizerOn <- True()]) W [fmSynthesis <- False()]);
-	[amSynthesis <- False()] -> (([filterOn <- False()] -> [lfo <- False()]) W [amSynthesis <- True()]);
-	[arpeggiatorStyle <- upDownStyle()] -> (([lfo <- True()] -> [arpeggiatorOn <- False()]) W ([arpeggiatorStyle <- upStyle()] || [arpeggiatorStyle <- downStyle()] || [arpeggiatorStyle <- downUpStyle()]));
-}
