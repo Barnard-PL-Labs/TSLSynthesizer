@@ -112,7 +112,7 @@ const btnGuarantees = `
 
 // TODO
 function makeAlwaysAssume(predicateList){
-    let alwaysAssume = "always assume{" + btnAssumes + "\n";
+    let alwaysAssume = "always assume{" + "\n";
 
     if(predicateList.length < 1)
         return alwaysAssume + "}";
@@ -128,7 +128,7 @@ function makeAlwaysAssume(predicateList){
     ).join("\n\t");
 
     alwaysAssume += noPredSimul;
-    alwaysAssume += noBtnSimul;
+    // alwaysAssume += noBtnSimul;
     alwaysAssume += "\n}\n";
 
     return alwaysAssume;
@@ -160,10 +160,10 @@ function getSpecFromDOM(){
     const predicateList = [...predicateSet];
     const alwaysAssume = makeAlwaysAssume(predicateList);
     const alwaysGuarantee = "always guarantee {\n" +
-        "\t" + tslSpecList.join("\n\t") + btnGuarantees + "\n}\n";
+        "\t" + tslSpecList.join("\n\t") + "\n}\n";
 
-    const spec = termVars + alwaysAssume + alwaysGuarantee;
-    console.log(`Got spec from DOM: \n${spec}`);
+    const spec = alwaysAssume + alwaysGuarantee;
+    // console.log(`Got spec from DOM: \n${spec}`);
 
     return spec;
 }

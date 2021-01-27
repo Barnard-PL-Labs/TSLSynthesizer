@@ -1,0 +1,35 @@
+INFO {
+  TITLE:       "Converted TSL Specification: temp"
+  DESCRIPTION: "TSL specification, which has been converted to TLSF."
+  SEMANTICS:   Mealy
+  TARGET:      Mealy
+}
+MAIN {
+
+  OUTPUTS {
+    u0am2synthesis0am2synthesis;
+    u0am2synthesis0f1d2false1b;
+    u0am2synthesis0f1d2true1b;
+    u0arpeggiator2on0arpeggiator2on;
+    u0arpeggiator2on0f1d2false1b;
+    u0arpeggiator2style0arpeggiator2style;
+    u0arpeggiator2style0f1ddown2style1b;
+    u0arpeggiator2style0f1ddown2up2style1b;
+    u0arpeggiator2style0f1dup2down2style1b;
+    u0arpeggiator2style0f1dup2style1b;
+    u0filter2on0filter2on;
+    u0filter2on0f1d2false1b;
+    u0fm2synthesis0fm2synthesis;
+    u0fm2synthesis0f1d2false1b;
+    u0fm2synthesis0f1d2true1b;
+    u0harmonizer2on0harmonizer2on;
+    u0harmonizer2on0f1d2true1b;
+    u0lfo0lfo;
+    u0lfo0f1d2false1b;
+    u0lfo0f1d2true1b;
+  }
+
+  GUARANTEE {
+    (G (((((((! (((u0am2synthesis0f1d2false1b) && (! ((u0am2synthesis0f1d2true1b) || (u0am2synthesis0am2synthesis)))) <-> ((! (((u0am2synthesis0f1d2true1b) && (! (u0am2synthesis0am2synthesis))) <-> ((u0am2synthesis0am2synthesis) && (! (u0am2synthesis0f1d2true1b))))) && (! (u0am2synthesis0f1d2false1b))))) && (! (((u0arpeggiator2on0arpeggiator2on) && (! (u0arpeggiator2on0f1d2false1b))) <-> ((u0arpeggiator2on0f1d2false1b) && (! (u0arpeggiator2on0arpeggiator2on)))))) && (! (((! (((u0arpeggiator2style0f1dup2down2style1b) && (! (u0arpeggiator2style0f1ddown2style1b))) <-> ((u0arpeggiator2style0f1ddown2style1b) && (! (u0arpeggiator2style0f1dup2down2style1b))))) && (! (((u0arpeggiator2style0f1dup2style1b) || (u0arpeggiator2style0f1ddown2up2style1b)) || (u0arpeggiator2style0arpeggiator2style)))) <-> ((! (((u0arpeggiator2style0f1ddown2up2style1b) && (! ((u0arpeggiator2style0arpeggiator2style) || (u0arpeggiator2style0f1dup2style1b)))) <-> ((! (((u0arpeggiator2style0arpeggiator2style) && (! (u0arpeggiator2style0f1dup2style1b))) <-> ((u0arpeggiator2style0f1dup2style1b) && (! (u0arpeggiator2style0arpeggiator2style))))) && (! (u0arpeggiator2style0f1ddown2up2style1b))))) && (! ((u0arpeggiator2style0f1dup2down2style1b) || (u0arpeggiator2style0f1ddown2style1b))))))) && (! (((u0filter2on0filter2on) && (! (u0filter2on0f1d2false1b))) <-> ((u0filter2on0f1d2false1b) && (! (u0filter2on0filter2on)))))) && (! (((u0fm2synthesis0f1d2false1b) && (! ((u0fm2synthesis0f1d2true1b) || (u0fm2synthesis0fm2synthesis)))) <-> ((! (((u0fm2synthesis0f1d2true1b) && (! (u0fm2synthesis0fm2synthesis))) <-> ((u0fm2synthesis0fm2synthesis) && (! (u0fm2synthesis0f1d2true1b))))) && (! (u0fm2synthesis0f1d2false1b)))))) && (! (((u0harmonizer2on0harmonizer2on) && (! (u0harmonizer2on0f1d2true1b))) <-> ((u0harmonizer2on0f1d2true1b) && (! (u0harmonizer2on0harmonizer2on)))))) && (! (((u0lfo0f1d2false1b) && (! ((u0lfo0f1d2true1b) || (u0lfo0lfo)))) <-> ((! (((u0lfo0f1d2true1b) && (! (u0lfo0lfo))) <-> ((u0lfo0lfo) && (! (u0lfo0f1d2true1b))))) && (! (u0lfo0f1d2false1b))))))) && (((G ((u0fm2synthesis0f1d2true1b) -> (((u0am2synthesis0f1d2false1b) -> (u0harmonizer2on0f1d2true1b)) W (u0fm2synthesis0f1d2false1b)))) && (G ((u0am2synthesis0f1d2false1b) -> (((u0filter2on0f1d2false1b) -> (u0lfo0f1d2false1b)) W (u0am2synthesis0f1d2true1b))))) && (G ((u0arpeggiator2style0f1dup2down2style1b) -> (((u0lfo0f1d2true1b) -> (u0arpeggiator2on0f1d2false1b)) W (((u0arpeggiator2style0f1dup2style1b) || (u0arpeggiator2style0f1ddown2style1b)) || (u0arpeggiator2style0f1ddown2up2style1b))))));
+  }
+}

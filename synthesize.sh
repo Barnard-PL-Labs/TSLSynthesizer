@@ -5,6 +5,7 @@ file_header=${file_name:0:-4}
 tlsf="$file_header.tlsf"
 aag="$file_header.aag"
 js="$file_header.js"
+start=$(date +%s%N | cut -b1-13)
 
 # Build TLSF
 tsltools/tsl2tlsf $file_name | cat > $tlsf
@@ -12,20 +13,20 @@ tsltools/tsl2tlsf $file_name | cat > $tlsf
 # Build AAG from docker
 sudo docker run --rm -v $(pwd):/files -i wonhyukchoi/tlsf_to_aag /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
 
+end=$(date +%s%N | cut -b1-13)
+elapsed=$[ end - start ]
+
 # Change to unix format
 dos2unix $aag 2> /dev/null
 
 # Check for realizability
 is_realizable=$(head -n1 $aag)
 
+realizable="y"
 if [ "$is_realizable" = "UNREALIZABLE" ]; then
-	echo $is_realizable >&2
-	exit 1
+	realizable="n"	
 fi
 
-# Remove first line 
-# https://stackoverflow.com/a/339941/11801882
-tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
+result="$elapsed+$realizable"
 
-# Synthesize the resulting code
-tsltools/cfm2code WebAudio $aag 
+echo $result >> log.txt
