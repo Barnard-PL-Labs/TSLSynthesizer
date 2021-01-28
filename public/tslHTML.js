@@ -74,13 +74,13 @@ const dummyOptions = `
 const predicateSelector = `
 <select class="selector">
     <option value=""></option>
-    <option value="am">AM</option>
-    <option value="fm">FM</option>
-    <option value="lfo">LFO</option>
-    <option value="filter">filter</option>
-    <option value="harmon">harmonizer</option>
-    <option value="arp">arpeggiator</option>
-    <option value="waveform">waveform</option>
+<!--    <option value="am">AM</option>-->
+<!--    <option value="fm">FM</option>-->
+<!--    <option value="lfo">LFO</option>-->
+<!--    <option value="filter">filter</option>-->
+<!--    <option value="harmon">harmonizer</option>-->
+<!--    <option value="arp">arpeggiator</option>-->
+<!--    <option value="waveform">waveform</option>-->
     <option value="playing">playing</option>
 </select>
 `
