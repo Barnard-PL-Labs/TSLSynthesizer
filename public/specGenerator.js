@@ -102,8 +102,19 @@ function makeAlwaysAssume(predicateList){
     return "always assume{\n"  + noSimulPresses + "\n}\n";
 }
 
+const unselectedNotes = [];
+function populateUnselectedNotes(){
+    const allNotes = document.getElementsByClassName("keyboardNote");
+    for(let i=0; i<allNotes.length; i++){
+        if(selectedNotesList.includes(allNotes[i].getAttribute("id")))
+            continue;
+        unselectedNotes.push(allNotes[i]);
+    }
+}
+
 function getSpecFromDOM(){
     let spec;
+    populateUnselectedNotes();
     if(isDropdown){
         let tslSpecList = [];
         let predicateSet = new Set();

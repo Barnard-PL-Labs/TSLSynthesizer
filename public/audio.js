@@ -943,6 +943,7 @@ const allKeys = document.getElementById("keyboard").children[0].children;
         const keyNote = allKeys[i],
               midiNoteName = "note" + noteNameToMidiNote[keyNote.getAttribute("id")];
         keyNote.setAttribute("id", midiNoteName);
+        keyNote.setAttribute("class", "keyboardNote");
     }
 // })
 

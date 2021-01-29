@@ -3,7 +3,6 @@
 ////////////////////////////
 
 let synthStatus = document.getElementById("synth-status");
-const keyboardNode = document.getElementById("keyboard");
 
 // https://gist.github.com/aerrity/fd393e5511106420fba0c9602cc05d35
 function synthesize(spec){
