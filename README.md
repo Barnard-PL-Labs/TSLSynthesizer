@@ -11,7 +11,7 @@ Synthesis uses [Temporal Stream Logic](https://link.springer.com/chapter/10.1007
 
 ## Tutorial
 
-[Demo](https://youtu.be/RGoYLjd1ebQ)
+[Demo](https://www.youtube.com/watch?v=Rs2Q8bbbixs)
 
 
 ## Local installation
