@@ -8,7 +8,7 @@ tsltools
 media
 local.html
 *.prdx
-TODO
+TODO*
 __pycache__
 
 # Sensitive files

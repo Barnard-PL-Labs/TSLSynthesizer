@@ -66,7 +66,8 @@ function deleteTmpFiles(){
     return new Promise(resolve => {
         exec(shellCmd,
             function(err, data){
-                if (err) throw err;
+                if (err)
+                    console.log("Temp file deletions unsuccessful.\nPlease manually delete them.");
                 else
                     console.log("Temp files deletion successful.");
                 resolve();

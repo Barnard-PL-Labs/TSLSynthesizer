@@ -13,23 +13,65 @@ function getSelectedNote(noteOption){
 }
 
 function buildFormulaFromParts(optionList, formulaList){
-    let tslSpec = formulaList[0];
-    // XXX: hack on hack since the first child on the predicate node is "playing"...
-    if(binOpCategories[optionList[0].lastChild.value] === "always")
-        tslSpec += " ";
-    else if(binOpCategories[optionList[0].firstChild.value] === "update")
-        tslSpec += " <-> ";
-    else if(binOpCategories[optionList[0].firstChild.value] === "predicate")
-        tslSpec += " <-> ";
-    else
-        throw new Error("A wild error has appeared.");
-    tslSpec += formulaList[1];
-    return tslSpec;
+    if(currSpecStyle === specStyles.simple){
+        let tslSpec = formulaList[0];
+        // XXX: hack on hack since the first child on the predicate node is "playing"...
+        if(binOpCategories[optionList[0].lastChild.value] === "always")
+            tslSpec += " ";
+        else if(binOpCategories[optionList[0].firstChild.value] === "update")
+            tslSpec += " <-> ";
+        else if(binOpCategories[optionList[0].firstChild.value] === "predicate")
+            tslSpec += " <-> ";
+        else
+            throw new Error("A wild error has appeared.");
+        tslSpec += formulaList[1];
+        return tslSpec;
+    }
+    else if(currSpecStyle === specStyles.complex){
+        let tslSpec = "",
+            weakUntilClause = null;
+        if(optionList[0].firstChild.value !== "always"){
+            tslSpec += formulaList[0];
+            tslSpec += " -> ";
+            weakUntilClause = weakUntilMap(optionList[0]);
+        }
+        tslSpec += "(";
+        tslSpec += "(";
+        tslSpec += formulaList[1];
+        if(binOpCategories[optionList[1].lastChild.value] === "always")
+            tslSpec += " ";
+        else if(binOpCategories[optionList[1].firstChild.value] === "update")
+            tslSpec += " -> ";
+        else if(binOpCategories[optionList[1].firstChild.value] === "predicate")
+            tslSpec += " <-> ";
+        else
+            throw new Error("A wild error has appeared.");
+
+        tslSpec += formulaList[2];
+        tslSpec += ")";
+
+        if(weakUntilClause){
+            tslSpec += " W ";
+            tslSpec += weakUntilClause;
+        }
+
+        tslSpec += ")";
+        return tslSpec;
+    }
+    else {
+        throw new Error("Unknown specification style.");
+    }
 }
 
 function parseSpecNode(spec){
-    const PREDICATE_IDX = 0,
-          optionList =  onlySpecChildren(spec);
+    let PREDICATE_IDX;
+    if(currSpecStyle === specStyles.simple)
+        PREDICATE_IDX = 0;
+    else if(currSpecStyle === specStyles.complex)
+        PREDICATE_IDX = 1;
+    else
+        throw new Error("Unknown specification style");
+    const optionList =  onlySpecChildren(spec);
 
     if(optionList.length === 0)
         return ["", ""];
@@ -89,17 +131,45 @@ function nandPairAssumeClause(pair){
 }
 
 function makeAlwaysAssume(predicateList){
-    if(predicateList.length <= 1)
-        return "";
+    if(currSpecStyle === specStyles.simple){
+        if(predicateList.length <= 1)
+            return "";
 
-    const velocityAssume = "\t!(veloBelow50 noteVelocity && veloAbove50 noteVelocity);\n"
+        const pairLists = makePairs(predicateList),
+            notePlayedPairs = getOnlyNotePlays(pairLists),
+            assumeList = notePlayedPairs.map(nandPairAssumeClause),
+            noSimulPresses = "\t" + assumeList.join('\n\t');
 
-    const pairLists = makePairs(predicateList),
-          notePlayedPairs = getOnlyNotePlays(pairLists),
-          assumeList = notePlayedPairs.map(nandPairAssumeClause),
-          noSimulPresses = "\t" + assumeList.join('\n\t');
+        return "always assume{\n"  + noSimulPresses + "\n}\n";
+    }
+    else if(currSpecStyle === specStyles.complex){
+        let alwaysAssume = "always assume{" + "\n";
 
-    return "always assume{\n"  + noSimulPresses + "\n}\n";
+        if(predicateList.length < 1)
+            return alwaysAssume + "}";
+
+        const tempPredicateList = [];
+        for(let i=0; i<predicateList.length;i++){
+            if(predicateList[i] !== "G")
+                tempPredicateList.push(predicateList[i]);
+        }
+        predicateList = tempPredicateList;
+
+        let noPredSimul = ""
+        if(predicateList.length >= 2){
+            noPredSimul = "\t!(" +
+                predicateList.join(" && ") +
+                ");\n";
+        }
+        alwaysAssume += noPredSimul;
+        alwaysAssume += "\n}\n";
+
+        return alwaysAssume;
+    }
+    else{
+        throw new Error("Unknown spec style.");
+    }
+
 }
 
 const unselectedNotes = [];
@@ -115,7 +185,7 @@ function populateUnselectedNotes(){
 function getSpecFromDOM(){
     let spec;
     populateUnselectedNotes();
-    if(currSpecStyle === specStyles.simple){
+    if(currSpecStyle === specStyles.simple || currSpecStyle === specStyles.complex){
         let tslSpecList = [];
         let predicateSet = new Set();
 
@@ -143,9 +213,6 @@ function getSpecFromDOM(){
             "\t" + tslSpecList.join("\n\t") + "\n}\n";
 
         spec = alwaysAssume + alwaysGuarantee;
-    }
-    else if(currSpecStyle === specStyles.complex){
-
     }
     else if(currSpecStyle === specStyles.written){
         spec = document.getElementById("specText").value;

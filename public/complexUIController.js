@@ -13,8 +13,8 @@ class ComplexTSLHTML {
             <option value=""></option>
             <option value="on">On</option>
             <option value="off">Off</option>
-            <option value="inc10">Increase frequency by 10Hz</option>
-            <option value="dec10">Decrease frequency by 10Hz</option>
+            <option value="inc1">Increase frequency by 1Hz</option>
+            <option value="dec1">Decrease frequency by 1Hz</option>
             <option value="depthInc10">Increase depth by 1</option>
             <option value="depthDec10">Decrease depth by 1</option>
         </select>
@@ -27,9 +27,12 @@ class ComplexTSLHTML {
             <option value="up">up</option>
             <option value="upDown">up-down</option>
             <option value="down">down</option>
-            <option value="downUp">down-up</option>
+            <option value="random">random</option>
         </select>
     `
+
+    static arpPredicates = this.arpUpdates;
+
     static predicateSelectMap = {
         always: dummyOptions,
         am: onOffPredicates,
@@ -37,7 +40,7 @@ class ComplexTSLHTML {
         lfo: onOffPredicates,
         filter: onOffPredicates,
         harmon: onOffPredicates,
-        arp: arpPredicates,
+        arp: this.arpPredicates,
         waveform: waveformPredicates,
         playing: playingPredicates
     }

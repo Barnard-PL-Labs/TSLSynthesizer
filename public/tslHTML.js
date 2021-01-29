@@ -393,7 +393,7 @@ function weakUntilMap(specOptionNode){
             const up = "[arpeggiatorStyle <- upStyle()]",
                 down = "[arpeggiatorStyle <- downStyle()]",
                 upDown = "[arpeggiatorStyle <- upDownStyle()]",
-                downUp = "[arpeggiatorStyle <- downUpStyle()]";
+                downUp = "[arpeggiatorStyle <- randomStyle()]";
             switch(action){
                 case "on":
                     return "[arpeggiatorOn <- False()]";
@@ -405,7 +405,7 @@ function weakUntilMap(specOptionNode){
                     return orAll(up, upDown, downUp);
                 case "upDown":
                     return orAll(up, down, downUp);
-                case "downUp":
+                case "random":
                     return orAll(up, down, upDown);
                 default:
                     throw new Error("Out of switch cases");
