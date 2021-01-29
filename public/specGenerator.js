@@ -27,7 +27,7 @@ function buildFormulaFromParts(optionList, formulaList){
     if(binOpCategories[optionList[1].firstChild.value] === "update")
         tslSpec += " -> ";
     else if(binOpCategories[optionList[1].firstChild.value] === "predicate")
-        tslSpec += " -> X ";
+        tslSpec += " <-> ";
     else
         throw new Error("A wild error has appeared.");
 
@@ -58,7 +58,7 @@ function parseSpecNode(spec){
               termType = node.firstChild.value,
               action   = node.lastChild.value;
         if(!termType || !action)
-            return ["", ""];
+            ; //return ["", ""];
         formulaList.push(formulaMap(termType, action));
     }
     let tslSpec = buildFormulaFromParts(optionList, formulaList);

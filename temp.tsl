@@ -1,0 +1,10 @@
+always assume{
+	!(play note60 && play note61);
+
+}
+always guarantee {
+	[fmSynthesis <- False()] -> ((play note60 <-> [waveform <- square()]) W [fmSynthesis <- True()]);
+	[arpeggiatorStyle <- downStyle()] -> ((play note61 <-> [fmFreq <- dec10 fmFreq]) W ([arpeggiatorStyle <- upStyle()] || [arpeggiatorStyle <- upDownStyle()] || [arpeggiatorStyle <- downUpStyle()]));
+	((play note61 <-> [filterOn <- True()]));
+	[harmonizerOn <- False()] -> ((play note61 <-> [lfoFreq <- dec10 lfoFreq]) W [harmonizerOn <- True()]);
+}

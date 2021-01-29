@@ -1,4 +1,4 @@
-NUM_SPECS = 6
+NUM_SPECS = 6	
 
 ////////////////////////////
 //  DYNAMIC HTML LOADING  //
