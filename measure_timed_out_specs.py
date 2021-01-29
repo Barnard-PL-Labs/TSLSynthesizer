@@ -2,13 +2,13 @@
 import os
 from datetime import datetime
 
-with open("log.txt", "r") as f:
+with open("log_6_iff.txt", "r") as f:
     timed_out_idx = []
     for data_point in f.read().split('\n')[:-1]:
         if(data_point[-1] == 'f'):
             timed_out_idx.append(int(data_point[:-2]))
 
-with open("complexRandSpecs.log", "r") as f:
+with open("complexRandSpecs_6_iff.log", "r") as f:
     specs = f.read()
 
 spec_list = specs.split("\n***\n\n")
