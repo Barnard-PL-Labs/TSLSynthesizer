@@ -14,7 +14,10 @@ function getSelectedNote(noteOption){
 
 function buildFormulaFromParts(optionList, formulaList){
     let tslSpec = formulaList[0];
-    if(binOpCategories[optionList[0].firstChild.value] === "update")
+    // XXX: hack on hack since the first child on the predicate node is "playing"...
+    if(binOpCategories[optionList[0].lastChild.value] === "always")
+        tslSpec += " ";
+    else if(binOpCategories[optionList[0].firstChild.value] === "update")
         tslSpec += " <-> ";
     else if(binOpCategories[optionList[0].firstChild.value] === "predicate")
         tslSpec += " <-> ";
@@ -96,7 +99,7 @@ function makeAlwaysAssume(predicateList){
           assumeList = notePlayedPairs.map(nandPairAssumeClause),
           noSimulPresses = "\t" + assumeList.join('\n\t');
 
-    return "always assume{\n" + velocityAssume + noSimulPresses + "\n}\n";
+    return "always assume{\n"  + noSimulPresses + "\n}\n";
 }
 
 function getSpecFromDOM(){

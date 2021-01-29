@@ -59,9 +59,8 @@ function createSingleSpec(idx){
                 updateSelectorMap = nextUpdateSelectorMap;
             else if(termType === "update")
                 updateSelectorMap = predicateSelectMap;
-            else if(termType === "reset"){
+            else if(termType === "reset")
                 updateSelectorMap = predicateSelectMap;
-            }
             else
                 throw new Error("Enumerable Type Exhausted.");
             changeYoungerSibling(e.target, updateSelectorMap);
@@ -70,7 +69,7 @@ function createSingleSpec(idx){
         actionNode.appendChild(strToDOM(dummyOptions));
         return actionNode;
     }
-    const tempActionNode = getActionNode("predicate");
+    let tempActionNode = getActionNode("predicate");
 
     spec.appendChild(getSpanNode("Playing "));
     spec.appendChild(predNode);
@@ -101,13 +100,12 @@ function bootSpecs(){
         textArea.setAttribute("id", "specText");
         textArea.setAttribute("cols", "70");
         textArea.setAttribute("rows", "20");
-		const defaultSpec = `
+        textArea.value = `
 		always guarantee{
      		play note67 <-> [fmSynthesis <- toggle fmSynthesis];
      		play note64 <-> [lfo <- toggle lfo];
 		}
-		`
-		textArea.value = defaultSpec;
+		`;
         specRootNode.appendChild(textArea);
     }
 }

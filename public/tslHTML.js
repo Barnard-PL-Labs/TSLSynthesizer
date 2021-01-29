@@ -57,6 +57,19 @@ const arpUpdates = `
     <option value="random">random</option>
 </select>
 `
+const arpUpdatesForAlways = `
+<select>
+    <option value=""></option>
+    <option value="on">On</option>
+    <option value="off">Off</option>
+    <option value="inc10">increase rate by 10</option>
+    <option value="dec10">decrease rate by 10</option>
+    <option value="up">up</option>
+    <option value="upDown">up-down</option>
+    <option value="down">down</option>
+    <option value="random">random</option>
+</select>
+`
 
 const harmonUpdates = `
 <select>
@@ -99,18 +112,25 @@ const toggleOption = `
     <option value="toggle">toggle</option>
 </select>
 `
+const onOffPredicates = `
+<select>
+    <option value=""></option>
+    <option value="on">On</option>
+    <option value="off">Off</option>
+</select>
+`
 const arpPredicates = arpUpdates;
 const waveformPredicates = waveformUpdates;
 const playingPredicates = `
 <select>
     <option value=""></option>
+    <option value="always">Any note</option>
     <option value="0">Note 1</option>
     <option value="1">Note 2</option>
     <option value="2">Note 3</option>
     <option value="3">Note 4</option>
 </select>
 `
-
 const hackEmptyOption = `
 <select hidden>
     <option value="playing"></option>
@@ -131,6 +151,7 @@ const predicateSelectMap = {
 
 const binOpCategories = {
     "": "reset",
+    always: "always",
     am: "update",
     fm: "update",
     lfo: "update",
@@ -154,6 +175,16 @@ const nextUpdateSelectorMap = {
     filter: filterUpdates,
     harmon: harmonUpdates,
     arp: arpUpdates,
+    waveform: waveformUpdates
+}
+
+const alwaysSelectorMap = {
+    am: onOffPredicates,
+    fm: onOffPredicates,
+    lfo: onOffPredicates,
+    filter: onOffPredicates,
+    harmon: onOffPredicates,
+    arp: arpUpdatesForAlways,
     waveform: waveformUpdates
 }
 
@@ -287,6 +318,8 @@ function formulaMap(termType, action){
                     return "veloBelow50 noteVelocity";
                 case "veloHigh":
                     return "veloAbove50 noteVelocity";
+                case "always":
+                    return "G";
                 default:
                     const selectedNote = getSelectedNote(action);
                     return `play ${selectedNote}`;
