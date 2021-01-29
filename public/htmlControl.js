@@ -79,15 +79,48 @@ function createSingleSpec(idx){
 }
 
 // Frontend change stuff
-let isDropdown = true;
+class specStyles {
+    static simple  = "simple";
+    static complex = "complex";
+    static written = "written";
+    static toNextSpecStyle(){
+        if(currSpecStyle === specStyles.simple){
+            currSpecStyle = specStyles.complex;
+            toggleReactiveInputVisibility();
+        }
+        else if(currSpecStyle === specStyles.complex){
+            currSpecStyle = specStyles.written;
+            toggleReactiveInputVisibility();
+        }
+        else if(currSpecStyle === specStyles.written){
+            currSpecStyle = specStyles.simple;
+        }
+    }
+}
+let currSpecStyle = specStyles.simple;
 const swapFrontendBtn = document.getElementById("frontendSwap");
+function toggleReactiveInputVisibility(){
+    const buttons = document.getElementsByClassName("btn");
+    const musicOptions = document.getElementsByClassName("musicOption");
+    function toggleVisibility(node){
+        if(node.style.visibility === "hidden")
+            node.style.visibility = ""
+        else
+            node.style.visibility = "hidden"
+    }
+    for(let i=0; i<buttons.length;i++)
+        toggleVisibility(buttons[i])
+    for(let i=0; i<musicOptions.length;i++)
+        toggleVisibility(musicOptions[i])
+}
+
 swapFrontendBtn.addEventListener("click", _ => {
-    isDropdown = !isDropdown;
+    specStyles.toNextSpecStyle();
     rebootSpecs();
 }, false);
 
 function bootSpecs(){
-    if(isDropdown){
+    if(currSpecStyle === specStyles.simple){
         for(let i=0; i<NUM_SPECS; i++){
             const singleSpec = createSingleSpec(i);
             specRootNode.appendChild(singleSpec);
@@ -95,18 +128,26 @@ function bootSpecs(){
             specRootNode.appendChild(document.createElement("br"));
         }
     }
-    else {
+    else if(currSpecStyle === specStyles.complex){
+        for(let i=0; i<NUM_SPECS; i++){
+            const singleSpec = createSingleComplexSpec(i);
+            specRootNode.appendChild(singleSpec);
+            specNodeList.push(singleSpec);
+            specRootNode.appendChild(document.createElement("br"));
+        }
+    }
+    else if(currSpecStyle === specStyles.written){
         const textArea = document.createElement("textarea");
         textArea.setAttribute("id", "specText");
         textArea.setAttribute("cols", "70");
-        textArea.setAttribute("rows", "20");
-        textArea.value = `
-		always guarantee{
-     		play note67 <-> [fmSynthesis <- toggle fmSynthesis];
-     		play note64 <-> [lfo <- toggle lfo];
-		}
-		`;
+        textArea.setAttribute("rows", "15");
+        textArea.value = `always guarantee{
+     	play note67 <-> [fmSynthesis <- toggle fmSynthesis];
+     	play note64 <-> [lfo <- toggle lfo];\n}`;
         specRootNode.appendChild(textArea);
+    }
+    else {
+        throw new Error("A wild error has occured");
     }
 }
 
@@ -239,8 +280,9 @@ function saveLastClicked(e){
 function resetIthSelectedNote(idx, buttonNode){
     const SPAN_LABEL_IDX = 0;
     buttonNode.parentNode.children[SPAN_LABEL_IDX].innerText = "" +
-        "Note " + (idx+1).toString() + ": None (Play to Change)"
+        "Note " + (idx+1).toString() + ": None (Play to change)"
     selectedNotesLock[idx] = false;
+    selectedNotesList[idx] = null;
 }
 
 function resetAllSelectedNotes(){

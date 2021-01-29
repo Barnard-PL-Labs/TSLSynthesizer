@@ -37,7 +37,7 @@ function synthesize(spec){
                         }
 
                         else if(synthesized.toString().search("ERROR") !== -1){
-                            synthStatus.innerText = "Program Error. Check console log.\t";
+                            synthStatus.innerText = "Server Error. Please refresh page.\t";
                             console.log(synthesized);
                         }
                         else {
@@ -84,7 +84,7 @@ document.getElementById("synthesize-btn").addEventListener(
             if(err instanceof UnselectedNoteError)
                 synthStatus.innerHTML = "You did not select notes.\t"
             else{
-                synthStatus.innerText = "Program Error. Check console log.\t";
+                synthStatus.innerText = "Server Error. Please refresh page.\t";
                 throw err;
             }
         }

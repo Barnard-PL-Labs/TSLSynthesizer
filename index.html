@@ -61,7 +61,7 @@
                 <input id="gain" type="range" min="0" max="0.95" step="0.01" value="0.8">
             </label>
             <label for="waveform">Waveform
-                <select name="waveform" id="waveform">
+                <select name="waveform" id="waveform" class="musicOption">
                     <option value="sine">Sine</option>
                     <option value="sawtooth">Sawtooth</option>
                     <option value="square">Square</option>
@@ -76,24 +76,24 @@
             <label for="lfoFreq">LFO Frequency
                 <input id="lfoFreq" type="range" min="0" max="20">
             </label>
-            <button id="lfoOnBtn"> LFO On </button>
-            <button id="lfoOffBtn"> LFO Off </button>
+            <button id="lfoOnBtn" class="btn"> LFO On </button>
+            <button id="lfoOffBtn" class="btn"> LFO Off </button>
             <span id="lfoStatus">LFO: Off</span>
         </div>
         <div class="synth-control" id="amControl">
             <label for="amFreq">AM frequency
                 <input id="amFreq" type="range" min="0" max="1000">
             </label>
-            <button id="amOnBtn"> AM On </button>
-            <button id="amOffBtn"> AM Off </button>
+            <button id="amOnBtn" class="btn"> AM On </button>
+            <button id="amOffBtn" class="btn"> AM Off </button>
             <span id="amStatus">AM: Off</span>
         </div>
         <div class="synth-control" id="fmControl">
             <label for="fmFreq">FM frequency
                 <input id="fmFreq" type="range" min="0" max="1000">
             </label>
-            <button id="fmOnBtn"> FM On </button>
-            <button id="fmOffBtn"> FM Off </button>
+            <button id="fmOnBtn" class="btn"> FM On </button>
+            <button id="fmOffBtn" class="btn"> FM Off </button>
             <span id="fmStatus">FM: Off</span>
         </div>
         <div class="synth-control" id="filterControl">
@@ -104,14 +104,14 @@
                 <input id="filterQ" type="range" min="-4.0" max="3.0" step="0.01" value="0">
             </label>
             <label for="filterTypeDropdown"> Type
-              <select name="filterType" id="filterTypeDropdown">
+              <select name="filterType" id="filterTypeDropdown" class="musicOption">
                 <option value="lowpass">low-pass</option>
                 <option value="highpass">high-pass</option>
                 <option value="bandpass">band-pass</option>
               </select>
             </label>
-            <button id="filterOnBtn"> FILTER On </button>
-            <button id="filterOffBtn"> FILTER Off </button>
+            <button id="filterOnBtn" class="btn"> FILTER On </button>
+            <button id="filterOffBtn" class="btn"> FILTER Off </button>
             <span id="filterStatus">FILTER: Off</span>
         </div>
         <div class="synth-control" id="harmonizerControl">
@@ -119,8 +119,8 @@
                 <input id="harmonizerInterval" type="range" class="harmonizerIntervalWidth" min="-12" max="12" value="-5">
             </label>
 
-            <button id="harmonizerOnBtn"> HARMONIZER On </button>
-            <button id="harmonizerOffBtn"> HARMONIZER Off </button>
+            <button id="harmonizerOnBtn" class="btn"> HARMONIZER On </button>
+            <button id="harmonizerOffBtn" class="btn"> HARMONIZER Off </button>
             <span id="harmonizerStatus">HARMONIZER: Off</span>
         </div>
         <div class="synth-control" id="arpeggiatorControl">
@@ -128,15 +128,15 @@
                 <input id="arpeggiatorRate" type="range" min="1" max="60" value="6">
             </label>
             <label for="arpeggiatorStyleDropdown"> Style
-              <select name="arpeggiatorStyle" id="arpeggiatorStyleDropdown">
+              <select name="arpeggiatorStyle" id="arpeggiatorStyleDropdown" class="musicOption">
                 <option value="up">up</option>
                 <option value="up-down">up-down</option>
                 <option value="down">down</option>
                 <option value="random">random</option>
               </select>
             </label>
-            <button id="arpeggiatorOnBtn"> ARPEGGIATOR On </button>
-            <button id="arpeggiatorOffBtn"> ARPEGGIATOR Off </button>
+            <button id="arpeggiatorOnBtn" class="btn"> ARPEGGIATOR On </button>
+            <button id="arpeggiatorOffBtn" class="btn"> ARPEGGIATOR Off </button>
             <span id="arpeggiatorStatus">ARPEGGIATOR: Off</span>
         </div>
     </section>
@@ -151,9 +151,9 @@
 <script src="qwerty-hancock.js"></script>
 <script src="audio.js"></script>
 <script src="tslHTML.js"></script>
+<script src="complexUIController.js"></script>
 <script src="htmlControl.js"></script>
 <script src="specGenerator.js"></script>
 <script src="client.js"></script>
-<!--<script src="debug.js"></script>-->
 </body>
 </html>
