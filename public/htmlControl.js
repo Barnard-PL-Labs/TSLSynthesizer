@@ -121,13 +121,10 @@ function bootSpecs(){
         const textArea = document.createElement("textarea");
         textArea.setAttribute("id", "specText");
         textArea.setAttribute("cols", "70");
-        textArea.setAttribute("rows", "20");
-        textArea.value = `
-		always guarantee{
-     		play note67 <-> [fmSynthesis <- toggle fmSynthesis];
-     		play note64 <-> [lfo <- toggle lfo];
-		}
-		`;
+        textArea.setAttribute("rows", "14");
+        textArea.value = `always guarantee{
+     	play note67 <-> [fmSynthesis <- toggle fmSynthesis];
+     	play note64 <-> [lfo <- toggle lfo];\n}`;
         specRootNode.appendChild(textArea);
     }
     else {
@@ -264,8 +261,9 @@ function saveLastClicked(e){
 function resetIthSelectedNote(idx, buttonNode){
     const SPAN_LABEL_IDX = 0;
     buttonNode.parentNode.children[SPAN_LABEL_IDX].innerText = "" +
-        "Note " + (idx+1).toString() + ": None (Play to Change)"
+        "Note " + (idx+1).toString() + ": None (Play to change)"
     selectedNotesLock[idx] = false;
+    selectedNotesList[idx] = null;
 }
 
 function resetAllSelectedNotes(){
