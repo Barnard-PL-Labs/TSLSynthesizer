@@ -115,7 +115,7 @@ function populateUnselectedNotes(){
 function getSpecFromDOM(){
     let spec;
     populateUnselectedNotes();
-    if(isDropdown){
+    if(currSpecStyle === specStyles.simple){
         let tslSpecList = [];
         let predicateSet = new Set();
 
@@ -144,8 +144,14 @@ function getSpecFromDOM(){
 
         spec = alwaysAssume + alwaysGuarantee;
     }
-    else {
+    else if(currSpecStyle === specStyles.complex){
+
+    }
+    else if(currSpecStyle === specStyles.written){
         spec = document.getElementById("specText").value;
+    }
+    else {
+        throw new Error("Incorrect type of specification style");
     }
     console.log(`Got spec from DOM: \n${spec}`);
 

@@ -79,15 +79,29 @@ function createSingleSpec(idx){
 }
 
 // Frontend change stuff
-let isDropdown = true;
+class specStyles {
+    static simple  = "simple";
+    static complex = "complex";
+    static written = "written";
+    static nextSpecStyle(){
+        if(currSpecStyle === specStyles.simple)
+            return specStyles.complex
+        else if(currSpecStyle === specStyles.complex)
+            return specStyles.written
+        else if(currSpecStyle === specStyles.written)
+            return specStyles.simple
+    }
+}
+let currSpecStyle = specStyles.simple;
 const swapFrontendBtn = document.getElementById("frontendSwap");
+
 swapFrontendBtn.addEventListener("click", _ => {
-    isDropdown = !isDropdown;
+    currSpecStyle = specStyles.nextSpecStyle();
     rebootSpecs();
 }, false);
 
 function bootSpecs(){
-    if(isDropdown){
+    if(currSpecStyle === specStyles.simple){
         for(let i=0; i<NUM_SPECS; i++){
             const singleSpec = createSingleSpec(i);
             specRootNode.appendChild(singleSpec);
@@ -95,7 +109,15 @@ function bootSpecs(){
             specRootNode.appendChild(document.createElement("br"));
         }
     }
-    else {
+    else if(currSpecStyle === specStyles.complex){
+        for(let i=0; i<NUM_SPECS; i++){
+            const singleSpec = createSingleComplexSpec(i);
+            specRootNode.appendChild(singleSpec);
+            specNodeList.push(singleSpec);
+            specRootNode.appendChild(document.createElement("br"));
+        }
+    }
+    else if(currSpecStyle === specStyles.written){
         const textArea = document.createElement("textarea");
         textArea.setAttribute("id", "specText");
         textArea.setAttribute("cols", "70");
@@ -107,6 +129,9 @@ function bootSpecs(){
 		}
 		`;
         specRootNode.appendChild(textArea);
+    }
+    else {
+        throw new Error("A wild error has occured");
     }
 }
 

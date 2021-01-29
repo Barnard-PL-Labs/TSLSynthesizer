@@ -57,19 +57,6 @@ const arpUpdates = `
     <option value="random">random</option>
 </select>
 `
-const arpUpdatesForAlways = `
-<select>
-    <option value=""></option>
-    <option value="on">On</option>
-    <option value="off">Off</option>
-    <option value="inc10">increase rate by 10</option>
-    <option value="dec10">decrease rate by 10</option>
-    <option value="up">up</option>
-    <option value="upDown">up-down</option>
-    <option value="down">down</option>
-    <option value="random">random</option>
-</select>
-`
 
 const harmonUpdates = `
 <select>
@@ -86,6 +73,19 @@ const waveformUpdates = `
     <option value="sawtooth">sawtooth</option>
     <option value="square">square</option>
     <option value="triangle">triangle</option>
+</select>
+`
+const whileSelector = `
+<select class="selector">
+    <option value=""></option>
+    <option value="always">Always</option>
+    <option value="am">AM</option>
+    <option value="fm">FM</option>
+    <option value="lfo">LFO</option>
+    <option value="filter">filter</option>
+    <option value="harmon">harmonizer</option>
+    <option value="arp">arpeggiator</option>
+    <option value="waveform">waveform</option>
 </select>
 `
 const dummyOptions = `
@@ -178,16 +178,6 @@ const nextUpdateSelectorMap = {
     waveform: waveformUpdates
 }
 
-const alwaysSelectorMap = {
-    am: onOffPredicates,
-    fm: onOffPredicates,
-    lfo: onOffPredicates,
-    filter: onOffPredicates,
-    harmon: onOffPredicates,
-    arp: arpUpdatesForAlways,
-    waveform: waveformUpdates
-}
-
 // XXX: Abomination
 function formulaMap(termType, action){
     switch(termType){
@@ -199,6 +189,10 @@ function formulaMap(termType, action){
             switch(action){
                 case "":
                     return "";
+                case "on":
+                    return "[amSynthesis <- True()]";
+                case "off":
+                    return "[amSynthesis <- False()]";
                 case "toggle":
                     return "[amSynthesis <- toggle amSynthesis]";
                 case "inc10":
@@ -212,6 +206,10 @@ function formulaMap(termType, action){
             switch(action){
                 case "":
                     return "";
+                case "on":
+                    return "[fmSynthesis <- True()]";
+                case "off":
+                    return "[fmSynthesis <- False()]";
                 case "toggle":
                     return "[fmSynthesis <- toggle fmSynthesis]";
                 case "inc10":
@@ -225,6 +223,10 @@ function formulaMap(termType, action){
             switch(action){
                 case "":
                     return "";
+                case "on":
+                    return "[lfo <- True()]";
+                case "off":
+                    return "[lfo <- False()]";
                 case "toggle":
                     return "[lfo <- toggle lfo]";
                 case "inc1":
@@ -242,6 +244,10 @@ function formulaMap(termType, action){
             switch(action){
                 case "":
                     return "";
+                case "on":
+                    return "[filterOn <- True()]";
+                case "off":
+                    return "[filterOn <- False()]";
                 case "toggle":
                     return "[filterOn <- toggle filterOn]";
                 case "inc100":
@@ -265,6 +271,10 @@ function formulaMap(termType, action){
             switch(action){
                 case "":
                     return "";
+                case "on":
+                    return "[harmonizerOn <- True()]";
+                case "off":
+                    return "[harmonizerOn <- False()]";
                 case "toggle":
                     return "[harmonizerOn <- toggle harmonizerOn]";
                 case "inc1":
@@ -278,6 +288,10 @@ function formulaMap(termType, action){
             switch(action){
                 case "":
                     return "";
+                case "on":
+                    return "[arpeggiatorOn <- True()]";
+                case "off":
+                    return "[arpeggiatorOn <- False()]";
                 case "toggle":
                     return "[arpeggiatorOn <- toggle arpeggiatorOn]";
                 case "inc10":
@@ -323,6 +337,104 @@ function formulaMap(termType, action){
                 default:
                     const selectedNote = getSelectedNote(action);
                     return `play ${selectedNote}`;
+            }
+        default:
+            throw new Error("Out of switch cases");
+    }
+}
+
+// XXX: Abomination
+function weakUntilMap(specOptionNode){
+    function orAll(arg1, arg2, arg3){
+        return "(" + [arg1, arg2, arg3].join(" || ") + ")";
+    }
+    const termType = specOptionNode.firstChild.value,
+        action   = specOptionNode.lastChild.value;
+    switch(termType){
+        case "":
+            return "";
+        case "am":
+            switch(action){
+                case "on":
+                    return "[amSynthesis <- False()]"
+                case "off":
+                    return "[amSynthesis <- True()]"
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "fm":
+            switch(action){
+                case "on":
+                    return "[fmSynthesis <- False()]"
+                case "off":
+                    return "[fmSynthesis <- True()]"
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "filter":
+            switch(action){
+                case "on":
+                    return "[filterOn <- False()]"
+                case "off":
+                    return "[filterOn <- True()]"
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "harmon":
+            switch(action){
+                case "on":
+                    return "[harmonizerOn <- False()]"
+                case "off":
+                    return "[harmonizerOn <- True()]"
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "arp":
+            const up = "[arpeggiatorStyle <- upStyle()]",
+                down = "[arpeggiatorStyle <- downStyle()]",
+                upDown = "[arpeggiatorStyle <- upDownStyle()]",
+                downUp = "[arpeggiatorStyle <- downUpStyle()]";
+            switch(action){
+                case "on":
+                    return "[arpeggiatorOn <- False()]";
+                case "off":
+                    return "[arpeggiatorOn <- True()]";
+                case "up":
+                    return orAll(down, upDown, downUp);
+                case "down":
+                    return orAll(up, upDown, downUp);
+                case "upDown":
+                    return orAll(up, down, downUp);
+                case "downUp":
+                    return orAll(up, down, upDown);
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "lfo":
+            switch(action){
+                case "on":
+                    return "[lfo <- False()]";
+                case "off":
+                    return "[lfo <- True()]";
+                default:
+                    throw new Error("Out of switch cases");
+            }
+        case "waveform":
+            const sine = "[waveform <- sine()]",
+                sawtooth = "[waveform <- sawtooth()]",
+                square = "[waveform <- square()]",
+                triangle = "[waveform <- triangle()]";
+            switch(action){
+                case "sine":
+                    return orAll(sawtooth, square, triangle);
+                case "sawtooth":
+                    return orAll(sine, square, triangle);
+                case "square":
+                    return orAll(sine, sawtooth, triangle);
+                case "triangle":
+                    return orAll(sine, sawtooth, square);
+                default:
+                    throw new Error("Out of switch cases");
             }
         default:
             throw new Error("Out of switch cases");
