@@ -122,6 +122,7 @@ function createSpecificationSimple(){
 }
 
 function createSpecificationComplex(){
+    currSpecStyle = specStyles.complex;
     let specificationDiv = document.createElement("div");
     for(let i=0; i<NUM_SPECS; i++){
         const singleSpec = createSingleComplexSpec(i);
@@ -133,6 +134,7 @@ function createSpecificationComplex(){
 }
 
 function createSpecificationWritten(){
+    currSpecStyle = specStyles.written;
     const textArea = document.createElement("textarea");
     textArea.setAttribute("id", "specText");
     textArea.setAttribute("cols", "70");

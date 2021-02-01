@@ -224,3 +224,7 @@ function getSpecFromDOMDropdown(){
 
     return spec;
 }
+
+function getSpecFromDOMSimple(){return getSpecFromDOMDropdown();}
+function getSpecFromDOMComplex(){return getSpecFromDOMDropdown();}
+function getSpecFromDOMWritten(){return getSpecFromDOMDropdown();}

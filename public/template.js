@@ -1,20 +1,26 @@
+// Change these parameters
 const NUM_SPECS = 6;
-const FROM_HTML = false;
 
-const specificationHTML = "";
-function createInterfaceFromJS(){
-    return createSpecificationSimple();
-    // return createSpecificationComplex();
-    // return createSpecificationWritten();
-}
+const yourInterfaceHTML  = `
+<select>
+    <option value=" "></option>
+</select>
+`
 
+// Option 1) Create a function that returns a HTML node
+// with your specification interface HTML node inside
+// Option 2) Write your interface in HTML,
+// and use the helper function strToDOM to return a HTML node object
 function createSpecificationInterface() {
-    if(FROM_HTML)
-        return strToDOM(specificationHTML);
-    else
-        return createInterfaceFromJS();
+    // return createSpecificationSimple();
+    return createSpecificationComplex();
+    // return createSpecificationWritten();
+	// return strToDOM(yourInterfaceHTML);
 }
 
 function getSpecFromDOM(){
-    return getSpecFromDOMDropdown();
+    // return getSpecFromDOMSimple();
+    return getSpecFromDOMComplex();
+    // return getSpecFromDOMWritten();
+    // return yourInterfaceToLogicFunction();
 }
