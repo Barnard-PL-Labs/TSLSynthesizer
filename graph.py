@@ -15,19 +15,19 @@ with open(file_name, "r") as f:
         realizable = data_point[-1]
         data.append(DataPoint(time=time, real=realizable))
 
-#assert len(data) == 1000
+assert len(data) == 1000
 
-times = [x.time for x in data]
+times = [x.time for x in data if x.real != "f"]
+if file_name == "log_4_iff.txt":
+    times = [t for t in times if t < 10000]
 realizables = [x.real for x in data]
 print(Counter(realizables))
 print("median", np.median(times))
 print("mean", np.mean(times))
 
 times.sort()
-outlier_idx = 975
-times = times[:outlier_idx]
 
-plt.hist(times)
+plt.hist(times, edgecolor="black")
 plt.title("Distribution of synthesis times")
 plt.ylabel("Num. synthesis requests")
 plt.xlabel("Time taken (milliseconds)")
