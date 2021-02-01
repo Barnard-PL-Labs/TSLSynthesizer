@@ -21,10 +21,10 @@ print("median", np.median(times))
 print("mean", np.mean(times))
 
 times.sort()
-outlier_idx = 975
-times = times[:outlier_idx]
+#outlier_idx = 975
+#times = times[:outlier_idx]
 
-plt.hist(times)
+plt.hist(times, edgecolor='black')
 plt.title("Distribution of synthesis times")
 plt.ylabel("Num. synthesis requests")
 plt.xlabel("Time taken (milliseconds)")
