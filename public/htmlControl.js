@@ -1,10 +1,9 @@
-NUM_SPECS = 6
-
 ////////////////////////////
 //  DYNAMIC HTML LOADING  //
 ////////////////////////////
 
-const specRootNode = document.getElementById("specification");
+const specRootParent = document.getElementById("specification");
+let specRootNode;
 let specNodeList = [];
 
 function changeYoungerSibling(node, optionMap){
@@ -119,42 +118,48 @@ swapFrontendBtn.addEventListener("click", _ => {
     rebootSpecs();
 }, false);
 
-function bootSpecs(){
-    if(currSpecStyle === specStyles.simple){
-        for(let i=0; i<NUM_SPECS; i++){
-            const singleSpec = createSingleSpec(i);
-            specRootNode.appendChild(singleSpec);
-            specNodeList.push(singleSpec);
-            specRootNode.appendChild(document.createElement("br"));
-        }
+function createSpecificationSimple(){
+    let specificationDiv = document.createElement("div");
+    for(let i=0; i<NUM_SPECS; i++){
+        const singleSpec = createSingleSpec(i);
+        specificationDiv.appendChild(singleSpec);
+        specNodeList.push(singleSpec);
+        specificationDiv.appendChild(document.createElement("br"));
     }
-    else if(currSpecStyle === specStyles.complex){
-        for(let i=0; i<NUM_SPECS; i++){
-            const singleSpec = createSingleComplexSpec(i);
-            specRootNode.appendChild(singleSpec);
-            specNodeList.push(singleSpec);
-            specRootNode.appendChild(document.createElement("br"));
-        }
+    return specificationDiv;
+}
+
+function createSpecificationComplex(){
+    let specificationDiv = document.createElement("div");
+    for(let i=0; i<NUM_SPECS; i++){
+        const singleSpec = createSingleComplexSpec(i);
+        specificationDiv.appendChild(singleSpec);
+        specNodeList.push(singleSpec);
+        specificationDiv.appendChild(document.createElement("br"));
     }
-    else if(currSpecStyle === specStyles.written){
-        const textArea = document.createElement("textarea");
-        textArea.setAttribute("id", "specText");
-        textArea.setAttribute("cols", "70");
-        textArea.setAttribute("rows", "15");
-        textArea.value = `always guarantee{
+    return specificationDiv;
+}
+
+function createSpecificationWritten(){
+    const textArea = document.createElement("textarea");
+    textArea.setAttribute("id", "specText");
+    textArea.setAttribute("cols", "70");
+    textArea.setAttribute("rows", "15");
+    textArea.value = `always guarantee{
      	play note67 <-> [fmSynthesis <- toggle fmSynthesis];
      	play note64 <-> [lfo <- toggle lfo];\n}`;
-        specRootNode.appendChild(textArea);
-    }
-    else {
-        throw new Error("A wild error has occured");
-    }
+    return textArea;
+}
+
+function bootSpecs(){
+    specRootNode = createSpecificationInterface();
+    specRootParent.appendChild(specRootNode);
 }
 
 function rebootSpecs(){
     // Remove everything prior
-    while(specRootNode.children.length > 0){
-        specRootNode.children[specRootNode.children.length - 1].remove();
+    while(specRootParent.children.length > 0){
+        specRootParent.children[specRootParent.children.length - 1].remove();
     }
     specNodeList = [];
     bootSpecs();
