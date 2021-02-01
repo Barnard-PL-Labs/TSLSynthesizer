@@ -3,9 +3,9 @@ const FROM_HTML = false;
 
 const specificationHTML = "";
 function createInterfaceFromJS(){
-    // return createSpecificationSimple();
-    return createSpecificationComplex();
-    return createSpecificationWritten();
+    return createSpecificationSimple();
+    // return createSpecificationComplex();
+    // return createSpecificationWritten();
 }
 
 function createSpecificationInterface() {
@@ -13,4 +13,8 @@ function createSpecificationInterface() {
         return strToDOM(specificationHTML);
     else
         return createInterfaceFromJS();
+}
+
+function getSpecFromDOM(){
+    return getSpecFromDOMDropdown();
 }

@@ -182,7 +182,7 @@ function populateUnselectedNotes(){
     }
 }
 
-function getSpecFromDOM(){
+function getSpecFromDOMDropdown(){
     let spec;
     populateUnselectedNotes();
     if(currSpecStyle === specStyles.simple || currSpecStyle === specStyles.complex){

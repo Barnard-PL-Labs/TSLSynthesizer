@@ -117,20 +117,3 @@ function onMIDISuccess(midiAccess) {
 function onMIDIFailure() {
     console.log('Error: Could not access MIDI devices.');
 }
-
-function genRandSpec(){
-	const noteBase = "note6";
-	for(let i=0; i<selectedNotesList.length; i++)
-	    selectedNotesList[i] = `${noteBase}${i}`;
-	randomSpecBtn.click();
-}
-
-function runRandomSpecs(times){
-    const specs = [];
-    for(let i=0; i<times; i++){
-        genRandSpec();
-        specs.push(getSpecFromDOM());
-    }
-    return specs
-}
-
