@@ -1,9 +1,0 @@
-always assume{
-}always guarantee {
-	[lfo <- True()] -> (([filterOn <- False()] -> [arpeggiatorOn <- False()]) W [lfo <- False()]);
-	(([harmonizerOn <- False()] -> [waveform <- sawtooth()]));
-	(([harmonizerOn <- True()] -> [amSynthesis <- True()]));
-	(([filterOn <- True()] -> [fmSynthesis <- True()]));
-	[fmSynthesis <- False()] -> (([arpeggiatorStyle <- downStyle()] -> [arpeggiatorOn <- True()]) W [fmSynthesis <- True()]);
-	(([arpeggiatorOn <- True()] -> [fmSynthesis <- False()]));
-}

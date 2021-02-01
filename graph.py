@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 
 import numpy as np
+import sys
 from matplotlib import pyplot as plt
 from collections import namedtuple, Counter
 DataPoint = namedtuple("DataPoint", ("time", "real"))
 
-with open("log.txt", "r") as f:
+file_name = sys.argv[1]
+
+with open(file_name, "r") as f:
     data = []
     for data_point in f.read().split('\n')[:-1]:
         time = int(data_point[:-2])
         realizable = data_point[-1]
         data.append(DataPoint(time=time, real=realizable))
 
-assert len(data) == 1000
+#assert len(data) == 1000
 
 times = [x.time for x in data]
 realizables = [x.real for x in data]
