@@ -139,8 +139,8 @@ function bootSpecs(){
     else if(currSpecStyle === specStyles.written){
         const textArea = document.createElement("textarea");
         textArea.setAttribute("id", "specText");
-        textArea.setAttribute("cols", "70");
-        textArea.setAttribute("rows", "15");
+        textArea.setAttribute("cols", "50");
+        textArea.setAttribute("rows", "12");
         textArea.value = `always guarantee{
      	play note67 <-> [fmSynthesis <- toggle fmSynthesis];
      	play note64 <-> [lfo <- toggle lfo];\n}`;
