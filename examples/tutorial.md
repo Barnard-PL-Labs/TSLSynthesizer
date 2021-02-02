@@ -23,19 +23,24 @@ function getSpecFromDOM(){
 
 Here, we will fill in the fronted with a simple `textArea` interface.
 
-## `textarea` interface
+## The `textarea` interface
 We define our HTML interface:
 ```js
 const yourInterfaceHTML  = `
-<textarea id="specText" cols="70" rows="15"></textarea>
+<textarea id="specText" cols="50" rows="15"></textarea>
 `
 ```
 
-Parsing a `textarea``html` node only requires us to use its `value`, so we can implement the `getSpecFromDOM` function:
+Parsing a `textarea` `html` node only requires us to use its `value`, so we can implement the `getSpecFromDOM` function:
 ```js
 function getSpecFromDOM(){
     return document.getElementById("specText").value;
 }
 ```
 
-Voila! Now, we can test our interface right away!
+Voila! Now, you can test the interface right away, by entering your logic formulas directly into the interface.
+
+![](..\.github\tutorial_interface.png)
+
+## More resources
+Additional, more complicated examples are available in this examples folder.

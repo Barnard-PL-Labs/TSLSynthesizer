@@ -1,11 +1,23 @@
 const yourInterfaceHTML  = `
-<textarea id="specText" cols="70" rows="15"></textarea>
+<select>
+    <option value=" "></option>
+</select>
 `
 
+// Option 1) Create a function that returns a HTML node
+// with your specification interface HTML node inside
+// Option 2) Write your interface in HTML,
+// and use the helper function strToDOM to return a HTML node object
 function createSpecificationInterface() {
-    return strToDOM(yourInterfaceHTML);
+    // return createSpecificationSimple();
+    return createSpecificationComplex();
+    // return createSpecificationWritten();
+	// return strToDOM(yourInterfaceHTML);
 }
 
 function getSpecFromDOM(){
-    return document.getElementById("specText").value;
+    // return getSpecFromDOMSimple();
+    return getSpecFromDOMComplex();
+    // return getSpecFromDOMWritten();
+    // return yourInterfaceToLogicFunction();
 }
