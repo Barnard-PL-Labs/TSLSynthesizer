@@ -3,12 +3,12 @@ import shlex
 import os
 from tqdm import tqdm
 
-with open("complexRandSpecs_6_iff.log", "r") as f:
+with open("complexRandSpecs_4_iff_predicate.log", "r") as f:
     specs = f.read()
 
-after_i = 34
+after_i = 25
+timeout = 100
 
-spec_list = specs.split("\n***\n\n")
 spec_list = specs.split("\n***\n\n")[after_i:]
 
 assert len(spec_list) == (1000 - after_i)
@@ -17,9 +17,9 @@ def run_once(spec, index):
     with open("temp.tsl", "w") as f:
         f.write(spec)
     try:
-        subprocess.run(shlex.split("./synthesize.sh temp.tsl"), timeout=10)
+        subprocess.run(shlex.split("./synthesize.sh temp.tsl"), timeout=timeout)
     except subprocess.TimeoutExpired:
-        with open("log.txt", "a") as f:
+        with open("log_4_iff_predicate.txt", "a") as f:
             f.write(str(index+after_i) + '+f\n')
         os.system("sudo killall strix")
 
