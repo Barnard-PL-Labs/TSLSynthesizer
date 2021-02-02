@@ -72,17 +72,18 @@ const dummyOptions = `
 </select>
 `
 
+        //<option value="am">AM</option>
+        //<option value="fm">FM</option>
+        //<option value="lfo">LFO</option>
+        //<option value="filter">filter</option>
+        //<option value="harmon">harmonizer</option>
+        //<option value="arp">arpeggiator</option>
+        //<option value="waveform">waveform</option>
+
 
 const predicateSelector = `
 <select class="selector">
     <option value=""></option>
-        <option value="am">AM</option>
-        <option value="fm">FM</option>
-        <option value="lfo">LFO</option>
-        <option value="filter">filter</option>
-        <option value="harmon">harmonizer</option>
-        <option value="arp">arpeggiator</option>
-        <option value="waveform">waveform</option>
     <option value="playing">playing</option>
 </select>
 `
@@ -101,10 +102,10 @@ const playingPredicates = `
     <option value="0">Note 1</option>
     <option value="1">Note 2</option>
     <option value="2">Note 3</option>
-    <option value="veloLow">with velocity < 50</option>
-    <option value="veloHigh">with velocity > 50</option>
 </select>
 `
+    //<option value="veloLow">with velocity < 50</option>
+    //<option value="veloHigh">with velocity > 50</option>
 
 const predicateSelectMap = {
     always: dummyOptions,
@@ -332,13 +333,13 @@ function weakUntilMap(specOptionNode){
                 case "off":
                     return "[arpeggiatorOn <- True()]";
                 case "up":
-                    return orAll(down, upDown, downUp);
+                    return "![arpeggiatorStyle <- upStyle()]";
                 case "down":
-                    return orAll(up, upDown, downUp);
+                    return "![arpeggiatorStyle <- downStyle()]";
                 case "upDown":
-                    return orAll(up, down, downUp);
+                    return "![arpeggiatorStyle <- upDownStyle()]";
                 case "downUp":
-                    return orAll(up, down, upDown);
+                    return "![arpeggiatorStyle <- downUpStyle()]";
                 default:
                     throw new Error("Out of switch cases");
             }
@@ -358,13 +359,13 @@ function weakUntilMap(specOptionNode){
                   triangle = "[waveform <- triangle()]";
             switch(action){
                 case "sine":
-                    return orAll(sawtooth, square, triangle);
+					return "![waveform <- sine()]";
                 case "sawtooth":
-                    return orAll(sine, square, triangle);
+					return "![waveform <- sawtooth()]";
                 case "square":
-                    return orAll(sine, sawtooth, triangle);
+					return "![waveform <- square()]";
                 case "triangle":
-                    return orAll(sine, sawtooth, square);
+					return "![waveform <- triangle()]";
                 default:
                     throw new Error("Out of switch cases");
             }

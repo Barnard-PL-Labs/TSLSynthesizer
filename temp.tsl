@@ -1,9 +1,10 @@
 always assume{
-}always guarantee {
-	[fmSynthesis <- True()] -> (([filterOn <- True()] -> [lfo <- True()]) W [fmSynthesis <- False()]);
-	[arpeggiatorOn <- True()] -> (([lfo <- True()] -> [lfo <- False()]) W [arpeggiatorOn <- False()]);
-	[arpeggiatorStyle <- downUpStyle()] -> (([harmonizerOn <- True()] -> [lfo <- False()]) W ([arpeggiatorStyle <- upStyle()] || [arpeggiatorStyle <- downStyle()] || [arpeggiatorStyle <- upDownStyle()]));
-	[harmonizerOn <- False()] -> (([fmSynthesis <- False()] -> [harmonizerOn <- False()]) W [harmonizerOn <- True()]);
-	[waveform <- square()] -> (([fmSynthesis <- True()] -> [waveform <- sine()]) W ([waveform <- sine()] || [waveform <- sawtooth()] || [waveform <- triangle()]));
-	[arpeggiatorStyle <- downStyle()] -> (([harmonizerOn <- True()] -> [lfo <- False()]) W ([arpeggiatorStyle <- upStyle()] || [arpeggiatorStyle <- upDownStyle()] || [arpeggiatorStyle <- downUpStyle()]));
+	!(play note62 && play note60);
+
+}
+always guarantee {
+	[waveform <- sawtooth()] -> ((play note62 <-> [arpeggiatorOn <- True()]) W ![waveform <- sawtooth()]);
+	[arpeggiatorStyle <- upStyle()] -> ((play note60 <-> [arpeggiatorStyle <- downStyle()]) W ![arpeggiatorStyle <- upStyle()]);
+	[fmSynthesis <- False()] -> ((play note60 <-> [harmonizerOn <- True()]) W [fmSynthesis <- True()]);
+	[waveform <- square()] -> ((play note62 <-> [lfo <- True()]) W ![waveform <- square()]);
 }

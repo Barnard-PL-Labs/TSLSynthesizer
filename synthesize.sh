@@ -29,4 +29,4 @@ fi
 
 result="$elapsed+$realizable"
 
-echo $result >> log.txt
+echo $result >> log_4_iff_predicate.txt
