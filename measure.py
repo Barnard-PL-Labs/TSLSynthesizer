@@ -6,6 +6,8 @@ with open("complexRandSpecs_6_iff.log", "r") as f:
 
 spec_list = specs.split("\n***\n\n")
 
+spec_list = spec_list[377:]
+
 def run_once(spec):
     with open("temp.tsl", "w") as f:
         f.write(spec)
