@@ -1,6 +1,8 @@
 ////////////////
 //  RAW HTML  //
 ////////////////
+const NUM_SPECS = 6;
+
 const updateSelector = `
 <select class="selector">
     <option value=""></option>

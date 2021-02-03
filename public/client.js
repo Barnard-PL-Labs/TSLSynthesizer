@@ -121,4 +121,5 @@ function onMIDISuccess(midiAccess) {
 // Function to run when requestMIDIAccess fails
 function onMIDIFailure() {
     console.log('Error: Could not access MIDI devices.');
+
 }
