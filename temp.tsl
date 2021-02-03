@@ -1,11 +1,9 @@
 always assume{
-
-}
-always guarantee {
-	[amSynthesis <- False()] -> ((veloBelow50 noteVelocity <-> [arpeggiatorStyle <- downStyle()]) W [amSynthesis <- True()]);
-	[filterOn <- False()] -> (([lfo <- True()] -> [harmonizerOn <- False()]) W [filterOn <- True()]);
-	[amSynthesis <- True()] -> (([filterOn <- False()] -> [fmSynthesis <- True()]) W [amSynthesis <- False()]);
-	[lfo <- False()] -> (([waveform <- square()] -> [lfo <- False()]) W [lfo <- True()]);
-	[arpeggiatorStyle <- downUpStyle()] -> (([harmonizerOn <- False()] -> [fmSynthesis <- False()]) W ([arpeggiatorStyle <- upStyle()] || [arpeggiatorStyle <- downStyle()] || [arpeggiatorStyle <- upDownStyle()]));
-	[filterOn <- False()] -> (([arpeggiatorOn <- False()] -> [fmSynthesis <- False()]) W [filterOn <- True()]);
+}always guarantee {
+	[lfo <- True()] -> (([filterOn <- False()] -> [arpeggiatorOn <- False()]) W [lfo <- False()]);
+	(([harmonizerOn <- False()] -> [waveform <- sawtooth()]));
+	(([harmonizerOn <- True()] -> [amSynthesis <- True()]));
+	(([filterOn <- True()] -> [fmSynthesis <- True()]));
+	[fmSynthesis <- False()] -> (([arpeggiatorStyle <- downStyle()] -> [arpeggiatorOn <- True()]) W [fmSynthesis <- True()]);
+	(([arpeggiatorOn <- True()] -> [fmSynthesis <- False()]));
 }
