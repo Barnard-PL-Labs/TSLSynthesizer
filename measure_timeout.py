@@ -3,10 +3,10 @@ import shlex
 import os
 from tqdm import tqdm
 
-with open("complexRandSpecs_6_iff.log", "r") as f:
+with open("complexRandSpecs_6_iff_predicate.log", "r") as f:
     specs = f.read()
 
-after_i = 434
+after_i = 0
 timeout = 100
 
 spec_list = specs.split("\n***\n\n")[after_i:]
@@ -19,7 +19,7 @@ def run_once(spec, index):
     try:
         subprocess.run(shlex.split("./synthesize.sh temp.tsl"), timeout=timeout)
     except subprocess.TimeoutExpired:
-        with open("log_6_iff_full_progress.txt", "a") as f:
+        with open("log_6_iff_predicate.txt", "a") as f:
             f.write(str(index+after_i) + '+f\n')
         os.system("sudo killall strix")
 
