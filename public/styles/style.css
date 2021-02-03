@@ -5,11 +5,14 @@ html {
     font-size: 18px;
 }
 
+body {
+    background-color: #050505;
+}
 h1, h2 {
     font-family: 'Press Start 2P', cursive;
 }
 
-h1, a, a:visited, pre {
+h1, a, pre {
     color: #fb2a3d;
 }
 
@@ -29,7 +32,6 @@ h3 {
     width: 1000px;
     margin: 40px auto;
     color: black;
-    background-color: yellow;
 }
 
 .keyboard {
@@ -55,3 +57,9 @@ pre {
 #lastClicked, #controls{
     margin: 0 10px;
 }
+
+input, label, .musicOption {
+    display:block;
+    text-align: left;
+}
+

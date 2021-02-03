@@ -1,0 +1,2083 @@
+<html lang="en"><head><title>TSL Synthesis Synthesizer: Reconfigurable Signal Flows through Program Synthesis</title><meta charSet="utf-8"/><style type="text/css">/* Imports the equivalent of components/Editor/styles/base.scss,
+but without the media query mixin, which breaks PagedJS-cli:
+https://gitlab.pagedmedia.org/tools/pagedjs-cli/issues/11 */
+@import url("https://use.typekit.net/kmi0tdo.css");
+.ProseMirror {
+  position: relative; }
+
+.ProseMirror {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  -webkit-font-variant-ligatures: none;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0;
+  /* the above doesn't seem to work in Edge */ }
+
+.ProseMirror pre {
+  white-space: pre-wrap; }
+
+.ProseMirror li {
+  position: relative; }
+
+.ProseMirror-hideselection *::selection {
+  background: transparent; }
+
+.ProseMirror-hideselection *::-moz-selection {
+  background: transparent; }
+
+.ProseMirror-hideselection {
+  caret-color: transparent; }
+
+.ProseMirror-selectednode {
+  outline: 2px solid #8cf; }
+
+/* Make sure li selections wrap around markers */
+li.ProseMirror-selectednode {
+  outline: none; }
+
+li.ProseMirror-selectednode:after {
+  content: "";
+  position: absolute;
+  left: -32px;
+  right: -2px;
+  top: -2px;
+  bottom: -2px;
+  border: 2px solid #8cf;
+  pointer-events: none; }
+
+.ProseMirror-gapcursor {
+  display: none;
+  pointer-events: none;
+  position: absolute; }
+
+.ProseMirror-gapcursor:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -2px;
+  width: 20px;
+  border-top: 1px solid black;
+  animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite; }
+
+@keyframes ProseMirror-cursor-blink {
+  to {
+    visibility: hidden; } }
+
+.ProseMirror-focused .ProseMirror-gapcursor {
+  display: block; }
+
+.ProseMirror .tableWrapper {
+  overflow-x: auto; }
+
+.ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  overflow: hidden; }
+
+.ProseMirror td, .ProseMirror th {
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative; }
+
+.ProseMirror .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  z-index: 20;
+  background-color: #adf;
+  pointer-events: none; }
+
+.ProseMirror.resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize; }
+
+/* Give selected cells a blue overlay */
+.ProseMirror .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(200, 200, 255, 0.4);
+  pointer-events: none; }
+
+/* stylelint-disable font-family-no-missing-generic-family-keyword */
+@font-face {
+  font-family: 'KaTeX_AMS';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_AMS-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_AMS-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_AMS-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Caligraphic';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Caligraphic-Bold.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Caligraphic-Bold.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Caligraphic-Bold.ttf) format("truetype");
+  font-weight: bold;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Caligraphic';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Caligraphic-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Caligraphic-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Caligraphic-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Fraktur';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Fraktur-Bold.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Fraktur-Bold.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Fraktur-Bold.ttf) format("truetype");
+  font-weight: bold;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Fraktur';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Fraktur-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Fraktur-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Fraktur-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Main';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Bold.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Bold.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Bold.ttf) format("truetype");
+  font-weight: bold;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Main';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-BoldItalic.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-BoldItalic.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-BoldItalic.ttf) format("truetype");
+  font-weight: bold;
+  font-style: italic; }
+
+@font-face {
+  font-family: 'KaTeX_Main';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Italic.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Italic.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Italic.ttf) format("truetype");
+  font-weight: normal;
+  font-style: italic; }
+
+@font-face {
+  font-family: 'KaTeX_Main';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Main-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Math';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Math-BoldItalic.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Math-BoldItalic.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Math-BoldItalic.ttf) format("truetype");
+  font-weight: bold;
+  font-style: italic; }
+
+@font-face {
+  font-family: 'KaTeX_Math';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Math-Italic.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Math-Italic.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Math-Italic.ttf) format("truetype");
+  font-weight: normal;
+  font-style: italic; }
+
+@font-face {
+  font-family: 'KaTeX_SansSerif';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Bold.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Bold.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Bold.ttf) format("truetype");
+  font-weight: bold;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_SansSerif';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Italic.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Italic.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Italic.ttf) format("truetype");
+  font-weight: normal;
+  font-style: italic; }
+
+@font-face {
+  font-family: 'KaTeX_SansSerif';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_SansSerif-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Script';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Script-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Script-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Script-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Size1';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size1-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size1-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size1-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Size2';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size2-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size2-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size2-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Size3';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size3-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size3-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size3-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Size4';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size4-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size4-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Size4-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'KaTeX_Typewriter';
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Typewriter-Regular.woff2) format("woff2"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Typewriter-Regular.woff) format("woff"), url(https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/fonts/KaTeX_Typewriter-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+.katex {
+  font: normal 1.21em KaTeX_Main, Times New Roman, serif;
+  line-height: 1.2;
+  text-indent: 0;
+  text-rendering: auto; }
+
+.katex * {
+  -ms-high-contrast-adjust: none !important; }
+
+.katex .katex-version::after {
+  content: "0.11.1"; }
+
+.katex .katex-mathml {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0;
+  border: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden; }
+
+.katex .katex-html {
+  /* \newline is an empty block at top level, between .base elements */ }
+
+.katex .katex-html > .newline {
+  display: block; }
+
+.katex .base {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  width: min-content; }
+
+.katex .strut {
+  display: inline-block; }
+
+.katex .textbf {
+  font-weight: bold; }
+
+.katex .textit {
+  font-style: italic; }
+
+.katex .textrm {
+  font-family: KaTeX_Main; }
+
+.katex .textsf {
+  font-family: KaTeX_SansSerif; }
+
+.katex .texttt {
+  font-family: KaTeX_Typewriter; }
+
+.katex .mathdefault {
+  font-family: KaTeX_Math;
+  font-style: italic; }
+
+.katex .mathit {
+  font-family: KaTeX_Main;
+  font-style: italic; }
+
+.katex .mathrm {
+  font-style: normal; }
+
+.katex .mathbf {
+  font-family: KaTeX_Main;
+  font-weight: bold; }
+
+.katex .boldsymbol {
+  font-family: KaTeX_Math;
+  font-weight: bold;
+  font-style: italic; }
+
+.katex .amsrm {
+  font-family: KaTeX_AMS; }
+
+.katex .mathbb,
+.katex .textbb {
+  font-family: KaTeX_AMS; }
+
+.katex .mathcal {
+  font-family: KaTeX_Caligraphic; }
+
+.katex .mathfrak,
+.katex .textfrak {
+  font-family: KaTeX_Fraktur; }
+
+.katex .mathtt {
+  font-family: KaTeX_Typewriter; }
+
+.katex .mathscr,
+.katex .textscr {
+  font-family: KaTeX_Script; }
+
+.katex .mathsf,
+.katex .textsf {
+  font-family: KaTeX_SansSerif; }
+
+.katex .mathboldsf,
+.katex .textboldsf {
+  font-family: KaTeX_SansSerif;
+  font-weight: bold; }
+
+.katex .mathitsf,
+.katex .textitsf {
+  font-family: KaTeX_SansSerif;
+  font-style: italic; }
+
+.katex .mainrm {
+  font-family: KaTeX_Main;
+  font-style: normal; }
+
+.katex .vlist-t {
+  display: inline-table;
+  table-layout: fixed; }
+
+.katex .vlist-r {
+  display: table-row; }
+
+.katex .vlist {
+  display: table-cell;
+  vertical-align: bottom;
+  position: relative; }
+
+.katex .vlist > span {
+  display: block;
+  height: 0;
+  position: relative; }
+
+.katex .vlist > span > span {
+  display: inline-block; }
+
+.katex .vlist > span > .pstrut {
+  overflow: hidden;
+  width: 0; }
+
+.katex .vlist-t2 {
+  margin-right: -2px; }
+
+.katex .vlist-s {
+  display: table-cell;
+  vertical-align: bottom;
+  font-size: 1px;
+  width: 2px;
+  min-width: 2px; }
+
+.katex .msupsub {
+  text-align: left; }
+
+.katex .mfrac > span > span {
+  text-align: center; }
+
+.katex .mfrac .frac-line {
+  display: inline-block;
+  width: 100%;
+  border-bottom-style: solid; }
+
+.katex .mfrac .frac-line,
+.katex .overline .overline-line,
+.katex .underline .underline-line,
+.katex .hline,
+.katex .hdashline,
+.katex .rule {
+  min-height: 1px; }
+
+.katex .mspace {
+  display: inline-block; }
+
+.katex .llap,
+.katex .rlap,
+.katex .clap {
+  width: 0;
+  position: relative; }
+
+.katex .llap > .inner,
+.katex .rlap > .inner,
+.katex .clap > .inner {
+  position: absolute; }
+
+.katex .llap > .fix,
+.katex .rlap > .fix,
+.katex .clap > .fix {
+  display: inline-block; }
+
+.katex .llap > .inner {
+  right: 0; }
+
+.katex .rlap > .inner,
+.katex .clap > .inner {
+  left: 0; }
+
+.katex .clap > .inner > span {
+  margin-left: -50%;
+  margin-right: 50%; }
+
+.katex .rule {
+  display: inline-block;
+  border: solid 0;
+  position: relative; }
+
+.katex .overline .overline-line,
+.katex .underline .underline-line,
+.katex .hline {
+  display: inline-block;
+  width: 100%;
+  border-bottom-style: solid; }
+
+.katex .hdashline {
+  display: inline-block;
+  width: 100%;
+  border-bottom-style: dashed; }
+
+.katex .sqrt > .root {
+  margin-left: 0.27777778em;
+  margin-right: -0.55555556em; }
+
+.katex .sizing.reset-size1.size1,
+.katex .fontsize-ensurer.reset-size1.size1 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size1.size2,
+.katex .fontsize-ensurer.reset-size1.size2 {
+  font-size: 1.2em; }
+
+.katex .sizing.reset-size1.size3,
+.katex .fontsize-ensurer.reset-size1.size3 {
+  font-size: 1.4em; }
+
+.katex .sizing.reset-size1.size4,
+.katex .fontsize-ensurer.reset-size1.size4 {
+  font-size: 1.6em; }
+
+.katex .sizing.reset-size1.size5,
+.katex .fontsize-ensurer.reset-size1.size5 {
+  font-size: 1.8em; }
+
+.katex .sizing.reset-size1.size6,
+.katex .fontsize-ensurer.reset-size1.size6 {
+  font-size: 2em; }
+
+.katex .sizing.reset-size1.size7,
+.katex .fontsize-ensurer.reset-size1.size7 {
+  font-size: 2.4em; }
+
+.katex .sizing.reset-size1.size8,
+.katex .fontsize-ensurer.reset-size1.size8 {
+  font-size: 2.88em; }
+
+.katex .sizing.reset-size1.size9,
+.katex .fontsize-ensurer.reset-size1.size9 {
+  font-size: 3.456em; }
+
+.katex .sizing.reset-size1.size10,
+.katex .fontsize-ensurer.reset-size1.size10 {
+  font-size: 4.148em; }
+
+.katex .sizing.reset-size1.size11,
+.katex .fontsize-ensurer.reset-size1.size11 {
+  font-size: 4.976em; }
+
+.katex .sizing.reset-size2.size1,
+.katex .fontsize-ensurer.reset-size2.size1 {
+  font-size: 0.83333333em; }
+
+.katex .sizing.reset-size2.size2,
+.katex .fontsize-ensurer.reset-size2.size2 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size2.size3,
+.katex .fontsize-ensurer.reset-size2.size3 {
+  font-size: 1.16666667em; }
+
+.katex .sizing.reset-size2.size4,
+.katex .fontsize-ensurer.reset-size2.size4 {
+  font-size: 1.33333333em; }
+
+.katex .sizing.reset-size2.size5,
+.katex .fontsize-ensurer.reset-size2.size5 {
+  font-size: 1.5em; }
+
+.katex .sizing.reset-size2.size6,
+.katex .fontsize-ensurer.reset-size2.size6 {
+  font-size: 1.66666667em; }
+
+.katex .sizing.reset-size2.size7,
+.katex .fontsize-ensurer.reset-size2.size7 {
+  font-size: 2em; }
+
+.katex .sizing.reset-size2.size8,
+.katex .fontsize-ensurer.reset-size2.size8 {
+  font-size: 2.4em; }
+
+.katex .sizing.reset-size2.size9,
+.katex .fontsize-ensurer.reset-size2.size9 {
+  font-size: 2.88em; }
+
+.katex .sizing.reset-size2.size10,
+.katex .fontsize-ensurer.reset-size2.size10 {
+  font-size: 3.45666667em; }
+
+.katex .sizing.reset-size2.size11,
+.katex .fontsize-ensurer.reset-size2.size11 {
+  font-size: 4.14666667em; }
+
+.katex .sizing.reset-size3.size1,
+.katex .fontsize-ensurer.reset-size3.size1 {
+  font-size: 0.71428571em; }
+
+.katex .sizing.reset-size3.size2,
+.katex .fontsize-ensurer.reset-size3.size2 {
+  font-size: 0.85714286em; }
+
+.katex .sizing.reset-size3.size3,
+.katex .fontsize-ensurer.reset-size3.size3 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size3.size4,
+.katex .fontsize-ensurer.reset-size3.size4 {
+  font-size: 1.14285714em; }
+
+.katex .sizing.reset-size3.size5,
+.katex .fontsize-ensurer.reset-size3.size5 {
+  font-size: 1.28571429em; }
+
+.katex .sizing.reset-size3.size6,
+.katex .fontsize-ensurer.reset-size3.size6 {
+  font-size: 1.42857143em; }
+
+.katex .sizing.reset-size3.size7,
+.katex .fontsize-ensurer.reset-size3.size7 {
+  font-size: 1.71428571em; }
+
+.katex .sizing.reset-size3.size8,
+.katex .fontsize-ensurer.reset-size3.size8 {
+  font-size: 2.05714286em; }
+
+.katex .sizing.reset-size3.size9,
+.katex .fontsize-ensurer.reset-size3.size9 {
+  font-size: 2.46857143em; }
+
+.katex .sizing.reset-size3.size10,
+.katex .fontsize-ensurer.reset-size3.size10 {
+  font-size: 2.96285714em; }
+
+.katex .sizing.reset-size3.size11,
+.katex .fontsize-ensurer.reset-size3.size11 {
+  font-size: 3.55428571em; }
+
+.katex .sizing.reset-size4.size1,
+.katex .fontsize-ensurer.reset-size4.size1 {
+  font-size: 0.625em; }
+
+.katex .sizing.reset-size4.size2,
+.katex .fontsize-ensurer.reset-size4.size2 {
+  font-size: 0.75em; }
+
+.katex .sizing.reset-size4.size3,
+.katex .fontsize-ensurer.reset-size4.size3 {
+  font-size: 0.875em; }
+
+.katex .sizing.reset-size4.size4,
+.katex .fontsize-ensurer.reset-size4.size4 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size4.size5,
+.katex .fontsize-ensurer.reset-size4.size5 {
+  font-size: 1.125em; }
+
+.katex .sizing.reset-size4.size6,
+.katex .fontsize-ensurer.reset-size4.size6 {
+  font-size: 1.25em; }
+
+.katex .sizing.reset-size4.size7,
+.katex .fontsize-ensurer.reset-size4.size7 {
+  font-size: 1.5em; }
+
+.katex .sizing.reset-size4.size8,
+.katex .fontsize-ensurer.reset-size4.size8 {
+  font-size: 1.8em; }
+
+.katex .sizing.reset-size4.size9,
+.katex .fontsize-ensurer.reset-size4.size9 {
+  font-size: 2.16em; }
+
+.katex .sizing.reset-size4.size10,
+.katex .fontsize-ensurer.reset-size4.size10 {
+  font-size: 2.5925em; }
+
+.katex .sizing.reset-size4.size11,
+.katex .fontsize-ensurer.reset-size4.size11 {
+  font-size: 3.11em; }
+
+.katex .sizing.reset-size5.size1,
+.katex .fontsize-ensurer.reset-size5.size1 {
+  font-size: 0.55555556em; }
+
+.katex .sizing.reset-size5.size2,
+.katex .fontsize-ensurer.reset-size5.size2 {
+  font-size: 0.66666667em; }
+
+.katex .sizing.reset-size5.size3,
+.katex .fontsize-ensurer.reset-size5.size3 {
+  font-size: 0.77777778em; }
+
+.katex .sizing.reset-size5.size4,
+.katex .fontsize-ensurer.reset-size5.size4 {
+  font-size: 0.88888889em; }
+
+.katex .sizing.reset-size5.size5,
+.katex .fontsize-ensurer.reset-size5.size5 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size5.size6,
+.katex .fontsize-ensurer.reset-size5.size6 {
+  font-size: 1.11111111em; }
+
+.katex .sizing.reset-size5.size7,
+.katex .fontsize-ensurer.reset-size5.size7 {
+  font-size: 1.33333333em; }
+
+.katex .sizing.reset-size5.size8,
+.katex .fontsize-ensurer.reset-size5.size8 {
+  font-size: 1.6em; }
+
+.katex .sizing.reset-size5.size9,
+.katex .fontsize-ensurer.reset-size5.size9 {
+  font-size: 1.92em; }
+
+.katex .sizing.reset-size5.size10,
+.katex .fontsize-ensurer.reset-size5.size10 {
+  font-size: 2.30444444em; }
+
+.katex .sizing.reset-size5.size11,
+.katex .fontsize-ensurer.reset-size5.size11 {
+  font-size: 2.76444444em; }
+
+.katex .sizing.reset-size6.size1,
+.katex .fontsize-ensurer.reset-size6.size1 {
+  font-size: 0.5em; }
+
+.katex .sizing.reset-size6.size2,
+.katex .fontsize-ensurer.reset-size6.size2 {
+  font-size: 0.6em; }
+
+.katex .sizing.reset-size6.size3,
+.katex .fontsize-ensurer.reset-size6.size3 {
+  font-size: 0.7em; }
+
+.katex .sizing.reset-size6.size4,
+.katex .fontsize-ensurer.reset-size6.size4 {
+  font-size: 0.8em; }
+
+.katex .sizing.reset-size6.size5,
+.katex .fontsize-ensurer.reset-size6.size5 {
+  font-size: 0.9em; }
+
+.katex .sizing.reset-size6.size6,
+.katex .fontsize-ensurer.reset-size6.size6 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size6.size7,
+.katex .fontsize-ensurer.reset-size6.size7 {
+  font-size: 1.2em; }
+
+.katex .sizing.reset-size6.size8,
+.katex .fontsize-ensurer.reset-size6.size8 {
+  font-size: 1.44em; }
+
+.katex .sizing.reset-size6.size9,
+.katex .fontsize-ensurer.reset-size6.size9 {
+  font-size: 1.728em; }
+
+.katex .sizing.reset-size6.size10,
+.katex .fontsize-ensurer.reset-size6.size10 {
+  font-size: 2.074em; }
+
+.katex .sizing.reset-size6.size11,
+.katex .fontsize-ensurer.reset-size6.size11 {
+  font-size: 2.488em; }
+
+.katex .sizing.reset-size7.size1,
+.katex .fontsize-ensurer.reset-size7.size1 {
+  font-size: 0.41666667em; }
+
+.katex .sizing.reset-size7.size2,
+.katex .fontsize-ensurer.reset-size7.size2 {
+  font-size: 0.5em; }
+
+.katex .sizing.reset-size7.size3,
+.katex .fontsize-ensurer.reset-size7.size3 {
+  font-size: 0.58333333em; }
+
+.katex .sizing.reset-size7.size4,
+.katex .fontsize-ensurer.reset-size7.size4 {
+  font-size: 0.66666667em; }
+
+.katex .sizing.reset-size7.size5,
+.katex .fontsize-ensurer.reset-size7.size5 {
+  font-size: 0.75em; }
+
+.katex .sizing.reset-size7.size6,
+.katex .fontsize-ensurer.reset-size7.size6 {
+  font-size: 0.83333333em; }
+
+.katex .sizing.reset-size7.size7,
+.katex .fontsize-ensurer.reset-size7.size7 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size7.size8,
+.katex .fontsize-ensurer.reset-size7.size8 {
+  font-size: 1.2em; }
+
+.katex .sizing.reset-size7.size9,
+.katex .fontsize-ensurer.reset-size7.size9 {
+  font-size: 1.44em; }
+
+.katex .sizing.reset-size7.size10,
+.katex .fontsize-ensurer.reset-size7.size10 {
+  font-size: 1.72833333em; }
+
+.katex .sizing.reset-size7.size11,
+.katex .fontsize-ensurer.reset-size7.size11 {
+  font-size: 2.07333333em; }
+
+.katex .sizing.reset-size8.size1,
+.katex .fontsize-ensurer.reset-size8.size1 {
+  font-size: 0.34722222em; }
+
+.katex .sizing.reset-size8.size2,
+.katex .fontsize-ensurer.reset-size8.size2 {
+  font-size: 0.41666667em; }
+
+.katex .sizing.reset-size8.size3,
+.katex .fontsize-ensurer.reset-size8.size3 {
+  font-size: 0.48611111em; }
+
+.katex .sizing.reset-size8.size4,
+.katex .fontsize-ensurer.reset-size8.size4 {
+  font-size: 0.55555556em; }
+
+.katex .sizing.reset-size8.size5,
+.katex .fontsize-ensurer.reset-size8.size5 {
+  font-size: 0.625em; }
+
+.katex .sizing.reset-size8.size6,
+.katex .fontsize-ensurer.reset-size8.size6 {
+  font-size: 0.69444444em; }
+
+.katex .sizing.reset-size8.size7,
+.katex .fontsize-ensurer.reset-size8.size7 {
+  font-size: 0.83333333em; }
+
+.katex .sizing.reset-size8.size8,
+.katex .fontsize-ensurer.reset-size8.size8 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size8.size9,
+.katex .fontsize-ensurer.reset-size8.size9 {
+  font-size: 1.2em; }
+
+.katex .sizing.reset-size8.size10,
+.katex .fontsize-ensurer.reset-size8.size10 {
+  font-size: 1.44027778em; }
+
+.katex .sizing.reset-size8.size11,
+.katex .fontsize-ensurer.reset-size8.size11 {
+  font-size: 1.72777778em; }
+
+.katex .sizing.reset-size9.size1,
+.katex .fontsize-ensurer.reset-size9.size1 {
+  font-size: 0.28935185em; }
+
+.katex .sizing.reset-size9.size2,
+.katex .fontsize-ensurer.reset-size9.size2 {
+  font-size: 0.34722222em; }
+
+.katex .sizing.reset-size9.size3,
+.katex .fontsize-ensurer.reset-size9.size3 {
+  font-size: 0.40509259em; }
+
+.katex .sizing.reset-size9.size4,
+.katex .fontsize-ensurer.reset-size9.size4 {
+  font-size: 0.46296296em; }
+
+.katex .sizing.reset-size9.size5,
+.katex .fontsize-ensurer.reset-size9.size5 {
+  font-size: 0.52083333em; }
+
+.katex .sizing.reset-size9.size6,
+.katex .fontsize-ensurer.reset-size9.size6 {
+  font-size: 0.5787037em; }
+
+.katex .sizing.reset-size9.size7,
+.katex .fontsize-ensurer.reset-size9.size7 {
+  font-size: 0.69444444em; }
+
+.katex .sizing.reset-size9.size8,
+.katex .fontsize-ensurer.reset-size9.size8 {
+  font-size: 0.83333333em; }
+
+.katex .sizing.reset-size9.size9,
+.katex .fontsize-ensurer.reset-size9.size9 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size9.size10,
+.katex .fontsize-ensurer.reset-size9.size10 {
+  font-size: 1.20023148em; }
+
+.katex .sizing.reset-size9.size11,
+.katex .fontsize-ensurer.reset-size9.size11 {
+  font-size: 1.43981481em; }
+
+.katex .sizing.reset-size10.size1,
+.katex .fontsize-ensurer.reset-size10.size1 {
+  font-size: 0.24108004em; }
+
+.katex .sizing.reset-size10.size2,
+.katex .fontsize-ensurer.reset-size10.size2 {
+  font-size: 0.28929605em; }
+
+.katex .sizing.reset-size10.size3,
+.katex .fontsize-ensurer.reset-size10.size3 {
+  font-size: 0.33751205em; }
+
+.katex .sizing.reset-size10.size4,
+.katex .fontsize-ensurer.reset-size10.size4 {
+  font-size: 0.38572806em; }
+
+.katex .sizing.reset-size10.size5,
+.katex .fontsize-ensurer.reset-size10.size5 {
+  font-size: 0.43394407em; }
+
+.katex .sizing.reset-size10.size6,
+.katex .fontsize-ensurer.reset-size10.size6 {
+  font-size: 0.48216008em; }
+
+.katex .sizing.reset-size10.size7,
+.katex .fontsize-ensurer.reset-size10.size7 {
+  font-size: 0.57859209em; }
+
+.katex .sizing.reset-size10.size8,
+.katex .fontsize-ensurer.reset-size10.size8 {
+  font-size: 0.69431051em; }
+
+.katex .sizing.reset-size10.size9,
+.katex .fontsize-ensurer.reset-size10.size9 {
+  font-size: 0.83317261em; }
+
+.katex .sizing.reset-size10.size10,
+.katex .fontsize-ensurer.reset-size10.size10 {
+  font-size: 1em; }
+
+.katex .sizing.reset-size10.size11,
+.katex .fontsize-ensurer.reset-size10.size11 {
+  font-size: 1.19961427em; }
+
+.katex .sizing.reset-size11.size1,
+.katex .fontsize-ensurer.reset-size11.size1 {
+  font-size: 0.20096463em; }
+
+.katex .sizing.reset-size11.size2,
+.katex .fontsize-ensurer.reset-size11.size2 {
+  font-size: 0.24115756em; }
+
+.katex .sizing.reset-size11.size3,
+.katex .fontsize-ensurer.reset-size11.size3 {
+  font-size: 0.28135048em; }
+
+.katex .sizing.reset-size11.size4,
+.katex .fontsize-ensurer.reset-size11.size4 {
+  font-size: 0.32154341em; }
+
+.katex .sizing.reset-size11.size5,
+.katex .fontsize-ensurer.reset-size11.size5 {
+  font-size: 0.36173633em; }
+
+.katex .sizing.reset-size11.size6,
+.katex .fontsize-ensurer.reset-size11.size6 {
+  font-size: 0.40192926em; }
+
+.katex .sizing.reset-size11.size7,
+.katex .fontsize-ensurer.reset-size11.size7 {
+  font-size: 0.48231511em; }
+
+.katex .sizing.reset-size11.size8,
+.katex .fontsize-ensurer.reset-size11.size8 {
+  font-size: 0.57877814em; }
+
+.katex .sizing.reset-size11.size9,
+.katex .fontsize-ensurer.reset-size11.size9 {
+  font-size: 0.69453376em; }
+
+.katex .sizing.reset-size11.size10,
+.katex .fontsize-ensurer.reset-size11.size10 {
+  font-size: 0.83360129em; }
+
+.katex .sizing.reset-size11.size11,
+.katex .fontsize-ensurer.reset-size11.size11 {
+  font-size: 1em; }
+
+.katex .delimsizing.size1 {
+  font-family: KaTeX_Size1; }
+
+.katex .delimsizing.size2 {
+  font-family: KaTeX_Size2; }
+
+.katex .delimsizing.size3 {
+  font-family: KaTeX_Size3; }
+
+.katex .delimsizing.size4 {
+  font-family: KaTeX_Size4; }
+
+.katex .delimsizing.mult .delim-size1 > span {
+  font-family: KaTeX_Size1; }
+
+.katex .delimsizing.mult .delim-size4 > span {
+  font-family: KaTeX_Size4; }
+
+.katex .nulldelimiter {
+  display: inline-block;
+  width: 0.12em; }
+
+.katex .delimcenter {
+  position: relative; }
+
+.katex .op-symbol {
+  position: relative; }
+
+.katex .op-symbol.small-op {
+  font-family: KaTeX_Size1; }
+
+.katex .op-symbol.large-op {
+  font-family: KaTeX_Size2; }
+
+.katex .op-limits > .vlist-t {
+  text-align: center; }
+
+.katex .accent > .vlist-t {
+  text-align: center; }
+
+.katex .accent .accent-body {
+  position: relative; }
+
+.katex .accent .accent-body:not(.accent-full) {
+  width: 0; }
+
+.katex .overlay {
+  display: block; }
+
+.katex .mtable .vertical-separator {
+  display: inline-block;
+  min-width: 1px; }
+
+.katex .mtable .arraycolsep {
+  display: inline-block; }
+
+.katex .mtable .col-align-c > .vlist-t {
+  text-align: center; }
+
+.katex .mtable .col-align-l > .vlist-t {
+  text-align: left; }
+
+.katex .mtable .col-align-r > .vlist-t {
+  text-align: right; }
+
+.katex .svg-align {
+  text-align: left; }
+
+.katex svg {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: inherit;
+  fill: currentColor;
+  stroke: currentColor;
+  fill-rule: nonzero;
+  fill-opacity: 1;
+  stroke-width: 1;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 4;
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  stroke-opacity: 1; }
+
+.katex svg path {
+  stroke: none; }
+
+.katex img {
+  border-style: none;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none; }
+
+.katex .stretchy {
+  width: 100%;
+  display: block;
+  position: relative;
+  overflow: hidden; }
+
+.katex .stretchy::before,
+.katex .stretchy::after {
+  content: ""; }
+
+.katex .hide-tail {
+  width: 100%;
+  position: relative;
+  overflow: hidden; }
+
+.katex .halfarrow-left {
+  position: absolute;
+  left: 0;
+  width: 50.2%;
+  overflow: hidden; }
+
+.katex .halfarrow-right {
+  position: absolute;
+  right: 0;
+  width: 50.2%;
+  overflow: hidden; }
+
+.katex .brace-left {
+  position: absolute;
+  left: 0;
+  width: 25.1%;
+  overflow: hidden; }
+
+.katex .brace-center {
+  position: absolute;
+  left: 25%;
+  width: 50%;
+  overflow: hidden; }
+
+.katex .brace-right {
+  position: absolute;
+  right: 0;
+  width: 25.1%;
+  overflow: hidden; }
+
+.katex .x-arrow-pad {
+  padding: 0 0.5em; }
+
+.katex .x-arrow,
+.katex .mover,
+.katex .munder {
+  text-align: center; }
+
+.katex .boxpad {
+  padding: 0 0.3em 0 0.3em; }
+
+.katex .fbox,
+.katex .fcolorbox {
+  box-sizing: border-box;
+  border: 0.04em solid; }
+
+.katex .cancel-pad {
+  padding: 0 0.2em 0 0.2em; }
+
+.katex .cancel-lap {
+  margin-left: -0.2em;
+  margin-right: -0.2em; }
+
+.katex .sout {
+  border-bottom-style: solid;
+  border-bottom-width: 0.08em; }
+
+.katex-display {
+  display: block;
+  margin: 1em 0;
+  text-align: center; }
+
+.katex-display > .katex {
+  display: block;
+  text-align: center;
+  white-space: nowrap; }
+
+.katex-display > .katex > .katex-html {
+  display: block;
+  position: relative; }
+
+.katex-display > .katex > .katex-html > .tag {
+  position: absolute;
+  right: 0; }
+
+.katex-display.leqno > .katex > .katex-html > .tag {
+  left: 0;
+  right: auto; }
+
+.katex-display.fleqn > .katex {
+  text-align: left; }
+
+[data-node-type='math-inline'] {
+  font-size: 0.9em;
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 100%; }
+
+[data-node-type='math-block'] {
+  font-size: 20px;
+  text-align: center;
+  max-width: 100%;
+  position: relative;
+  display: flex; }
+  [data-node-type='math-block'] > span {
+    flex-grow: 1; }
+  [data-node-type='math-block'] > span:first-child {
+    flex-shrink: 2; }
+  [data-node-type='math-block'] > span:nth-child(2) {
+    flex-shrink: 0; }
+  [data-node-type='math-block'] > span:last-child {
+    flex-shrink: 1;
+    text-align: right; }
+
+.equation-label {
+  text-align: center;
+  font-family: skolar-latin, Georgia, Cambria, "Times New Roman", Times, serif; }
+
+.editor {
+  /*! fileicon.css v0.1.1 | MIT License | github.com/picturepan2/fileicon.css */
+  /* fileicon.basic */
+  /* fileicons */
+  /* fileicon.types */
+  /* This clunky table, tableWrapper thing is because */
+  /* isReadOnly removes the wrapping div, so margins don't */
+  /* collapse as expected in all situations. */ }
+  .editor:focus {
+    outline: none !important; }
+  .editor .prosemirror-placeholder {
+    opacity: 0.5;
+    white-space: nowrap;
+    position: relative; }
+    .editor .prosemirror-placeholder:after {
+      position: absolute;
+      top: 0;
+      content: attr(data-content); }
+  .editor .ProseMirror-selectednode {
+    outline: 2px solid #bbbdc0; }
+  .editor.read-only .ProseMirror-selectednode {
+    outline: 0px solid #bbbdc0; }
+  .editor h1 a,
+  .editor h2 a,
+  .editor h3 a,
+  .editor h4 a,
+  .editor h5 a,
+  .editor h6 a {
+    text-decoration: none;
+    color: inherit; }
+  .editor .footnote {
+    vertical-align: super;
+    font-size: 0.85em; }
+  .editor span.citation {
+    color: #808080;
+    font-weight: bold; }
+  .editor a.reference.missing {
+    color: darkred; }
+  .editor table {
+    /* Prosemirror requires white-space: pre-wrap, but it's overriden by the quirks.css */
+    /* built-in that Firefox provides, breaking the editor. */
+    /* See https://github.com/ProseMirror/prosemirror/issues/651#issuecomment-313436150 */
+    white-space: pre-wrap !important; }
+  .editor .collab-cursor {
+    position: relative;
+    font-family: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif;
+    color: white;
+    user-select: none;
+    vertical-align: top; }
+    .editor .collab-cursor .inner-bar {
+      position: absolute;
+      height: calc(1em + 5px);
+      width: 2px;
+      background-color: #001996;
+      bottom: 0px;
+      left: 0; }
+      .editor .collab-cursor .inner-bar .inner-circle-small {
+        position: absolute;
+        height: 8px;
+        width: 8px;
+        border-radius: 8px;
+        background-color: #001996;
+        bottom: calc(100% + 0px);
+        left: -3px; }
+      .editor .collab-cursor .inner-bar .hover-wrapper {
+        transform: scale(0.4);
+        opacity: 0;
+        transform-origin: bottom left;
+        transition: .1s 0.3s linear transform, 0s 0.4s linear opacity;
+        display: block;
+        position: absolute;
+        bottom: 100%;
+        pointer-events: none;
+        z-index: 1; }
+        .editor .collab-cursor .inner-bar .hover-wrapper .inner-circle-big {
+          position: absolute;
+          height: 24px;
+          width: 24px;
+          border-radius: 24px;
+          background-color: #001996;
+          bottom: 0px;
+          left: -11px; }
+        .editor .collab-cursor .inner-bar .hover-wrapper .initials:after {
+          display: block;
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          bottom: 2px;
+          left: -9px;
+          font-size: 12px;
+          font-weight: bold;
+          line-height: 20px;
+          text-align: center;
+          z-index: 4;
+          white-space: nowrap;
+          user-select: none; }
+        .editor .collab-cursor .inner-bar .hover-wrapper .name:after {
+          position: absolute;
+          display: block;
+          padding: 2px 12px;
+          border-radius: 2px;
+          color: white;
+          background-color: #777;
+          font-size: 12px;
+          line-height: 16px;
+          font-weight: 400;
+          bottom: 2px;
+          left: 6px;
+          white-space: nowrap;
+          z-index: 3;
+          user-select: none; }
+        .editor .collab-cursor .inner-bar .hover-wrapper .image:after {
+          position: absolute;
+          bottom: 2px;
+          left: -9px;
+          z-index: 5;
+          border-radius: 10px;
+          width: 20px;
+          height: 20px;
+          background-size: cover;
+          content: "";
+          max-width: none;
+          margin-top: 0px; }
+    .editor .collab-cursor:hover .hover-wrapper {
+      opacity: 1;
+      transform: scale(1);
+      transition: .1s linear transform, 0s 0s linear opacity; }
+  .editor figure {
+    display: block;
+    text-align: center;
+    margin: 0; }
+    .editor figure > * {
+      pointer-events: none;
+      width: 100%; }
+    .editor figure.ProseMirror-selectednode {
+      outline: 2px solid #bbbdc0; }
+      .editor figure.ProseMirror-selectednode > * {
+        pointer-events: auto; }
+    .editor figure[data-align='left'] {
+      float: left;
+      margin: 0.5em 1.5em 0.5em 0em; }
+    .editor figure[data-align='right'] {
+      float: right;
+      margin: 0.5em 0em 0.5em 1.5em; }
+    .editor figure[data-align='center'] {
+      margin: 0 auto; }
+    .editor figure[data-size='1'] {
+      width: 1%; }
+    .editor figure[data-size='2'] {
+      width: 2%; }
+    .editor figure[data-size='3'] {
+      width: 3%; }
+    .editor figure[data-size='4'] {
+      width: 4%; }
+    .editor figure[data-size='5'] {
+      width: 5%; }
+    .editor figure[data-size='6'] {
+      width: 6%; }
+    .editor figure[data-size='7'] {
+      width: 7%; }
+    .editor figure[data-size='8'] {
+      width: 8%; }
+    .editor figure[data-size='9'] {
+      width: 9%; }
+    .editor figure[data-size='10'] {
+      width: 10%; }
+    .editor figure[data-size='11'] {
+      width: 11%; }
+    .editor figure[data-size='12'] {
+      width: 12%; }
+    .editor figure[data-size='13'] {
+      width: 13%; }
+    .editor figure[data-size='14'] {
+      width: 14%; }
+    .editor figure[data-size='15'] {
+      width: 15%; }
+    .editor figure[data-size='16'] {
+      width: 16%; }
+    .editor figure[data-size='17'] {
+      width: 17%; }
+    .editor figure[data-size='18'] {
+      width: 18%; }
+    .editor figure[data-size='19'] {
+      width: 19%; }
+    .editor figure[data-size='20'] {
+      width: 20%; }
+    .editor figure[data-size='21'] {
+      width: 21%; }
+    .editor figure[data-size='22'] {
+      width: 22%; }
+    .editor figure[data-size='23'] {
+      width: 23%; }
+    .editor figure[data-size='24'] {
+      width: 24%; }
+    .editor figure[data-size='25'] {
+      width: 25%; }
+    .editor figure[data-size='26'] {
+      width: 26%; }
+    .editor figure[data-size='27'] {
+      width: 27%; }
+    .editor figure[data-size='28'] {
+      width: 28%; }
+    .editor figure[data-size='29'] {
+      width: 29%; }
+    .editor figure[data-size='30'] {
+      width: 30%; }
+    .editor figure[data-size='31'] {
+      width: 31%; }
+    .editor figure[data-size='32'] {
+      width: 32%; }
+    .editor figure[data-size='33'] {
+      width: 33%; }
+    .editor figure[data-size='34'] {
+      width: 34%; }
+    .editor figure[data-size='35'] {
+      width: 35%; }
+    .editor figure[data-size='36'] {
+      width: 36%; }
+    .editor figure[data-size='37'] {
+      width: 37%; }
+    .editor figure[data-size='38'] {
+      width: 38%; }
+    .editor figure[data-size='39'] {
+      width: 39%; }
+    .editor figure[data-size='40'] {
+      width: 40%; }
+    .editor figure[data-size='41'] {
+      width: 41%; }
+    .editor figure[data-size='42'] {
+      width: 42%; }
+    .editor figure[data-size='43'] {
+      width: 43%; }
+    .editor figure[data-size='44'] {
+      width: 44%; }
+    .editor figure[data-size='45'] {
+      width: 45%; }
+    .editor figure[data-size='46'] {
+      width: 46%; }
+    .editor figure[data-size='47'] {
+      width: 47%; }
+    .editor figure[data-size='48'] {
+      width: 48%; }
+    .editor figure[data-size='49'] {
+      width: 49%; }
+    .editor figure[data-size='50'] {
+      width: 50%; }
+    .editor figure[data-size='51'] {
+      width: 51%; }
+    .editor figure[data-size='52'] {
+      width: 52%; }
+    .editor figure[data-size='53'] {
+      width: 53%; }
+    .editor figure[data-size='54'] {
+      width: 54%; }
+    .editor figure[data-size='55'] {
+      width: 55%; }
+    .editor figure[data-size='56'] {
+      width: 56%; }
+    .editor figure[data-size='57'] {
+      width: 57%; }
+    .editor figure[data-size='58'] {
+      width: 58%; }
+    .editor figure[data-size='59'] {
+      width: 59%; }
+    .editor figure[data-size='60'] {
+      width: 60%; }
+    .editor figure[data-size='61'] {
+      width: 61%; }
+    .editor figure[data-size='62'] {
+      width: 62%; }
+    .editor figure[data-size='63'] {
+      width: 63%; }
+    .editor figure[data-size='64'] {
+      width: 64%; }
+    .editor figure[data-size='65'] {
+      width: 65%; }
+    .editor figure[data-size='66'] {
+      width: 66%; }
+    .editor figure[data-size='67'] {
+      width: 67%; }
+    .editor figure[data-size='68'] {
+      width: 68%; }
+    .editor figure[data-size='69'] {
+      width: 69%; }
+    .editor figure[data-size='70'] {
+      width: 70%; }
+    .editor figure[data-size='71'] {
+      width: 71%; }
+    .editor figure[data-size='72'] {
+      width: 72%; }
+    .editor figure[data-size='73'] {
+      width: 73%; }
+    .editor figure[data-size='74'] {
+      width: 74%; }
+    .editor figure[data-size='75'] {
+      width: 75%; }
+    .editor figure[data-size='76'] {
+      width: 76%; }
+    .editor figure[data-size='77'] {
+      width: 77%; }
+    .editor figure[data-size='78'] {
+      width: 78%; }
+    .editor figure[data-size='79'] {
+      width: 79%; }
+    .editor figure[data-size='80'] {
+      width: 80%; }
+    .editor figure[data-size='81'] {
+      width: 81%; }
+    .editor figure[data-size='82'] {
+      width: 82%; }
+    .editor figure[data-size='83'] {
+      width: 83%; }
+    .editor figure[data-size='84'] {
+      width: 84%; }
+    .editor figure[data-size='85'] {
+      width: 85%; }
+    .editor figure[data-size='86'] {
+      width: 86%; }
+    .editor figure[data-size='87'] {
+      width: 87%; }
+    .editor figure[data-size='88'] {
+      width: 88%; }
+    .editor figure[data-size='89'] {
+      width: 89%; }
+    .editor figure[data-size='90'] {
+      width: 90%; }
+    .editor figure[data-size='91'] {
+      width: 91%; }
+    .editor figure[data-size='92'] {
+      width: 92%; }
+    .editor figure[data-size='93'] {
+      width: 93%; }
+    .editor figure[data-size='94'] {
+      width: 94%; }
+    .editor figure[data-size='95'] {
+      width: 95%; }
+    .editor figure[data-size='96'] {
+      width: 96%; }
+    .editor figure[data-size='97'] {
+      width: 97%; }
+    .editor figure[data-size='98'] {
+      width: 98%; }
+    .editor figure[data-size='99'] {
+      width: 99%; }
+    .editor figure[data-size='100'] {
+      width: 100%; }
+    .editor figure[data-align='full'] {
+      width: 100%; }
+    .editor figure figcaption {
+      opacity: 0.75;
+      margin: 1em auto; }
+  .editor.ProseMirror.read-only figure > * {
+    pointer-events: auto; }
+  .editor.ProseMirror.read-only figure.ProseMirror-selectednode {
+    outline: none; }
+  .editor .file-icon {
+    font-family: Arial, Tahoma, sans-serif;
+    font-weight: 300;
+    display: inline-block;
+    width: 24px;
+    height: 32px;
+    background: #018fef;
+    flex-shrink: 0;
+    position: relative;
+    border-radius: 2px;
+    text-align: left;
+    -webkit-font-smoothing: antialiased; }
+  .editor .file-icon::before {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-bottom-left-radius: 2px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #fff #fff rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.35); }
+  .editor .file-icon::after {
+    display: block;
+    content: attr(data-type);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 10px;
+    color: #fff;
+    text-transform: lowercase;
+    width: 100%;
+    padding: 2px;
+    white-space: nowrap;
+    overflow: hidden; }
+  .editor .file-icon-xs {
+    width: 12px;
+    height: 16px;
+    border-radius: 2px; }
+  .editor .file-icon-xs::before {
+    border-bottom-left-radius: 1px;
+    border-width: 3px; }
+  .editor .file-icon-xs::after {
+    content: "";
+    border-bottom: 2px solid rgba(255, 255, 255, 0.45);
+    width: auto;
+    left: 2px;
+    right: 2px;
+    bottom: 3px; }
+  .editor .file-icon-sm {
+    width: 18px;
+    height: 24px;
+    border-radius: 2px; }
+  .editor .file-icon-sm::before {
+    border-bottom-left-radius: 2px;
+    border-width: 4px; }
+  .editor .file-icon-sm::after {
+    font-size: 7px;
+    padding: 2px; }
+  .editor .file-icon-lg {
+    width: 48px;
+    height: 64px;
+    border-radius: 3px; }
+  .editor .file-icon-lg::before {
+    border-bottom-left-radius: 2px;
+    border-width: 8px; }
+  .editor .file-icon-lg::after {
+    font-size: 16px;
+    padding: 4px 6px; }
+  .editor .file-icon-xl {
+    width: 96px;
+    height: 128px;
+    border-radius: 4px; }
+  .editor .file-icon-xl::before {
+    border-bottom-left-radius: 4px;
+    border-width: 16px; }
+  .editor .file-icon-xl::after {
+    font-size: 24px;
+    padding: 4px 10px; }
+  .editor .file-icon[data-type=zip],
+  .editor .file-icon[data-type=rar] {
+    background: #acacac; }
+  .editor .file-icon[data-type^=doc] {
+    background: #307cf1; }
+  .editor .file-icon[data-type^=xls] {
+    background: #0f9d58; }
+  .editor .file-icon[data-type^=ppt] {
+    background: #d24726; }
+  .editor .file-icon[data-type=pdf] {
+    background: #e13d34; }
+  .editor .file-icon[data-type=txt] {
+    background: #5eb533; }
+  .editor .file-icon[data-type=mp3],
+  .editor .file-icon[data-type=wma],
+  .editor .file-icon[data-type=m4a],
+  .editor .file-icon[data-type=flac] {
+    background: #8e44ad; }
+  .editor .file-icon[data-type=mp4],
+  .editor .file-icon[data-type=wmv],
+  .editor .file-icon[data-type=mov],
+  .editor .file-icon[data-type=avi],
+  .editor .file-icon[data-type=mkv] {
+    background: #7a3ce7; }
+  .editor .file-icon[data-type=bmp],
+  .editor .file-icon[data-type=jpg],
+  .editor .file-icon[data-type=jpeg],
+  .editor .file-icon[data-type=gif],
+  .editor .file-icon[data-type=png] {
+    background: #f48c00; }
+  .editor [data-node-type='file'] {
+    width: 65%; }
+    .editor [data-node-type='file'] .details {
+      display: flex;
+      align-items: center;
+      text-align: left; }
+      .editor [data-node-type='file'] .details .extension {
+        text-transform: uppercase;
+        font-family: 'Courier', monospace;
+        font-weight: 600;
+        font-size: 1.5em; }
+      .editor [data-node-type='file'] .details .file-name {
+        flex-grow: 1;
+        flex-shrink: 1;
+        margin: 0em 1em;
+        word-wrap: break-word; }
+        .editor [data-node-type='file'] .details .file-name a {
+          color: inherit; }
+          .editor [data-node-type='file'] .details .file-name a:hover {
+            cursor: pointer;
+            text-decoration: underline !important; }
+      .editor [data-node-type='file'] .details .file-size {
+        margin: 0em 1em; }
+  .editor .tableWrapper {
+    margin: 1em 0; }
+    .editor .tableWrapper table {
+      margin: 0em; }
+  .editor th {
+    font-weight: bold;
+    text-align: left;
+    background-color: #f0f0f4; }
+  .editor th,
+  .editor td,
+  .editor table caption {
+    min-width: 1em;
+    border: 1px solid #ddd;
+    padding: 3px 5px;
+    /* Two :last-of-type as a selector specificity hack */
+    /* :last-child does not work here because the table plugin inserts nodes when resizing */ }
+    .editor th > p:last-of-type:last-of-type,
+    .editor td > p:last-of-type:last-of-type,
+    .editor table caption > p:last-of-type:last-of-type {
+      margin-bottom: 0; }
+  .editor table {
+    margin: 1em 0;
+    max-width: 100%; }
+    .editor table caption {
+      text-align: left;
+      border-bottom: none;
+      padding: 3px 5px; }
+
+/* Import some global variables and styles, including fonts */
+.pub-body-component .editor.ProseMirror h1#abstract:first-child,
+.pub-body-styles h1#abstract:first-child {
+  text-transform: uppercase;
+  font-size: 1em;
+  font-weight: 500;
+  padding-top: 1em; }
+  .pub-body-component .editor.ProseMirror h1#abstract:first-child + p,
+  .pub-body-styles h1#abstract:first-child + p {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1em; }
+
+.pub-body-component .editor.ProseMirror h1,
+.pub-body-component .editor.ProseMirror h2,
+.pub-body-component .editor.ProseMirror h3,
+.pub-body-component .editor.ProseMirror h4,
+.pub-body-component .editor.ProseMirror h5,
+.pub-body-component .editor.ProseMirror h6,
+.pub-body-styles h1,
+.pub-body-styles h2,
+.pub-body-styles h3,
+.pub-body-styles h4,
+.pub-body-styles h5,
+.pub-body-styles h6 {
+  margin-bottom: 0.5em;
+  line-height: 1em;
+  font-weight: 500;
+  font-family: multi-display, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif;
+  letter-spacing: 1px; }
+  .pub-body-component .editor.ProseMirror h1 a,
+  .pub-body-component .editor.ProseMirror h2 a,
+  .pub-body-component .editor.ProseMirror h3 a,
+  .pub-body-component .editor.ProseMirror h4 a,
+  .pub-body-component .editor.ProseMirror h5 a,
+  .pub-body-component .editor.ProseMirror h6 a,
+  .pub-body-styles h1 a,
+  .pub-body-styles h2 a,
+  .pub-body-styles h3 a,
+  .pub-body-styles h4 a,
+  .pub-body-styles h5 a,
+  .pub-body-styles h6 a {
+    text-decoration: underline; }
+
+.pub-body-component .editor.ProseMirror h1,
+.pub-body-styles h1 {
+  font-size: 1.4em;
+  font-weight: 600;
+  line-height: 1.3em;
+  letter-spacing: 0px; }
+
+.pub-body-component .editor.ProseMirror h2,
+.pub-body-styles h2 {
+  font-size: 1.3em;
+  line-height: 1.3em;
+  font-weight: 500;
+  letter-spacing: 0px; }
+
+.pub-body-component .editor.ProseMirror h3,
+.pub-body-styles h3 {
+  font-size: 1.2em;
+  line-height: 1.3em;
+  font-weight: 400;
+  letter-spacing: 0.5px; }
+
+.pub-body-component .editor.ProseMirror h4,
+.pub-body-styles h4 {
+  font-size: 1em;
+  line-height: 1.3em;
+  font-weight: 500;
+  letter-spacing: 0.5px; }
+
+.pub-body-component .editor.ProseMirror h5,
+.pub-body-styles h5 {
+  font-size: 1em;
+  line-height: 1.3em;
+  font-weight: 400;
+  letter-spacing: 0.5px; }
+
+.pub-body-component .editor.ProseMirror h6,
+.pub-body-styles h6 {
+  font-size: 1em;
+  line-height: 1.3em;
+  font-weight: 300;
+  letter-spacing: 0.5px; }
+
+.pub-body-component .editor.ProseMirror * + h1,
+.pub-body-component .editor.ProseMirror * + h2,
+.pub-body-component .editor.ProseMirror * + h3,
+.pub-body-component .editor.ProseMirror * + h4,
+.pub-body-component .editor.ProseMirror * + h5,
+.pub-body-component .editor.ProseMirror * + h6,
+.pub-body-styles * + h1,
+.pub-body-styles * + h2,
+.pub-body-styles * + h3,
+.pub-body-styles * + h4,
+.pub-body-styles * + h5,
+.pub-body-styles * + h6 {
+  margin-top: 1.4em; }
+
+.pub-body-component .editor.ProseMirror p,
+.pub-body-component .editor.ProseMirror li,
+.pub-body-styles p,
+.pub-body-styles li {
+  font-family: skolar-latin, Georgia, Cambria, "Times New Roman", Times, serif;
+  letter-spacing: 0.01rem;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.7;
+  letter-spacing: -0.003em;
+  margin: 0em 0em 1em;
+  word-break: break-word; }
+
+.pub-body-component .editor.ProseMirror li,
+.pub-body-styles li {
+  margin: 0em; }
+  .pub-body-component .editor.ProseMirror li > p,
+  .pub-body-styles li > p {
+    margin: 0; }
+
+.pub-body-component .editor.ProseMirror ul > li,
+.pub-body-styles ul > li {
+  font-size: 0.8em; }
+  .pub-body-component .editor.ProseMirror ul > li > *,
+  .pub-body-styles ul > li > * {
+    font-size: 1.25em; }
+
+.pub-body-component .editor.ProseMirror ul,
+.pub-body-component .editor.ProseMirror ol,
+.pub-body-styles ul,
+.pub-body-styles ol {
+  padding-left: 1em;
+  margin: 0em 0em 1em; }
+  .pub-body-component .editor.ProseMirror ul ul,
+  .pub-body-component .editor.ProseMirror ul ol,
+  .pub-body-component .editor.ProseMirror ol ul,
+  .pub-body-component .editor.ProseMirror ol ol,
+  .pub-body-styles ul ul,
+  .pub-body-styles ul ol,
+  .pub-body-styles ol ul,
+  .pub-body-styles ol ol {
+    margin-bottom: 0em; }
+
+.pub-body-component .editor.ProseMirror hr,
+.pub-body-styles hr {
+  margin: 1em 0em; }
+
+.pub-body-component .editor.ProseMirror pre,
+.pub-body-styles pre {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  box-shadow: none;
+  white-space: pre;
+  overflow: hidden;
+  overflow-x: auto; }
+  .pub-body-component .editor.ProseMirror pre code,
+  .pub-body-styles pre code {
+    white-space: pre;
+    background-color: transparent;
+    padding: 0em; }
+
+.pub-body-component .editor.ProseMirror code,
+.pub-body-styles code {
+  background-color: rgba(27, 31, 35, 0.06);
+  border-radius: 2px;
+  font-size: 0.8em;
+  margin: 0;
+  padding: 0.2em 0.4em; }
+
+.pub-body-component .editor.ProseMirror blockquote,
+.pub-body-styles blockquote {
+  line-height: inherit;
+  font-size: 1em;
+  margin: 0 0 1em;
+  border-left: solid 4px rgba(181, 181, 181, 0.5);
+  padding: 0 1em; }
+
+.pub-body-component .editor.ProseMirror figure,
+.pub-body-component .editor.ProseMirror .file,
+.pub-body-styles figure,
+.pub-body-styles .file {
+  font-size: 0.75em; }
+
+.pub-body-component .editor.ProseMirror figcaption,
+.pub-body-styles figcaption {
+  font-size: 0.9em; }
+  .pub-body-component .editor.ProseMirror figcaption p,
+  .pub-body-styles figcaption p {
+    margin-bottom: 0em;
+    line-height: 1;
+    font-family: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif; }
+
+.pub-body-component .editor.ProseMirror iframe,
+.pub-body-styles iframe {
+  border: 0px solid transparent; }
+
+.pub-body-component .editor.ProseMirror *:first-child:not(.discussion-thread),
+.pub-body-styles *:first-child:not(.discussion-thread) {
+  margin-top: 0em; }
+
+.pub-body-component {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-font-feature-settings: 'liga' on;
+  font-feature-settings: 'liga' on;
+  font-size: 14px;
+  min-height: 300px;
+  margin-top: 25px; }
+  .pub-body-component .editor.ProseMirror {
+    min-height: 150px; }
+  .pub-body-component .bp3-callout.working-draft {
+    display: flex;
+    align-items: center; }
+    .pub-body-component .bp3-callout.working-draft span {
+      flex-grow: 1;
+      flex-shrink: 1; }
+  .pub-body-component .permanent {
+    background-color: #ffc940; }
+
+.pub-body-alert .error-time {
+  font-weight: bold; }
+
+body {
+  font-family: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif; }
+
+/* Paged-specific overrides */
+.csl-bib-body,
+.csl-entry {
+  display: inline; }
+
+.pub-body-component .editor.ProseMirror .pub-notes ol > li {
+  list-style-position: inside;
+  margin: inherit; }
+  .pub-body-component .editor.ProseMirror .pub-notes ol > li:target {
+    background: cornsilk; }
+  .pub-body-component .editor.ProseMirror .pub-notes ol > li p:last-child {
+    display: inline; }
+    .pub-body-component .editor.ProseMirror .pub-notes ol > li p:last-child:before {
+      display: inline;
+      content: ' '; }
+  .pub-body-component .editor.ProseMirror .pub-notes ol > li .return-link {
+    font-size: 0.75em; }
+
+.pub-body-component .editor.ProseMirror figure > * {
+  pointer-events: auto; }
+
+section.cover {
+  font-family: multi-display, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif; }
+  section.cover .title {
+    margin-top: 0;
+    font-size: 3em; }
+  section.cover .byline h3 {
+    margin: 0; }
+    section.cover .byline h3 span.name {
+      white-space: nowrap;
+      display: inline-block;
+      margin-right: 0.2em; }
+  section.cover .byline h5 {
+    margin: 0;
+    margin-top: 0.5em; }
+    section.cover .byline h5 span.affiliation {
+      white-space: break-word;
+      display: inline-block;
+      margin-right: 0.2em; }
+  section.cover .details > *:not(:last-child) {
+    margin-bottom: 7px; }
+  section.cover .title,
+  section.cover .byline,
+  section.cover .details {
+    margin-bottom: 30px !important; }
+
+@media screen {
+  body > * {
+    max-width: 700px;
+    margin: 0 auto; }
+    body > *.pub-body-component {
+      font-size: 20px !important; } }
+
+@media print {
+  /* Baseline page styles */
+  @page {
+    size: Letter;
+    @top-left {
+      color: #666;
+      font-size: 10px;
+      font-family: multi-display, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif;
+      content: string(community-and-collection); }
+    @top-right {
+      color: #666;
+      font-size: 10px;
+      font-family: multi-display, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif;
+      content: string(title); }
+    @bottom-center {
+      color: #666;
+      font-size: 10px;
+      font-family: multi-display, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif;
+      content: counter(page); } }
+  /* Avoid being the last element on the page */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    break-after: avoid; }
+  tr,
+  th {
+    break-inside: avoid;
+    max-height: 90vh;
+    overflow-y: hidden; }
+  figure {
+    break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    max-height: 800px; }
+    figure img,
+    figure video {
+      break-inside: avoid;
+      width: 100%;
+      min-height: 0;
+      max-height: 100%;
+      flex-shrink: 1;
+      object-fit: contain; }
+  figcaption {
+    font-size: 10px;
+    color: #555;
+    flex-shrink: 0; }
+  table {
+    font-size: 12px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    overflow: hidden; }
+  table caption {
+    text-align: left; }
+  table,
+  tr,
+  th,
+  td {
+    border: 1px #ccc solid;
+    padding: 5px; }
+  th {
+    font-weight: bold;
+    text-align: left;
+    background-color: #f0f0f4; }
+  td,
+  a {
+    word-break: break-word; }
+  a.footnote {
+    vertical-align: super;
+    font-size: 10px; }
+  [data-node-type='math-block'] {
+    break-inside: avoid; }
+  section.cover {
+    page: cover; }
+  @page cover {
+    @top-left {
+      content: ''; }
+    @top-right {
+      content: ''; }
+    @bottom-center {
+      content: ''; } }
+  .community-and-collection {
+    string-set: community-and-collection content(); }
+  .title {
+    string-set: title content(); } }
+</style></head><body><section class="cover"><h3 class="community-and-collection">UNDER SUBMISSION</h3><h1 class="title" style="color:#2D2E2F">TSL Synthesis Synthesizer: Reconfigurable Signal Flows through Program Synthesis</h1><div class="details"><div><strong>License:</strong> <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License (CC-BY 4.0)</a></div></div></section><div class="pub-body-component"><div class="editor Prosemirror"><h1 id="abstract">Abstract</h1><p id="nfb5xvj82nr" class="md-end-block md-p">We introduce the TSL Synthesis Synthesizer, an online synthesizer that can dynamically change signal flow topologies. The application uses program synthesis to transform user specifications to JavaScript code, which then controls the synthesizer. Users can then perform on their instrument, with the specified conditions triggering the synthesizer to automatically change the underlying signal flow topologies. This work presents a novel interface for no-code reconfigurable signal flow topologies in software.</p><h2 id="author-keywords"><strong>Author Keywords</strong></h2><p id="nsg5zvk3ada" class="md-end-block md-p">Program synthesis, reactive synthesis, WebAudio</p><h2 id="ccs-concepts"><strong>CCS Concepts</strong></h2><ul id="n6ufkvg9ffy"><li><p id="nvg6vi7zmp4"><strong>Applied Computing</strong> <span data-node-type="math-inline" data-value="\to"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span></span> <strong>Sound and music computing;</strong></p></li></ul><h1 id="introduction">Introduction</h1><p id="ncy4ed5m6z1" class="md-end-block md-p">Recently, there has been an increased interest in instruments that allow for reconfigurable signal flow topologies. The most prominent example of this setting is modular synthesis. Over the last ten years, modular synthesizers have experienced a revival; Eurorack manufacturers have nearly quadrupled from 2010 to 2020 <a href="#citation-MDNDP9XmDP-bottom" id="citation-MDNDP9XmDP-inline" data-node-type="citation" data-value="@article{babbitt1964introduction,
+  title={An Introduction to the RCA Synthesizer},
+  author={Babbitt, Milton},
+  journal={Journal of Music Theory},
+  pages={251--265},
+  year={1964},
+  publisher={JSTOR}
+}" data-unstructured-value="" class="citation">[1]</a>. In modular synthesis, the signal flow topology of the instrument can be changed by rerouting patch cables. This rerouting of patch cables is often a critical part of the performance that gives performers access to a rich space of possible sounds.</p><p id="nmayize398e" class="md-end-block md-p">While modular synthesizers allow users to create complex signal flow topologies, those topologies are fixed until patch cables are manually rerouted. We propose a software system that allows users to create systems that automatically reconfigure the signal flow topology of software synthesizer. It is already possible to achieve an automatic reconfiguration - but this would require users to write custom programs that reconfigures the topology themselves. The feedback loop for writing such software is slow and cannot be used in real-time. To overcome this challenge, we propose using program synthesis <a href="#citation-q0UNdEl0Ey-bottom" id="citation-q0UNdEl0Ey-inline" data-node-type="citation" data-value="@article{gulwani2017program,
+  title={Program synthesis},
+  author={Gulwani, Sumit and Polozov, Oleksandr and Singh, Rishabh and others},
+  journal={Foundations and Trends{\textregistered} in Programming Languages},
+  volume={4},
+  number={1-2},
+  pages={1--119},
+  year={2017},
+  publisher={Now Publishers, Inc.}
+}" data-unstructured-value="" class="citation">[2]</a>.</p><p id="nhmybbme33o" class="md-end-block md-p">In this paper, we present the TSL Synthesis Synthesizer, a web synthesizer instrument that gives users the ability to create changing signal flow topologies in real-time without writing code. The application takes user specification, and uses program synthesis to generate code to control the synthesizer. The synthesized control code takes inputs, such as MIDI signals, and automates changes as specified by the user. Using our tool, users can preconfigure multiple signal flow topologies, and step through them over the course of a performance without having to rewire a synthesizer. The TSL Synthesis Synthesizer is available online, <a href="https://tslsynthesissynthesizer.com">https://tslsynthesissynthesizer.com</a>, and can be controlled via the keyboard or an external MIDI device. Users can generate control code by writing specifications manually, or by using a set of dropdowns. After the user inputs their specification, our tool uses Temporal Stream Logic (TSL) <a href="#citation-rGpfvTsTkS-bottom" id="citation-rGpfvTsTkS-inline" data-node-type="citation" data-value="@inproceedings{finkbeiner2019temporal,
+  title={Temporal stream logic: Synthesis beyond the bools},
+  author={Finkbeiner, Bernd and Klein, Felix and Piskac, Ruzica and Santolucito, Mark},
+  booktitle={International Conference on Computer Aided Verification},
+  pages={609--629},
+  year={2019},
+  organization={Springer}
+}" data-unstructured-value="" class="citation">[3]</a> to automatically synthesize JavaScript code, and embeds the code into the website. All subsequent MIDI signals are processed through the synthesized code and change the signal flow as specified by the user.</p><h2 id="motivating-example">Motivating Example</h2><p id="nx8eviyuiph" class="md-end-block md-p md-focus">An example of the need our tool, we present an annotated score of the popular jazz standard Autumn Leaves with a dynamically changing synthesis process in Figure 1.</p><figure id="naxjns72r2f" data-node-type="image" data-size="100" data-align="center" data-url="https://assets.pubpub.org/nxld4omi/71611362735692.png" data-caption="&lt;p id=&quot;np6b9tqp8b0&quot;&gt;Figure 1: Autumn Leaves rendition lead sheet.&lt;/p&gt;"><img src="https://assets.pubpub.org/nxld4omi/71611362735692.png" alt="" aria-labelledby="naxjns72r2f-figure-caption"/><figcaption id="naxjns72r2f-figure-caption"><div><div><p id="np6b9tqp8b0">Figure 1: Autumn Leaves rendition lead sheet.</p></div></div></figcaption></figure><p id="nay75wgmx2q" class="md-end-block md-p">Realizing this rendition in a DAW would be easy by using automation on the synthesizer track. However, we want to be able to perform this live. The TSL Synthesis Synthesizer allows us to do this by creating a specification stating that note E4 will toggle LFO and note G4 will toggle FM synthesis. After synthesizing a program from this specification, we can play the piece exactly as written in the score and rely on the TSL logic to manage the control flow of the effects.</p><p id="nl7mu01u32g">A video demonstration of this rendition may be found at the following link: </p><p id="n8d365nsn7g"><a href="https://www.youtube.com/watch?v=Rs2Q8bbbixs">https://www.youtube.com/watch?v=Rs2Q8bbbixs</a></p><h1 id="related-work">Related Work</h1><p id="nzrpzrl87l8" class="md-end-block md-p">The idea of reconfigurable signal flow for audio synthesis has been present since the earliest hardware synthesizers. For example, the RCA Mark II <a href="#citation-MDNDP9XmDP-bottom" id="citation-MDNDP9XmDP-inline" data-node-type="citation" data-value="@article{babbitt1964introduction,
+  title={An Introduction to the RCA Synthesizer},
+  author={Babbitt, Milton},
+  journal={Journal of Music Theory},
+  pages={251--265},
+  year={1964},
+  publisher={JSTOR}
+}" data-unstructured-value="" class="citation">[1]</a> in 1957 allowed users to use patch cables to connect analog circuitry. Similarly, modular synthesis systems, such as those introduced by Buchla and Moog, also use patch cables to reconfigure signal flow. Today, tools are available to replicate this patch reconfiguring process in software- such as VCV Rack <a href="#citation-aTebqtrXQV-bottom" id="citation-aTebqtrXQV-inline" data-node-type="citation" data-value="@misc{vcvrack,
+  title = &quot;VCVRack&quot;,
+  author = {Aaron Belt},
+  howpublished = {\url{vcvrack.com}},
+  note = {Online; accessed 20 January 2021},
+  year = 2021
+}" data-unstructured-value="" class="citation">[4]</a>. A similar interaction modality is used in MaxMSP and PureData <a href="#citation-8/s1Sc9wEv-bottom" id="citation-8/s1Sc9wEv-inline" data-node-type="citation" data-value="@inproceedings{puckette1997pure,
+  title={Pure data},
+  author={Puckette, Miller S and others},
+  booktitle={ICMC},
+  year={1997}
+}" data-unstructured-value="" class="citation">[5]</a>. While there are tools to automate switching between saved preset values or saved patch configurations - there is no way to automate changes to the topology (how the wires are connected) of the modular synthesizer without writing custom code.  While our work does not yet target the modular synthesis setting, the underlying algorithm is best understood from the perspective of automating control for rerouting patch cables. </p><p id="nncpp8qb7x3">Using program synthesis for real time music performance has also been explored in the context of live coding for step-sequencers <a href="#citation-aLGyoBQtgW-bottom" id="citation-aLGyoBQtgW-inline" data-node-type="citation" data-value="@inproceedings{Santolucito2020Live,
+journal = {Hybrid Live Coding Interfaces: performance and craft},
+doi = {10.21428/40e92d8f.9ee35bfc},
+note = {https://hybrid-livecode.pubpub.org/pub/live-coding-sequencers},
+title = {Live Coding Sequencers},
+url = {https://hybrid-livecode.pubpub.org/pub/live-coding-sequencers},
+author = {Santolucito, Mark},
+date = {2020-07-19},
+year = {2020},
+month = {7},
+day = {19},
+}" data-unstructured-value="" class="citation">[6]</a>.  The context of live coding a step sequencer is a simpler synthesis problem algorithmically - the code must only generate a static value that represents the state of the sequencer. In contrast, our work must synthesize a reactive system that changes signal flow topologies in response to user input.</p><h1 id="tsl-synthesis-synthesizer">TSL Synthesis Synthesizer</h1><h2 id="overview">Overview</h2><p id="nvkuzpyqqet" class="md-end-block md-p">Our tool, the TSL Synthesis Synthesizer, is open-source and hosted online at <a href="https://tslsynthesissynthesizer.com/">https://tslsynthesissynthesizer.com/</a>. Users may play the keyboard, as well as synthesize a program that automates signal flow reconfigurations using the specification interface at the top.</p><figure id="no1717l3yyw" data-node-type="image" data-size="42" data-align="center" data-url="https://assets.pubpub.org/3zeafulv/61611362799896.png" data-caption="&lt;p id=&quot;n9vmsdq378f&quot;&gt;Figure 2: Diagram of TSL Synthesis Synthesizer configuration. Blue sections represent  playable interfaces.&lt;/p&gt;"><img src="https://assets.pubpub.org/3zeafulv/61611362799896.png" alt="" aria-labelledby="no1717l3yyw-figure-caption"/><figcaption id="no1717l3yyw-figure-caption"><div><div><p id="n9vmsdq378f">Figure 2: Diagram of TSL Synthesis Synthesizer configuration. Blue sections represent  playable interfaces.</p></div></div></figcaption></figure><h2 id="frontend">Frontend</h2><p id="n7lw30fb7tu" class="md-end-block md-p">Fundamentally, the webpage is a keyboard synthesizer. The keyboard can be played via one of three methods. Users can either click the keys on the webpage with their mouse, use their computer keyboard, or connect a USB MIDI keyboard.</p><p id="nys1iz4miop" class="md-end-block md-p">The synthesizer includes the following sound features:</p><table id="njp3cc9twka"><tbody><tr><td data-colwidth="157"><p id="npai58krg8h"><strong>Feature</strong></p></td><td data-colwidth="245"><p id="nnwb67jukxb"><strong>Mouse Controllables</strong></p></td><td><p id="nvkq5ggc5jp"><strong>TSL Controllables</strong></p></td></tr><tr><td data-colwidth="157"><p id="nw1yelh9fg0">Waveform</p></td><td data-colwidth="245"><p id="n1nvs0bkwbe">Sine, sawtooth, square, triangle</p></td><td><p id="n99pvlt0lhx">Sine, sawtooth, square, triangle</p></td></tr><tr><td data-colwidth="157"><p id="nx77tb1qv8y">LFO (note vibrato)</p></td><td data-colwidth="245"><p id="nlv53mopd2o">Device: LFO on, LFO off<br/>Depth: range from 1 to 100<br/>Frequency: range from 0Hz to 20Hz</p></td><td><p id="nsbvjib6y18">Device: Toggle on/off<br/>Depth: Increase/Decrease by &lt;user specified amount&gt;<br/>Frequency: Increase/Decrease by &lt;user specified amount&gt;</p></td></tr><tr><td data-colwidth="157"><p id="n1crxnei30r">AM Synthesis</p></td><td data-colwidth="245"><p id="ndga35iwdif">Device: AM on, AM off<br/>Frequency: range from 0Hz to 1000Hz<br/></p></td><td><p id="n508rfoibim">Device: Toggle on/off<br/>Depth: Increase/Decrease by &lt;user specified amount&gt;<br/>Frequency: Increase/Decrease by &lt;user specified amount&gt;</p></td></tr><tr><td data-colwidth="157"><p id="nkauryn4k39">FM Synthesis</p></td><td data-colwidth="245"><p id="njl312gjyiq">Device: FM on, FM off<br/>Frequency: range from 0Hz to 1000Hz</p></td><td><p id="npsbv6n3ics">Device: Toggle on/off<br/>Frequency: Increase/Decrease by &lt;user specified amount&gt;</p></td></tr><tr><td data-colwidth="157"><p id="nwg3j8ggnqz">Filter</p></td><td data-colwidth="245"><p id="nmihn15saki">Device: Filter on, Filter off<br/>Type: low-pass, high-pass, band-pass<br/>Q: range from -4.0 to 3.0<br/>Cutoff: range from 20Hz to 10000Hz</p></td><td><p id="n8eowrv94gy">Device: Toggle on/off<br/>Type: low-pass, high-pass, band-pass<br/>Cutoff: Increase/Decrease by &lt;user specified amount&gt;<br/>Q: Increase/Decrease by &lt;user specified amount&gt;</p></td></tr><tr><td data-colwidth="157"><p id="n9cxtexq6ec">Harmonizer</p></td><td data-colwidth="245"><p id="n1rv5fvvmhd">Device: Harmonizer on, Harmonizer off<br/>Interval: range from -12 to 12 semitones</p></td><td><p id="nqppadskm4h">Device: Toggle on/off<br/>Interval: Increase/Decrease by &lt;user specified amount&gt;</p></td></tr><tr><td data-colwidth="157"><p id="nit7nmuai8b">Arpeggiator</p></td><td data-colwidth="245"><p id="nuner1970xv">Device: Arpeggiator on, Arpeggiator off<br/>Style: up, up-down, down, random<br/>Rate: range from 1Hz to 50Hz</p></td><td><p id="nqiskwi726c">Device: Toggle on/off<br/>Style: up, up-down, down, random<br/>Rate: Increase/Decrease by &lt;user specified amount&gt;<br/></p></td></tr></tbody></table><p id="n5act92jqot" class="md-end-block md-p">Through the UI, the users can define their specification either through dropdown menus or by writing a TSL  formula. If the users select the dropdown options, then the program parses the input and produces the TSL formula accordingly.</p><p id="nm4ssqja0ci" class="md-end-block md-p">Once a specification is defined, users may click the “Synthesize!” button to synthesize the temporal control flow that alters the sound settings while the keyboard is played.</p><h2 id="backend">Backend</h2><p id="naxlj2jfgu9" class="md-end-block md-p">From a technical perspective, the key contribution of this work is the usage of program synthesis to automatically generate code based off users’ specifications.</p><p id="ne5r6tli67n">Temporal Stream Logic is a logic for describing reactive systems - systems that infinetly consume input and produce output over time. In our case, our reactive system consumes user input (i.e. MIDI input) and produces output as signal flow rerouting (e.g. toggling an LFO). TSL formulae operate on an abstract notion of “time,” which moves forward with each reactive input; in our example, each new MIDI signal moves time a step forward. TSL includes temporal operators such as “next” [<span data-node-type="math-inline" data-value="\bigcirc"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>◯</mo></mrow><annotation encoding="application/x-tex">\bigcirc</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">◯</span></span></span></span></span></span>],  “always” [<span data-node-type="math-inline" data-value="\square"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">□</mi></mrow><annotation encoding="application/x-tex">\square</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.675em;vertical-align:0em;"></span><span class="mord amsrm">□</span></span></span></span></span></span>], “eventually” [<span data-node-type="math-inline" data-value="\diamond"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⋄</mo></mrow><annotation encoding="application/x-tex">\diamond</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.44445em;vertical-align:0em;"></span><span class="mord">⋄</span></span></span></span></span></span>], “until” [<span data-node-type="math-inline" data-value="\mathcal{U
+}"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">U</mi></mrow><annotation encoding="application/x-tex">\mathcal{U}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.09931em;">U</span></span></span></span></span></span></span>], “weak until” [<span data-node-type="math-inline" data-value="\mathcal W"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">W</mi></mrow><annotation encoding="application/x-tex">\mathcal W</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal" style="margin-right:0.08222em;">W</span></span></span></span></span></span>], “release” [<span data-node-type="math-inline" data-value="\mathcal R"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">R</mi></mrow><annotation encoding="application/x-tex">\mathcal R</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal">R</span></span></span></span></span></span>], and “as soon as”[<span data-node-type="math-inline" data-value="\mathcal A"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">A</mi></mrow><annotation encoding="application/x-tex">\mathcal A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal">A</span></span></span></span></span></span>]. It also includes boolean logic operators such as “and”[<span data-node-type="math-inline" data-value="\wedge"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∧</mo></mrow><annotation encoding="application/x-tex">\wedge</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.55556em;vertical-align:0em;"></span><span class="mord">∧</span></span></span></span></span></span>], “or” [<span data-node-type="math-inline" data-value="\vee"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∨</mo></mrow><annotation encoding="application/x-tex">\vee</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.55556em;vertical-align:0em;"></span><span class="mord">∨</span></span></span></span></span></span>], “implies”[<span data-node-type="math-inline" data-value="\to"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span></span>], and “if and only if” [<span data-node-type="math-inline" data-value="\leftrightarrow"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>↔</mo></mrow><annotation encoding="application/x-tex">\leftrightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">↔</span></span></span></span></span></span>].</p><p id="ntwy1khuygr" class="md-end-block md-p">Using TSL, we can define the desired signal flow for the motivating example:</p><p id="n5aqc0m6jsr"><span data-node-type="math-inline" data-value="(\square \ \texttt{play}~\texttt{note67} \leftrightarrow (\bigcirc [\texttt{am} \leftarrow \texttt{toggle}~\texttt{am}])) \land \\ (\square~\texttt{play}~\texttt{note64} \leftrightarrow (\bigcirc [\texttt{lfo} \leftarrow \texttt{toggle}~\texttt{lfo}]))"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi mathvariant="normal">□</mi><mtext> </mtext><mtext mathvariant="monospace">play</mtext><mtext> </mtext><mtext mathvariant="monospace">note67</mtext><mo>↔</mo><mo stretchy="false">(</mo><mo>◯</mo><mo stretchy="false">[</mo><mtext mathvariant="monospace">am</mtext><mo>←</mo><mtext mathvariant="monospace">toggle</mtext><mtext> </mtext><mtext mathvariant="monospace">am</mtext><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>∧</mo><mspace linebreak="newline"></mspace><mo stretchy="false">(</mo><mi mathvariant="normal">□</mi><mtext> </mtext><mtext mathvariant="monospace">play</mtext><mtext> </mtext><mtext mathvariant="monospace">note64</mtext><mo>↔</mo><mo stretchy="false">(</mo><mo>◯</mo><mo stretchy="false">[</mo><mtext mathvariant="monospace">lfo</mtext><mo>←</mo><mtext mathvariant="monospace">toggle</mtext><mtext> </mtext><mtext mathvariant="monospace">lfo</mtext><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(\square \ \texttt{play}~\texttt{note67} \leftrightarrow (\bigcirc [\texttt{am} \leftarrow \texttt{toggle}~\texttt{am}])) \land \\ (\square~\texttt{play}~\texttt{note64} \leftrightarrow (\bigcirc [\texttt{lfo} \leftarrow \texttt{toggle}~\texttt{lfo}]))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord amsrm">□</span><span class="mspace"> </span><span class="mord text"><span class="mord texttt">play</span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord texttt">note67</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">↔</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">◯</span><span class="mopen">[</span><span class="mord text"><span class="mord texttt">am</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">←</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord texttt">toggle</span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord texttt">am</span></span><span class="mclose">]</span><span class="mclose">)</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∧</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord amsrm">□</span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord texttt">play</span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord texttt">note64</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">↔</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">◯</span><span class="mopen">[</span><span class="mord text"><span class="mord texttt">lfo</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">←</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord texttt">toggle</span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord texttt">lfo</span></span><span class="mclose">]</span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></span></p><p id="nu8xtqz0ipp">We can also create more complex control formulae, such as the following:</p><p id="nuticguune9"><span data-node-type="math-inline" data-value="\square~\texttt{play}~\texttt{note60} \to \bigcirc (\square [\texttt{am} \leftarrow \texttt{toggle}~\texttt{am}])~\mathcal W~\texttt{play}~\texttt{note67} "><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">□</mi><mtext>&nbsp;</mtext><mtext mathvariant="monospace">play</mtext><mtext>&nbsp;</mtext><mtext mathvariant="monospace">note60</mtext><mo>→</mo><mo>◯</mo><mo stretchy="false">(</mo><mi mathvariant="normal">□</mi><mo stretchy="false">[</mo><mtext mathvariant="monospace">am</mtext><mo>←</mo><mtext mathvariant="monospace">toggle</mtext><mtext>&nbsp;</mtext><mtext mathvariant="monospace">am</mtext><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mtext>&nbsp;</mtext><mi mathvariant="script">W</mi><mtext>&nbsp;</mtext><mtext mathvariant="monospace">play</mtext><mtext>&nbsp;</mtext><mtext mathvariant="monospace">note67</mtext></mrow><annotation encoding="application/x-tex">\square~\texttt{play}~\texttt{note60} \to \bigcirc (\square [\texttt{am} \leftarrow \texttt{toggle}~\texttt{am}])~\mathcal W~\texttt{play}~\texttt{note67} </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.89722em;vertical-align:-0.22222em;"></span><span class="mord amsrm">□</span><span class="mspace nobreak">&nbsp;</span><span class="mord text"><span class="mord texttt">play</span></span><span class="mspace nobreak">&nbsp;</span><span class="mord text"><span class="mord texttt">note60</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">◯</span><span class="mopen">(</span><span class="mord amsrm">□</span><span class="mopen">[</span><span class="mord text"><span class="mord texttt">am</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">←</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord texttt">toggle</span></span><span class="mspace nobreak">&nbsp;</span><span class="mord text"><span class="mord texttt">am</span></span><span class="mclose">]</span><span class="mclose">)</span><span class="mspace nobreak">&nbsp;</span><span class="mord mathcal" style="margin-right:0.08222em;">W</span><span class="mspace nobreak">&nbsp;</span><span class="mord text"><span class="mord texttt">play</span></span><span class="mspace nobreak">&nbsp;</span><span class="mord text"><span class="mord texttt">note67</span></span></span></span></span></span></span></p><p id="ne3ucr4c3e9">After obtaining the TSL formula, the backend then checks if the specification is realizable (there exists a program that satisfies the specification). If it is unrealizable, the user is asked to change their specification; if it is realizable, the program synthesizes JavaScript code to work with the WebAudio and WebMIDI code present in the web application. All subsequent MIDI signals and keyboard presses will follow the specification, dynamically altering the signal flow topology when the users’ conditions are met.</p><h1 id="discussions">Discussions</h1><p id="nvil57jslb8" class="md-end-block md-p">Our prototype currently provides two interfaces by which a user can provide a specification. Our goal is to use this first iteration of our instrument to further explore the space of possible interfaces for generating specifications for program synthesis. The current dropdown selection model is limited in its ability to capture complex temporal relationships between predicates (e.g. play note60) and actions (e.g. increase AM modulation frequency). Additionally, we hope to expand the set of  predicates beyond MIDI input signals to additionally capture arbitrary properties on the internal signals of the synthesizer.</p><p id="n7xjlk4r6o6" class="md-end-block md-p">One of the key challenges we have identified through our pilot testing is in communicating the mode of thinking a user must adopt when working with program synthesis framework. Program synthesis asks users to give properties of the desired behavior - not to define the complete desired behavior. We need to find interface designs that make it clear that specifying a program is different than writing a program.</p><p id="nssxzxflafe" class="md-end-block md-p">Additionally, while our current implementation in WebAudio is accessible, it has limited application in professional production. After finding an interface design that is effective, we plan to migrate this tool to a framework more optimized for professional audio, such as a VST3 plugin. Another potential future direction is to build the program synthesis functionality into a digital hardware synthesizer.</p><h2 id="conclusions">Conclusions</h2><p id="nnpufjv0bas" class="md-end-block md-p">In this paper, we have presented a first version of program synthesis-enabled synthesizer. We use Temporal Stream Logic to allow users to automatically construct programs that control the signal flow topology of their instrument. Much like tuning the parameters of an analog synth, users can tune the logical specification of program behavior in our interface to change the behavior of the signal processing in the synthesizer. We make our tool freely available online and open-source.</p><div class="pub-notes"><h1>Citations</h1><ol><li id="citation-MDNDP9XmDP-bottom"><span class="pub-note-content-component"><span><div class="csl-bib-body">  <div data-csl-entry-id="babbitt1964introduction" class="csl-entry">Babbitt, M. (1964). An Introduction to the RCA Synthesizer. <i>Journal of Music Theory</i>, 251–265.</div></div></span><span></span></span> <a href="#citation-MDNDP9XmDP-inline" class="return-link">↩</a></li><li id="citation-q0UNdEl0Ey-bottom"><span class="pub-note-content-component"><span><div class="csl-bib-body">  <div data-csl-entry-id="gulwani2017program" class="csl-entry">Gulwani, S., Polozov, O., Singh, R., &#38; others. (2017). Program synthesis. <i>Foundations and Trends® in Programming Languages</i>, <i>4</i>(1–2), 1–119.</div></div></span><span></span></span> <a href="#citation-q0UNdEl0Ey-inline" class="return-link">↩</a></li><li id="citation-rGpfvTsTkS-bottom"><span class="pub-note-content-component"><span><div class="csl-bib-body">  <div data-csl-entry-id="finkbeiner2019temporal" class="csl-entry">Finkbeiner, B., Klein, F., Piskac, R., &#38; Santolucito, M. (2019). Temporal stream logic: Synthesis beyond the bools. In <i>International Conference on Computer Aided Verification</i> (pp. 609–629).</div></div></span><span></span></span> <a href="#citation-rGpfvTsTkS-inline" class="return-link">↩</a></li><li id="citation-aTebqtrXQV-bottom"><span class="pub-note-content-component"><span><div class="csl-bib-body">  <div data-csl-entry-id="vcvrack" class="csl-entry">Belt, A. (2021). <i>VCVRack</i>.</div></div></span><span></span></span> <a href="#citation-aTebqtrXQV-inline" class="return-link">↩</a></li><li id="citation-8/s1Sc9wEv-bottom"><span class="pub-note-content-component"><span><div class="csl-bib-body">  <div data-csl-entry-id="puckette1997pure" class="csl-entry">Puckette, M. S., &#38; others. (1997). Pure data. In <i>ICMC</i>.</div></div></span><span></span></span> <a href="#citation-8/s1Sc9wEv-inline" class="return-link">↩</a></li><li id="citation-aLGyoBQtgW-bottom"><span class="pub-note-content-component"><span><div class="csl-bib-body">  <div data-csl-entry-id="Santolucito2020Live" class="csl-entry">Santolucito, M. (2020). Live Coding Sequencers. In <i>Hybrid Live Coding Interfaces: performance and craft</i>. https://doi.org/10.21428/40e92d8f.9ee35bfc</div></div></span><span></span></span> <a href="#citation-aLGyoBQtgW-inline" class="return-link">↩</a></li></ol></div></div></div></body></html>

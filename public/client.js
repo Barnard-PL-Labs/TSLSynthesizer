@@ -92,6 +92,11 @@ document.getElementById("synthesize-btn").addEventListener(
 );
 
 
+/////////////////////////
+// Web MIDI connection //
+/////////////////////////
+
+
 // Request MIDI access
 if (navigator.requestMIDIAccess) {
     console.log('This browser supports WebMIDI!');
@@ -116,4 +121,5 @@ function onMIDISuccess(midiAccess) {
 // Function to run when requestMIDIAccess fails
 function onMIDIFailure() {
     console.log('Error: Could not access MIDI devices.');
+
 }

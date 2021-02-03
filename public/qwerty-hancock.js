@@ -229,7 +229,7 @@
         key.el.style.backgroundColor = settings.blackKeyColour;
         key.el.style.border = '1px solid ' + settings.borderColour;
         key.el.style.position = 'absolute';
-        key.el.style.left = Math.floor(((white_key_width + 1) * (key.noteNumber + 1)) - (black_key_width / 2)) + 'px';
+        key.el.style.left = Math.floor(((white_key_width + 0) * (key.noteNumber + 1)) - (black_key_width / 2)) + 'px';
         key.el.style.width = black_key_width + 'px';
         key.el.style.height = (settings.height / 1.5) + 'px';
         key.el.style.borderRadius = '0 0 3px 3px';
