@@ -9,15 +9,15 @@ const yourInterfaceHTML  = `
 // Option 2) Write your interface in HTML,
 // and use the helper function strToDOM to return a HTML node object
 function createSpecificationInterface() {
-    // return createSpecificationSimple();
-    return createSpecificationComplex();
+     return createSpecificationSimple();
+    //return createSpecificationComplex();
     // return createSpecificationWritten();
 	// return strToDOM(yourInterfaceHTML);
 }
 
 function getSpecFromDOM(){
-    // return getSpecFromDOMSimple();
-    return getSpecFromDOMComplex();
+     return getSpecFromDOMSimple();
+    //return getSpecFromDOMComplex();
     // return getSpecFromDOMWritten();
     // return yourInterfaceToLogicFunction();
 }
