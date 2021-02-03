@@ -1,9 +1,12 @@
 always assume{
-}always guarantee {
-	[lfo <- True()] -> (([filterOn <- False()] -> [arpeggiatorOn <- False()]) W [lfo <- False()]);
-	(([harmonizerOn <- False()] -> [waveform <- sawtooth()]));
-	(([harmonizerOn <- True()] -> [amSynthesis <- True()]));
-	(([filterOn <- True()] -> [fmSynthesis <- True()]));
-	[fmSynthesis <- False()] -> (([arpeggiatorStyle <- downStyle()] -> [arpeggiatorOn <- True()]) W [fmSynthesis <- True()]);
-	(([arpeggiatorOn <- True()] -> [fmSynthesis <- False()]));
+	!(play note62 && play note61 && play note60);
+
+}
+always guarantee {
+	[arpeggiatorStyle <- downStyle()] -> ((play note62 <-> [harmonizerOn <- True()]) W ![arpeggiatorStyle <- downStyle()]);
+	[filterOn <- True()] -> ((play note61 <-> [amSynthesis <- True()]) W [filterOn <- False()]);
+	[filterOn <- False()] -> ((play note61 <-> [filterOn <- False()]) W [filterOn <- True()]);
+	((play note60 <-> [amFreq <- inc10 amFreq]));
+	[harmonizerOn <- False()] -> ((play note62 <-> [fmFreq <- dec10 fmFreq]) W [harmonizerOn <- True()]);
+	[waveform <- triangle()] -> ((play note61 <-> [filterOn <- True()]) W ![waveform <- triangle()]);
 }
