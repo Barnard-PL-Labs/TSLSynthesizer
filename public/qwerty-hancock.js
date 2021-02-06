@@ -43,6 +43,67 @@
             221: 'F#u',
             220: 'Gu'
         },
+        noteNameToMidiNote = {
+            "A1"  : 33,
+            "A#1" : 34,
+            "B1"  : 35,
+            "C2"  : 36,
+            "C#2" : 37,
+            "D2"  : 38,
+            "D#2" : 39,
+            "E2"  : 40,
+            "F2"  : 41,
+            "F#2" : 42,
+            "G2"  : 43,
+            "G#2" : 44,
+            "A2"  : 45,
+            "A#2" : 46,
+            "B2"  : 47,
+            "C3"  : 48,
+            "C#3" : 49,
+            "D3"  : 50,
+            "D#3" : 51,
+            "E3"  : 52,
+            "F3"  : 53,
+            "F#3" : 54,
+            "G3"  : 55,
+            "G#3" : 56,
+            "A3"  : 57,
+            "A#3" : 58,
+            "B3"  : 59,
+            "C4"  : 60,
+            "C#4" : 61,
+            "D4"  : 62,
+            "D#4" : 63,
+            "E4"  : 64,
+            "F4"  : 65,
+            "F#4" : 66,
+            "G4"  : 67,
+            "G#4" : 68,
+            "A4"  : 69,
+            "A#4" : 70,
+            "B4"  : 71,
+            "C5"  : 72,
+            "C#5" : 73,
+            "D5"  : 74,
+            "D#5" : 75,
+            "E5"  : 76,
+            "F5"  : 77,
+            "F#5" : 78,
+            "G5"  : 79,
+            "G#5" : 80,
+            "A5"  : 81,
+            "A#5" : 82,
+            "B5"  : 83,
+            "C6"  : 84,
+            "C#6" : 85,
+            "D6"  : 86,
+            "D#6" : 87,
+            "E6"  : 88,
+            "F6"  : 89,
+            "F#6" : 90,
+            "G6" : 91
+        },
         keyDownCallback,
         keyUpCallback;
 
@@ -427,10 +488,13 @@
     };
 
     var getKeyPressed = function (keyCode) {
-        return key_map[keyCode]
+
+        var noteName =  key_map[keyCode]
                 .replace('l', parseInt(settings.keyOctave, 10) + settings.keyPressOffset)
                 .replace('u', (parseInt(settings.keyOctave, 10) + settings.keyPressOffset + 1)
                 .toString());
+
+        return [noteName, "note" + noteNameToMidiNote[noteName].toString()];
     };
 
     /**
@@ -441,6 +505,8 @@
      */
     var keyboardDown = function (key, callback) {
         var key_pressed;
+        var key_data;
+        var noteName;
 
         if (key.keyCode in keysDown) {
            return false;
@@ -449,10 +515,12 @@
        keysDown[key.keyCode] = true;
 
        if (typeof key_map[key.keyCode] !== 'undefined') {
-            key_pressed = getKeyPressed(key.keyCode);
+            key_data = getKeyPressed(key.keyCode);
+            noteName = key_data[0];
+            key_pressed = key_data[1];
 
             // Call user's noteDown function.
-            callback(key_pressed, getFrequencyOfNote(key_pressed));
+            callback(noteName, getFrequencyOfNote(noteName));
             lightenUp(document.getElementById(key_pressed));
             return true;
        }
@@ -467,13 +535,17 @@
      */
     var keyboardUp = function (key, callback) {
         var key_pressed;
+        var key_data;
+        var noteName;
 
         delete keysDown[key.keyCode];
 
         if (typeof key_map[key.keyCode] !== 'undefined') {
-            key_pressed = getKeyPressed(key.keyCode);
+            key_data = getKeyPressed(key.keyCode);
+            noteName = key_data[0];
+            key_pressed = key_data[1];
             // Call user's noteDown function.
-            callback(key_pressed, getFrequencyOfNote(key_pressed));
+            callback(noteName, getFrequencyOfNote(noteName));
             darkenDown(document.getElementById(key_pressed));
             return true;
         }
@@ -492,35 +564,29 @@
      * Add event listeners to keyboard.
      * @param {element} keyboard_element
      */
-
-    function qwertyKeyDown(key) {
-        if (isModifierKey(key)) {
-        return;
-        }
-        if (keyboardDown(key, this.keyDown)) {
-            key.preventDefault();
-        }
-    }
-
-    function qwertyKeyUp(key) {
-        if (isModifierKey(key)) {
-        return;
-        }
-        if (keyboardUp(key, this.keyUp)) {
-            key.preventDefault();
-        }
-    }
-
     var addListeners = function (keyboard_element) {
         var that = this;
 
         if (settings.musicalTyping) {
-
             // Key is pressed down on keyboard.
-            globalWindow.addEventListener('keydown', qwertyKeyDown);
+            globalWindow.addEventListener('keydown', function (key) {
+                if (isModifierKey(key)) {
+                return;
+                }
+                if (keyboardDown(key, that.keyDown)) {
+                    key.preventDefault();
+                }
+            });
 
             // Key is released on keyboard.
-            globalWindow.addEventListener('keyup', qwertyKeyUp);
+            globalWindow.addEventListener('keyup', function (key) {
+                if (isModifierKey(key)) {
+                return;
+                }
+                if (keyboardUp(key, that.keyUp)) {
+                    key.preventDefault();
+                }
+            });
         }
 
         // Mouse is clicked down on keyboard element.
