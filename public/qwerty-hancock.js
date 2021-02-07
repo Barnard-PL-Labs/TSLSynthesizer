@@ -591,22 +591,22 @@
 
         // Mouse is clicked down on keyboard element.
         keyboard_element.addEventListener('mousedown', function (event) {
-            mouseDown(event.target, that.keyDown);
+            mouseDown(event.target, that.mDown);
         });
 
         // Mouse is released from keyboard element.
         keyboard_element.addEventListener('mouseup', function (event) {
-            mouseUp(event.target, that.keyUp);
+            mouseUp(event.target, that.mUp);
         });
 
         // Mouse is moved over keyboard element.
         keyboard_element.addEventListener('mouseover', function (event) {
-            mouseOver(event.target, that.keyDown);
+            mouseOver(event.target, that.mDown);
         });
 
         // Mouse is moved out of keyvoard element.
         keyboard_element.addEventListener('mouseout', function (event) {
-            mouseOut(event.target, that.keyUp);
+            mouseOut(event.target, that.mUp);
         });
 
         // Device supports touch events.

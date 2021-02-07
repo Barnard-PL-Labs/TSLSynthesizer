@@ -79,8 +79,12 @@ let context = new AudioContext(),
     },
     keyboard = new QwertyHancock(settings);
 
-keyboard.keyDown = audioKeyDown;
-keyboard.keyUp = audioKeyUp;
+keyboard.keyDown = qwertyKeyDown;
+keyboard.keyUp = qwertyKeyUp;
+
+keyboard.mDown = audioKeyDown;
+keyboard.mUp = audioKeyUp;
+
 
 // VARIABLE INIT
 let activeNotes = new Set();
@@ -891,7 +895,6 @@ function audioKeyDown(note, frequency, velocity) {
     let oscillator = context.createOscillator();
     oscillator.start(0);
 
-
 };
 
 
@@ -925,6 +928,13 @@ function audioKeyUp(note, frequency) {
 };
 
 
+function qwertyKeyDown(note, frequency) {
+    audioKeyDown(note, frequency);
+    reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
+}
+function qwertyKeyUp(note, frequency) {
+    audioKeyUp(note, frequency);
+}
 
 
 
