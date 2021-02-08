@@ -758,6 +758,18 @@ function playArpNote() {
     if (_arpIndex >= _arpNotes.length) {
         _arpIndex = _arpNotes.length - 1;
     }
+
+    if (!arpeggiatorOn) {
+        _arpNotes = [];
+        clearInterval(_arpeggiatorInterval);
+        for (note of activeNotes) {
+            playNote(note);
+            if (harmonizerOn) {
+                playHarmNoteOfNoteName(note);
+            }
+        }
+    }
+
     _notePlaying = _arpNotes[_arpIndex];
     playNote(_notePlaying);
 
