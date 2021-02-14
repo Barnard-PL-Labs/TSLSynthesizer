@@ -1,4 +1,3 @@
-
 const {exec, execFile} = require('child_process');
 const express = require('express');
 const fs = require('fs');
@@ -24,6 +23,11 @@ try {
     const httpsServer = https.createServer(httpsOptions, app);
 
     httpsServer.listen(443, 'tslsynthesissynthesizer.com');
+
+    app.get("*", function(req, res){
+        res.redirect("https://" + req.headers.host + req.url);
+    })
+
 } catch {
     //to run locally
     const PORT = 4747;
@@ -31,6 +35,7 @@ try {
         console.log(`Service started on port ${PORT}.`);
     });
 }
+
 // Serve the homepage
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
