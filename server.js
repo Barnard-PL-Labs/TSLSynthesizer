@@ -12,6 +12,7 @@ let tslFile;
 //https://gist.github.com/aerrity/fd393e5511106420fba0c9602cc05d35
 app.use(express.static("./public"));
 
+
 //try with https, if files found, go to app.listen
 try {
     const httpsOptions = {
@@ -23,10 +24,8 @@ try {
     const httpsServer = https.createServer(httpsOptions, app);
 
     httpsServer.listen(443, 'tslsynthesissynthesizer.com');
+	console.log("Service started on on https://tslsynthesissynthesizer.com.");
 
-    app.get("*", function(req, res){
-        res.redirect("https://" + req.headers.host + req.url);
-    })
 
 } catch {
     //to run locally
