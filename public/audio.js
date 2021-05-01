@@ -948,10 +948,17 @@ function qwertyKeyUp(note, frequency) {
     audioKeyUp(note, frequency);
 }
 
+function reactiveUpdateOnMIDI(note, velocity){
+    const inputTemplate = {
+        s_fmFreq : fmFreq,
+        s_fmSynthesis : fmSynthesis,
+        s_lfo : lfo,
+        s_lfoFreq : lfoFreq,
+    };
+    [fmFreq, fmSynthesis, lfo, lfoFreq] = control(inputTemplate);
+    updateVarsToUI();
+}
 
-
-// This function will be removed once synthesized.
-function reactiveUpdateOnMIDI(note, velocity){}
 
 //////////////////////////////////
 //  CHANGE KEYBOARD ID TO MIDI  //
