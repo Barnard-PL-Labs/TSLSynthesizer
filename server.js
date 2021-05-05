@@ -23,7 +23,7 @@ try {
 
     const httpsServer = https.createServer(httpsOptions, app);
 
-    httpsServer.listen(443, 'tslsynthesissynthesizer.com');
+    httpsServer.listen(7474, 'tslsynthesissynthesizer.com');
 	console.log("Service started on on https://tslsynthesissynthesizer.com.");
 
 
