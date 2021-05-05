@@ -27,5 +27,7 @@ fi
 # https://stackoverflow.com/a/339941/11801882
 tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
 
+cat $aag > foo.aag
+
 # Synthesize the resulting code
-tsltools/cfm2code WebAudio $aag
+tsltools/cfm2code $aag --webaudio
