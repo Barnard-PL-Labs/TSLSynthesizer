@@ -102,7 +102,7 @@
             "E6"  : 88,
             "F6"  : 89,
             "F#6" : 90,
-            "G6" : 91
+            "G6"  : 91
         },
         keyDownCallback,
         keyUpCallback;

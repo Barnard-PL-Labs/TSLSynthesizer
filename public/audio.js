@@ -943,6 +943,7 @@ function audioKeyUp(note, frequency) {
 function qwertyKeyDown(note, frequency) {
     audioKeyDown(note, frequency);
     reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
+    saveLastQuerty(noteNameToMidiNote[note]);
 }
 function qwertyKeyUp(note, frequency) {
     audioKeyUp(note, frequency);
