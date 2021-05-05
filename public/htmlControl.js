@@ -80,17 +80,27 @@ for(let i=0; i<selectedNotes.children.length; i++){
 
 function saveLastClicked(e){
     const note = e.target.id;
-    for(let i=0; i<selectedNotes.children.length; i++){
-        if(selectedNotesLock[i])
-            continue;
-
-        selectedNotesList[i] = note;
-        const noteNum = note.slice(4);
-        selectedNotes.children[i].children[0].innerText = "" +
-            "Note " + (i+1).toString() + ": MIDI note " +
-            noteNum + " (" + midiNoteToNoteName[noteNum] + ")";
-    }
+    saveLastNote(note);
 }
+
+function saveLastQuerty(noteNum){
+    const note = "note" + noteNum.toString();
+    saveLastNote(note);
+}
+
+function saveLastNote(note){
+  for(let i=0; i<selectedNotes.children.length; i++){
+      if(selectedNotesLock[i])
+          continue;
+
+      selectedNotesList[i] = note;
+      const noteNum = note.slice(4);
+      selectedNotes.children[i].children[0].innerText = "" +
+          "Note " + (i+1).toString() + ": MIDI note " +
+          noteNum + " (" + midiNoteToNoteName[noteNum] + ")";
+  }
+}
+
 
 function resetIthSelectedNote(idx, buttonNode){
     const SPAN_LABEL_IDX = 0;
