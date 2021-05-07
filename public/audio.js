@@ -1058,11 +1058,9 @@ function playMelodyMakerNote(){
 
 }
 
-var subdivisionInterval;
-var subdivisionCount;
-var subdivisionNote;
-var subdivisionPlayTime;
-function playRandomSubdivision(note) {
+
+function playRandomSubdivision(noteToPlay) {
+
     let subdivision;
     let tmpRand = Math.floor(Math.random() * (15 - 1 + 1) + 1);
     if (tmpRand < 6) {
@@ -1076,30 +1074,18 @@ function playRandomSubdivision(note) {
     } else {
         subdivision = 5;
     }
-    subdivisionPlayTime = Math.floor(498/subdivision);
-    subdivisionCount = subdivision;
-    subdivisionNote = note;
 
-    subdivisionInterval = setInterval(playSubdivision, subdivisionPlayTime);
 
-    console.log(subdivision);
-}
-
-async function playSubdivision() {
-    audioKeyDown(subdivisionNote);
-    reactiveUpdateOnMIDI(noteNameToMidiNote[subdivisionNote], 127);
-    await sleep(subdivisionPlayTime-1);
-    audioKeyUp(subdivisionNote);
-    subdivisionCount--;
-
-    if (subdivisionCount == 0){
-        clearInterval(subdivisionInterval);
+    let playTime = Math.floor(498/subdivision)
+    let stopTime = 25;
+    for (i = 0; i < subdivision; i++) {
+        setTimeout(() => {  audioKeyDown(noteToPlay) }, i*(playTime));
+        reactiveUpdateOnMIDI(noteNameToMidiNote[noteToPlay], 127);
+        setTimeout(() => {  audioKeyUp(noteToPlay) }, (i+1)*playTime - stopTime);
     }
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+
 
 function stopMelodyMaker(){
     clearInterval(melodyMakerInterval);
@@ -1113,7 +1099,7 @@ function stopMelodyMaker(){
 
 function resetMelodyMakerNotes(){
     melodyMakerNotes.clear()
-    let notes = ["D3", "F3", "G3", "A3", "C4", "D4", "D4", "F4", "G4", "A4", "C5", "D5"]
+    let notes = ["D3", "F3", "G3", "A3", "C4", "D4", "F4", "G4", "A4", "C5", "D5"]
     for (note of notes)
         melodyMakerNotes.add(note)
 }
