@@ -82,8 +82,8 @@ let context = new AudioContext(),
 keyboard.keyDown = qwertyKeyDown;
 keyboard.keyUp = qwertyKeyUp;
 
-keyboard.mDown = audioKeyDown;
-keyboard.mUp = audioKeyUp;
+keyboard.mDown = mouseKeyDown;
+keyboard.mUp = mouseKeyUp;
 
 
 // VARIABLE INIT
@@ -208,7 +208,17 @@ let harmonizerNoteSet = new Set();
 
 const harmonizerIntervalControl =  document.getElementById("harmonizerInterval");
 harmonizerIntervalControl.addEventListener("change", _ => {
+    if(!arpeggiatorOn){
+      for (note of activeNotes){
+        stopHarmNoteOfNoteName(note);
+      }
+    }
     harmonizerInterval = parseInt(harmonizerIntervalControl.value);
+    if(!arpeggiatorOn){
+      for (note of activeNotes){
+        playHarmNoteOfNoteName(note);
+      }
+    }
 })
 
 let harmonizerOnBtn = document.getElementById("harmonizerOnBtn");
@@ -941,22 +951,50 @@ function audioKeyUp(note, frequency) {
 
 
 function qwertyKeyDown(note, frequency) {
-    audioKeyDown(note, frequency);
-    reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
-    saveLastQuerty(noteNameToMidiNote[note]);
-}
-function qwertyKeyUp(note, frequency) {
-    audioKeyUp(note, frequency);
+
+    if(!melodyMakerOn){ //normal
+        audioKeyDown(note, frequency);
+        reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
+        saveLastQuerty(noteNameToMidiNote[note]);
+    } else { //melody maker
+        if (melodyMakerNotes.has(note)){
+            melodyMakerNotes.delete(note)
+        } else {
+            melodyMakerNotes.add(note);
+        }
+    }
 }
 
+function qwertyKeyUp(note, frequency) {
+    if(!melodyMakerOn){
+        audioKeyUp(note, frequency);
+    }
+}
+
+function mouseKeyDown(note, frequency) {
+    if(!melodyMakerOn){
+        audioKeyDown(note, frequency);
+        reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
+    } else { //melody maker
+        if (melodyMakerNotes.has(note)){
+            melodyMakerNotes.delete(note)
+        } else {
+            melodyMakerNotes.add(note);
+        }
+    }
+}
+
+function mouseKeyUp(note, frequency) {
+    if(!melodyMakerOn){
+        audioKeyUp(note, frequency);
+    }
+}
 
 
 // This function will be removed once synthesized.
 function reactiveUpdateOnMIDI(note, velocity){}
 
-//////////////////////////////////
-//  CHANGE KEYBOARD ID TO MIDI  //
-//////////////////////////////////
+
 
 const allKeys = document.getElementById("keyboard").children[0].children;
 
@@ -968,6 +1006,125 @@ const allKeys = document.getElementById("keyboard").children[0].children;
         keyNote.setAttribute("class", "keyboardNote");
     }
 // })
+
+
+
+
+
+
+
+//////////////////////////////////
+//  MELODY MAKER  //
+//////////////////////////////////
+
+var melodyMakerNotes = new Set();
+var melodyMakerInterval;
+
+var melodyMakerOn = 0;
+var melodyMakerBtn = document.getElementById("melodyMakerBtn");
+melodyMakerBtn.addEventListener("click", _ => {
+    melodyMakerOn = 1 - melodyMakerOn;
+    if (melodyMakerOn)
+        startMelodyMaker();
+    else
+        stopMelodyMaker();
+})
+
+
+function startMelodyMaker(){
+    for (note of activeNotes)
+        audioKeyUp(note);
+    activeNotes.clear();
+    resetMelodyMakerNotes();
+
+    melodyMakerInterval = setInterval(playMelodyMakerNote, 500);
+}
+
+
+function playMelodyMakerNote(){
+
+    for (note of activeNotes)
+        audioKeyUp(note);
+    activeNotes.clear();
+
+    if (melodyMakerNotes.size > 0){
+        let items = Array.from(melodyMakerNotes);
+        let noteToPlay = items[Math.floor(Math.random() * items.length)];
+
+        // audioKeyDown(noteToPlay);
+        // reactiveUpdateOnMIDI(noteNameToMidiNote[noteToPlay], 127);
+        playRandomSubdivision(noteToPlay);
+    }
+
+}
+
+var subdivisionInterval;
+var subdivisionCount;
+var subdivisionNote;
+var subdivisionPlayTime;
+function playRandomSubdivision(note) {
+    let subdivision;
+    let tmpRand = Math.floor(Math.random() * (15 - 1 + 1) + 1);
+    if (tmpRand < 6) {
+        subdivision = 1;
+    } else if (tmpRand < 10) {
+        subdivision = 2;
+    } else if (tmpRand < 13) {
+        subdivision = 3;
+    } else if (tmpRand < 15) {
+        subdivision = 4;
+    } else {
+        subdivision = 5;
+    }
+    subdivisionPlayTime = Math.floor(498/subdivision);
+    subdivisionCount = subdivision;
+    subdivisionNote = note;
+
+    subdivisionInterval = setInterval(playSubdivision, subdivisionPlayTime);
+
+    console.log(subdivision);
+}
+
+async function playSubdivision() {
+    audioKeyDown(subdivisionNote);
+    reactiveUpdateOnMIDI(noteNameToMidiNote[subdivisionNote], 127);
+    await sleep(subdivisionPlayTime-1);
+    audioKeyUp(subdivisionNote);
+    subdivisionCount--;
+
+    if (subdivisionCount == 0){
+        clearInterval(subdivisionInterval);
+    }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function stopMelodyMaker(){
+    clearInterval(melodyMakerInterval);
+    for (note of activeNotes)
+        audioKeyUp(note);
+    activeNotes.clear();
+
+}
+
+
+
+function resetMelodyMakerNotes(){
+    melodyMakerNotes.clear()
+    let notes = ["D3", "F3", "G3", "A3", "C4", "D4", "D4", "F4", "G4", "A4", "C5", "D5"]
+    for (note of notes)
+        melodyMakerNotes.add(note)
+}
+
+
+
+
+
+
+
+
 
 
 

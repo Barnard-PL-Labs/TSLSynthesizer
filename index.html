@@ -6,7 +6,7 @@
     <meta name="description" content="A synthesizer that synthesizes code based off of logical specifications." />
     <meta name="author" content="Wonhyuk Choi" />
     <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet'/>
-   
+
     <link href="./styles/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for the cover template -->
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="./styles/style.css"/>
 
 </head>
-<body>    
+<body>
     <nav>
         <nav class="site-header">
             <div class="container d-flex flex-column flex-md-row justify-content-between">
@@ -75,7 +75,10 @@
         <button id="clearSpec">Clear All</button>
         <button id="randomSpec">Try a random specification</button>
 		<a href="https://tslsynthesissynthesizer.com:4747"><button>Switch interfaces</button></a>
+        <!-- <button id="melodyMakerBtn">Toggle Melody Maker</button> -->
         <span><a href="https://www.youtube.com/watch?v=Rs2Q8bbbixs">Watch the demo</a></span>
+        <br>
+        <button id="melodyMakerBtn">Toggle Melody Maker</button>
     </section>
 
     <hr>
@@ -83,8 +86,8 @@
     <section id="controls">
         <h3 hidden>Synthesizer</h3>
         <div class="synth-control row">
-            <div class="col-3">     
-                <label for="gain">Gain</label>    
+            <div class="col-3">
+                <label for="gain">Gain</label>
                 <input id="gain" type="range" min="0" max="0.95" step="0.01" value="0.8">
             </div>
             <div class="col-3">
@@ -94,19 +97,19 @@
                     <option value="sawtooth">Sawtooth</option>
                     <option value="square">Square</option>
                     <option value="triangle">Triangle</option>
-                </select>     
+                </select>
             </div>
     </div>
         <div class="synth-control row" id="lfoControl">
             <div class="col-3">
                 <label for="lfoDepth">LFO Depth </label>
                 <input id="lfoDepth" type="range" min="0" max="100">
-            </div>            
+            </div>
             <div class="col-3">
                 <label for="lfoFreq">LFO Frequency</label>
                 <input id="lfoFreq" type="range" min="0" max="20">
-            </div>            
-            <div class="col-3">    
+            </div>
+            <div class="col-3">
                 <span id="lfoStatus">LFO: Off</span><br>
                 <button id="lfoOnBtn" class="btn"> LFO On </button>
                 <button id="lfoOffBtn" class="btn"> LFO Off </button>
@@ -118,7 +121,7 @@
                 <div class="col-6">
                     <label for="amFreq">AM frequency</label>
                     <input id="amFreq" type="range" min="0" max="1000">
-                </div>            
+                </div>
                 <div class="col-6">
                     <span id="amStatus">AM: Off</span><br>
                     <button id="amOnBtn" class="btn"> AM On </button>
@@ -169,7 +172,7 @@
                 <input id="harmonizerInterval" type="range" class="harmonizerIntervalWidth" min="-12" max="12" value="-5">
             </div>
             <div class="col-6">
-                <span id="harmonizerStatus">HARMONIZER: Off</span><br>            
+                <span id="harmonizerStatus">HARMONIZER: Off</span><br>
                 <button id="harmonizerOnBtn" class="btn"> HARMONIZER On </button>
                 <button id="harmonizerOffBtn" class="btn"> HARMONIZER Off </button>
             </div>
@@ -189,7 +192,7 @@
                 </select>
             </div>
             <div class="col-6">
-            <span id="arpeggiatorStatus">ARPEGGIATOR: Off</span><br>            
+            <span id="arpeggiatorStatus">ARPEGGIATOR: Off</span><br>
             <button id="arpeggiatorOnBtn" class="btn"> ARPEGGIATOR On </button>
             <button id="arpeggiatorOffBtn" class="btn"> ARPEGGIATOR Off </button>
         </div>
