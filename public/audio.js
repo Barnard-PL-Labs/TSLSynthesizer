@@ -953,39 +953,47 @@ function audioKeyUp(note, frequency) {
 function qwertyKeyDown(note, frequency) {
 
     if(!melodyMakerOn){ //normal
+        lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         audioKeyDown(note, frequency);
         reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
         saveLastQuerty(noteNameToMidiNote[note]);
     } else { //melody maker
         if (melodyMakerNotes.has(note)){
             melodyMakerNotes.delete(note)
+            darkenDown(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         } else {
             melodyMakerNotes.add(note);
+            lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         }
     }
 }
 
 function qwertyKeyUp(note, frequency) {
     if(!melodyMakerOn){
+        darkenDown(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         audioKeyUp(note, frequency);
     }
 }
 
 function mouseKeyDown(note, frequency) {
     if(!melodyMakerOn){
+        lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         audioKeyDown(note, frequency);
         reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
     } else { //melody maker
         if (melodyMakerNotes.has(note)){
             melodyMakerNotes.delete(note)
+            darkenDown(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         } else {
             melodyMakerNotes.add(note);
+            lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         }
     }
 }
 
 function mouseKeyUp(note, frequency) {
     if(!melodyMakerOn){
+        darkenDown(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         audioKeyUp(note, frequency);
     }
 }
@@ -1100,8 +1108,10 @@ function stopMelodyMaker(){
 function resetMelodyMakerNotes(){
     melodyMakerNotes.clear()
     let notes = ["D3", "F3", "G3", "A3", "C4", "D4", "F4", "G4", "A4", "C5", "D5"]
-    for (note of notes)
+    for (note of notes){
         melodyMakerNotes.add(note)
+        lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+    }
 }
 
 
