@@ -1051,6 +1051,17 @@ function startMelodyMaker(){
 }
 
 
+function stopMelodyMaker(){
+    clearInterval(melodyMakerInterval);
+    for (aNote of activeNotes)
+        audioKeyUp(aNote);
+    activeNotes.clear();
+    for (mNote of melodyMakerNotes)
+        darkenDown(document.getElementById("note" + noteNameToMidiNote[mNote].toString()));
+}
+
+
+
 function playMelodyMakerNote(){
 
     for (note of activeNotes)
@@ -1096,14 +1107,6 @@ function playRandomSubdivision(noteToPlay) {
 }
 
 
-
-function stopMelodyMaker(){
-    clearInterval(melodyMakerInterval);
-    for (note of activeNotes)
-        audioKeyUp(note);
-    activeNotes.clear();
-
-}
 
 
 
