@@ -172,6 +172,7 @@ let filterOn = false;
 let filterType = "lowpass"
 let filterCutoff = 10000;
 let filterQ = 1;
+let filterQExp = 0;
 
 const filterCutoffControl =  document.getElementById("filterCutoff");
 filterCutoffControl.addEventListener("change", _ => {
@@ -180,7 +181,8 @@ filterCutoffControl.addEventListener("change", _ => {
 
 const filterQControl =  document.getElementById("filterQ");
 filterQControl.addEventListener("change", _ => {
-    filterQ = Math.pow(10, parseInt(filterQControl.value));
+    filterQExp = parseFloat(filterQControl.value)
+    filterQ = Math.pow(10, filterQExp);
 })
 
 
