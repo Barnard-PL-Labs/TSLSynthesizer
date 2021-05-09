@@ -981,7 +981,7 @@ function mouseKeyDown(note, frequency) {
     if(!melodyMakerOn){
         lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
         audioKeyDown(note, frequency);
-        reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
+        // reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
     } else { //melody maker
         if (melodyMakerNotes.has(note)){
             melodyMakerNotes.delete(note)
