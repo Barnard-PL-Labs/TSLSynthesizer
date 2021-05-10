@@ -41,7 +41,7 @@ function updateVarsToUI(){
     lfoFreqControl.value = lfoFreq;
     amFreqControl.value = amFreq;
     fmFreqControl.value = fmFreq;
-    filterQControl.value = filterQ;
+    filterQControl.value = filterQExp;
     filterTypeControl.value = filterType;
     filterCutoffControl.value = filterCutoff;
     harmonizerIntervalControl.value = harmonizerInterval;

@@ -190,4 +190,12 @@ function generateRandSpec(){
             specNode.lastChild.value = chooseRandOption(specNode.lastChild);
         }
     }
+	for(let i=0; i <selectedNotes.children.length; i++){
+		let rand_int = Math.floor(Math.random() * 34) + 45;
+		let note = `note${rand_int}`;
+		selectedNotesList[i] = note;
+		selectedNotes.children[i].children[0].innerText = "" +
+			"Note " + (i+1).toString() + ": MIDI note " +
+			rand_int + " (" + midiNoteToNoteName[rand_int] + ")";
+	}
 }
