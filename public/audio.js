@@ -82,8 +82,8 @@ let context = new AudioContext(),
 keyboard.keyDown = qwertyKeyDown;
 keyboard.keyUp = qwertyKeyUp;
 
-keyboard.mDown = audioKeyDown;
-keyboard.mUp = audioKeyUp;
+keyboard.mDown = mouseKeyDown;
+keyboard.mUp = mouseKeyUp;
 
 
 // VARIABLE INIT
@@ -172,6 +172,7 @@ let filterOn = false;
 let filterType = "lowpass"
 let filterCutoff = 10000;
 let filterQ = 1;
+let filterQExp = 0;
 
 const filterCutoffControl =  document.getElementById("filterCutoff");
 filterCutoffControl.addEventListener("change", _ => {
@@ -180,7 +181,8 @@ filterCutoffControl.addEventListener("change", _ => {
 
 const filterQControl =  document.getElementById("filterQ");
 filterQControl.addEventListener("change", _ => {
-    filterQ = Math.pow(10, parseInt(filterQControl.value));
+    filterQExp = parseFloat(filterQControl.value)
+    filterQ = Math.pow(10, filterQExp);
 })
 
 
@@ -208,7 +210,17 @@ let harmonizerNoteSet = new Set();
 
 const harmonizerIntervalControl =  document.getElementById("harmonizerInterval");
 harmonizerIntervalControl.addEventListener("change", _ => {
+    if(!arpeggiatorOn){
+      for (note of activeNotes){
+        stopHarmNoteOfNoteName(note);
+      }
+    }
     harmonizerInterval = parseInt(harmonizerIntervalControl.value);
+    if(!arpeggiatorOn){
+      for (note of activeNotes){
+        playHarmNoteOfNoteName(note);
+      }
+    }
 })
 
 let harmonizerOnBtn = document.getElementById("harmonizerOnBtn");
@@ -941,22 +953,58 @@ function audioKeyUp(note, frequency) {
 
 
 function qwertyKeyDown(note, frequency) {
-    audioKeyDown(note, frequency);
-    reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
-    saveLastQuerty(noteNameToMidiNote[note]);
-}
-function qwertyKeyUp(note, frequency) {
-    audioKeyUp(note, frequency);
+
+    if(!melodyMakerOn){ //normal
+        lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+        audioKeyDown(note, frequency);
+        reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
+        saveLastQuerty(noteNameToMidiNote[note]);
+    } else { //melody maker
+        if (melodyMakerNotes.has(note)){
+            melodyMakerNotes.delete(note)
+            darkenDown(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+        } else {
+            melodyMakerNotes.add(note);
+            lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+        }
+    }
 }
 
+function qwertyKeyUp(note, frequency) {
+    if(!melodyMakerOn){
+        darkenDown(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+        audioKeyUp(note, frequency);
+    }
+}
+
+function mouseKeyDown(note, frequency) {
+    if(!melodyMakerOn){
+        lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+        audioKeyDown(note, frequency);
+        // reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
+    } else { //melody maker
+        if (melodyMakerNotes.has(note)){
+            melodyMakerNotes.delete(note)
+            darkenDown(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+        } else {
+            melodyMakerNotes.add(note);
+            lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+        }
+    }
+}
+
+function mouseKeyUp(note, frequency) {
+    if(!melodyMakerOn){
+        darkenDown(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+        audioKeyUp(note, frequency);
+    }
+}
 
 
 // This function will be removed once synthesized.
 function reactiveUpdateOnMIDI(note, velocity){}
 
-//////////////////////////////////
-//  CHANGE KEYBOARD ID TO MIDI  //
-//////////////////////////////////
+
 
 const allKeys = document.getElementById("keyboard").children[0].children;
 
@@ -968,6 +1016,116 @@ const allKeys = document.getElementById("keyboard").children[0].children;
         keyNote.setAttribute("class", "keyboardNote");
     }
 // })
+
+
+
+
+
+
+
+//////////////////////////////////
+//  MELODY MAKER  //
+//////////////////////////////////
+
+var melodyMakerNotes = new Set();
+var melodyMakerInterval;
+
+var melodyMakerOn = 0;
+var melodyMakerBtn = document.getElementById("melodyMakerBtn");
+melodyMakerBtn.addEventListener("click", _ => {
+    melodyMakerOn = 1 - melodyMakerOn;
+    if (melodyMakerOn)
+        startMelodyMaker();
+    else
+        stopMelodyMaker();
+})
+
+
+function startMelodyMaker(){
+    for (note of activeNotes)
+        audioKeyUp(note);
+    activeNotes.clear();
+    resetMelodyMakerNotes();
+
+    melodyMakerInterval = setInterval(playMelodyMakerNote, 500);
+}
+
+
+function stopMelodyMaker(){
+    clearInterval(melodyMakerInterval);
+    for (aNote of activeNotes)
+        audioKeyUp(aNote);
+    activeNotes.clear();
+    for (mNote of melodyMakerNotes)
+        darkenDown(document.getElementById("note" + noteNameToMidiNote[mNote].toString()));
+}
+
+
+
+function playMelodyMakerNote(){
+
+    for (note of activeNotes)
+        audioKeyUp(note);
+    activeNotes.clear();
+
+    if (melodyMakerNotes.size > 0){
+        let items = Array.from(melodyMakerNotes);
+        let noteToPlay = items[Math.floor(Math.random() * items.length)];
+
+        // audioKeyDown(noteToPlay);
+        // reactiveUpdateOnMIDI(noteNameToMidiNote[noteToPlay], 127);
+        playRandomSubdivision(noteToPlay);
+    }
+
+}
+
+
+function playRandomSubdivision(noteToPlay) {
+
+    let subdivision;
+    let tmpRand = Math.floor(Math.random() * (15 - 1 + 1) + 1);
+    if (tmpRand < 6) {
+        subdivision = 1;
+    } else if (tmpRand < 10) {
+        subdivision = 2;
+    } else if (tmpRand < 13) {
+        subdivision = 3;
+    } else if (tmpRand < 15) {
+        subdivision = 4;
+    } else {
+        subdivision = 5;
+    }
+
+
+    let playTime = Math.floor(498/subdivision)
+    let stopTime = 25;
+    for (i = 0; i < subdivision; i++) {
+        setTimeout(() => {  audioKeyDown(noteToPlay) }, i*(playTime));
+        reactiveUpdateOnMIDI(noteNameToMidiNote[noteToPlay], 127);
+        setTimeout(() => {  audioKeyUp(noteToPlay) }, (i+1)*playTime - stopTime);
+    }
+}
+
+
+
+
+
+function resetMelodyMakerNotes(){
+    melodyMakerNotes.clear()
+    let notes = ["D3", "F3", "G3", "A3", "C4", "D4", "F4", "G4", "A4", "C5", "D5"]
+    for (note of notes){
+        melodyMakerNotes.add(note)
+        lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+    }
+}
+
+
+
+
+
+
+
+
 
 
 

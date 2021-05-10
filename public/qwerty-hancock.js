@@ -340,7 +340,7 @@
     var mouseDown = function (element, callback) {
         if (element.tagName.toLowerCase() == 'li') {
             mouse_is_down = true;
-            lightenUp(element);
+            // lightenUp(element);
             callback(element.title, getFrequencyOfNote(element.title));
         }
     };
@@ -351,7 +351,7 @@
     var mouseUp = function (element, callback) {
         if (element.tagName.toLowerCase() == 'li') {
             mouse_is_down = false;
-            darkenDown(element);
+            // darkenDown(element);
             callback(element.title, getFrequencyOfNote(element.title));
         }
     };
@@ -361,7 +361,7 @@
     */
     var mouseOver = function (element, callback) {
         if (mouse_is_down) {
-            lightenUp(element);
+            // lightenUp(element);
             callback(element.title, getFrequencyOfNote(element.title));
         }
     };
@@ -371,7 +371,7 @@
     */
     var mouseOut = function (element, callback) {
         if (mouse_is_down) {
-            darkenDown(element);
+            // darkenDown(element);
             callback(element.title, getFrequencyOfNote(element.title));
         }
     };
@@ -521,7 +521,7 @@
 
             // Call user's noteDown function.
             callback(noteName, getFrequencyOfNote(noteName));
-            lightenUp(document.getElementById(key_pressed));
+            // lightenUp(document.getElementById(key_pressed));
             return true;
        }
        return false;
@@ -546,7 +546,7 @@
             key_pressed = key_data[1];
             // Call user's noteDown function.
             callback(noteName, getFrequencyOfNote(noteName));
-            darkenDown(document.getElementById(key_pressed));
+            // darkenDown(document.getElementById(key_pressed));
             return true;
         }
         return false;
