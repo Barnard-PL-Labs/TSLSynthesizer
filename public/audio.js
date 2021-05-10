@@ -1004,8 +1004,6 @@ function mouseKeyUp(note, frequency) {
 // This function will be removed once synthesized.
 function reactiveUpdateOnMIDI(note, velocity){}
 
-
-
 const allKeys = document.getElementById("keyboard").children[0].children;
 
 // document.addEventListener("DOMContentLoaded", _ => {

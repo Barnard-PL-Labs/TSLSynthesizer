@@ -123,3 +123,22 @@ function onMIDIFailure() {
     console.log('Error: Could not access MIDI devices.');
 
 }
+
+function f_add(arg1, arg2){return arg1+arg2;}
+function f_sub(arg1, arg2){return arg1-arg2;}
+function f_c0(){return 0;}
+function f_c1(){return 1;}
+function f_c5(){return 5;}
+function f_c10(){return 10;}
+function f_c15(){return 15;}
+function f_c200(){return 200;}
+function f_c500(){return 500;}
+function f_c250(){return 250;}
+function f_c750(){return 750;}
+function f_bigRand(){return Math.random() * 100;}
+function f_hugeRand(){return Math.random() * 200;}
+function f_smallRand(){return Math.floor(Math.random() * 3);}
+function p_gt(arg1, arg2){return arg1 > arg2;}
+function p_lte(arg1, arg2){return arg1 <= arg2;}
+fmFreq = 300;
+lfoDepth = 5;
