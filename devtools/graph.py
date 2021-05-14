@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from collections import namedtuple, Counter
 DataPoint = namedtuple("DataPoint", ("time", "real"))
 
-with open("log.txt", "r") as f:
+with open("time.log", "r") as f:
     data = []
     for data_point in f.read().split('\n')[:-1]:
         time = int(data_point[:-2])
@@ -14,7 +14,7 @@ with open("log.txt", "r") as f:
 
 assert len(data) == 1000
 
-times = [x.time for x in data]
+times = [x.time for x in data if x.real != "f"]
 realizables = [x.real for x in data]
 print(Counter(realizables))
 print("median", np.median(times))
