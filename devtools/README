@@ -1,0 +1,6 @@
+1. Boot up localhost.
+2. Go to console and run concatManyRandSpecs(1000).
+3. Copy result into specifications.log.
+4. Run measure.py.
+5. Run graph.py.
+6. Voila.
