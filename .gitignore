@@ -9,6 +9,7 @@ media
 local.html
 *.prdx
 TODO
+tags
 
 # Sensitive files
 synth_resources
