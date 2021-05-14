@@ -1,7 +1,7 @@
 import os
 from tqdm import tqdm
 
-with open("simpleRandSpecs.log", "r") as f:
+with open("log.log", "r") as f:
     specs = f.read()
 
 spec_list = specs.split("\n***\n\n")
