@@ -7,7 +7,7 @@ with open("specs.log", "r") as f:
     specs = f.read()
 
 after_i = 0
-timeout = 100
+timeout = 60
 
 spec_list = specs.split("\n***\n\n")[after_i:]
 
@@ -17,7 +17,7 @@ def run_once(spec, index):
     with open("tmp.tsl", "w") as f:
         f.write(spec)
     try:
-        subprocess.run(shlex.split("./synthesize.sh tmp.tsl"), timeout=timeout)
+        subprocess.run(shlex.split("./timer.sh tmp.tsl"), timeout=timeout)
     except subprocess.TimeoutExpired:
         with open("time.log", "a") as f:
             f.write(str(index+after_i) + '+f\n')
