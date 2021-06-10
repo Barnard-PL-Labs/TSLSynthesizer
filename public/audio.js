@@ -957,7 +957,7 @@ function audioKeyUp(note, frequency) {
 function qwertyKeyDown(note, frequency) {
 
     if (!melodyMakerOn) { //normal
-        if (mouseOnTextArea) {
+        if (!mouseOnTextArea) {
           lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
           audioKeyDown(note, frequency);
           reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
