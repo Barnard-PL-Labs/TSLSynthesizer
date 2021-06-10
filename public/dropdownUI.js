@@ -142,6 +142,14 @@ function createSpecificationWritten(){
     textArea.value = `always guarantee{
      	play note67 <-> [fmSynthesis <- toggle fmSynthesis];
      	play note64 <-> [lfo <- toggle lfo];\n}`;
+    textArea.addEventListener("mouseover", _ => {
+      mouseOnTextArea = true;
+      console.log(mouseOnTextArea)
+    })
+    textArea.addEventListener("mouseout", _ => {
+      mouseOnTextArea = false;
+      console.log(mouseOnTextArea)
+    })
     return textArea;
 }
 
