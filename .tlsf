@@ -1,0 +1,33 @@
+INFO {
+  TITLE:       "Converted TSL Specification: tmp148544"
+  DESCRIPTION: "TSL specification, which has been converted to TLSF."
+  SEMANTICS:   Mealy
+  TARGET:      Mealy
+}
+MAIN {
+  INPUTS {
+    p0p0play0note68;
+    p0p0play0note77;
+    p0p0play0note525;
+  }
+
+  OUTPUTS {
+    u0fm2synthesis0fm2synthesis;
+    u0fm2synthesis0f1dtoggle0fm2synthesis1b;
+    u0arpeggiator2on0arpeggiator2on;
+    u0arpeggiator2on0f1dtoggle0arpeggiator2on1b;
+    u0am2freq0am2freq;
+    u0am2freq0f1ddec24230am2freq1b;
+    u0harmonizer2interval0harmonizer2interval;
+    u0harmonizer2interval0f1dinc24max24250harmonizer2interval1b;
+    u0harmonizer2on0harmonizer2on;
+    u0harmonizer2on0f1dtoggle0harmonizer2on1b;
+    u0arpeggiator2style0arpeggiator2style;
+    u0arpeggiator2style0f1dup2style1b;
+  }
+
+  GUARANTEE {
+    (G ((((((! (((u0fm2synthesis0fm2synthesis) && (! (u0fm2synthesis0f1dtoggle0fm2synthesis1b))) <-> ((u0fm2synthesis0f1dtoggle0fm2synthesis1b) && (! (u0fm2synthesis0fm2synthesis))))) && (! (((u0arpeggiator2on0arpeggiator2on) && (! (u0arpeggiator2on0f1dtoggle0arpeggiator2on1b))) <-> ((u0arpeggiator2on0f1dtoggle0arpeggiator2on1b) && (! (u0arpeggiator2on0arpeggiator2on)))))) && (! (((u0am2freq0am2freq) && (! (u0am2freq0f1ddec24230am2freq1b))) <-> ((u0am2freq0f1ddec24230am2freq1b) && (! (u0am2freq0am2freq)))))) && (! (((u0harmonizer2interval0harmonizer2interval) && (! (u0harmonizer2interval0f1dinc24max24250harmonizer2interval1b))) <-> ((u0harmonizer2interval0f1dinc24max24250harmonizer2interval1b) && (! (u0harmonizer2interval0harmonizer2interval)))))) && (! (((u0harmonizer2on0harmonizer2on) && (! (u0harmonizer2on0f1dtoggle0harmonizer2on1b))) <-> ((u0harmonizer2on0f1dtoggle0harmonizer2on1b) && (! (u0harmonizer2on0harmonizer2on)))))) && (! (((u0arpeggiator2style0arpeggiator2style) && (! (u0arpeggiator2style0f1dup2style1b))) <-> ((u0arpeggiator2style0f1dup2style1b) && (! (u0arpeggiator2style0arpeggiator2style))))))) && ((((G (! ((p0p0play0note68) && (p0p0play0note77)))) && (G (! ((p0p0play0note525) && (p0p0play0note77))))) && (G (! ((p0p0play0note525) && (p0p0play0note68))))) -> ((((((G (G (u0fm2synthesis0f1dtoggle0fm2synthesis1b))) && (G ((p0p0play0note77) <-> (u0arpeggiator2on0f1dtoggle0arpeggiator2on1b)))) && (G ((p0p0play0note77) <-> (u0am2freq0f1ddec24230am2freq1b)))) && (G ((p0p0play0note77) <-> (u0harmonizer2interval0f1dinc24max24250harmonizer2interval1b)))) && (G ((p0p0play0note68) <-> (u0harmonizer2on0f1dtoggle0harmonizer2on1b)))) && (G ((p0p0play0note525) <-> (u0arpeggiator2style0f1dup2style1b)))));
+  }
+}
+

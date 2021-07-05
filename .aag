@@ -1,0 +1,43 @@
+aag 14 3 1 12 10
+2
+4
+6
+8 28
+18
+19
+24
+25
+26
+27
+26
+27
+26
+27
+1
+0
+10 9 7
+12 10 3
+14 5 3
+16 14 9
+18 17 13
+20 5 2
+22 20 10
+24 23 13
+26 23 17
+28 23 18
+i0 p0p0play0note525
+i1 p0p0play0note77
+i2 p0p0play0note68
+l0 l0
+o0 u0arpeggiator2style0f1dup2style1b
+o1 u0arpeggiator2style0arpeggiator2style
+o2 u0harmonizer2on0f1dtoggle0harmonizer2on1b
+o3 u0harmonizer2on0harmonizer2on
+o4 u0harmonizer2interval0f1dinc24max24250harmonizer2interval1b
+o5 u0harmonizer2interval0harmonizer2interval
+o6 u0am2freq0f1ddec24230am2freq1b
+o7 u0am2freq0am2freq
+o8 u0arpeggiator2on0f1dtoggle0arpeggiator2on1b
+o9 u0arpeggiator2on0arpeggiator2on
+o10 u0fm2synthesis0f1dtoggle0fm2synthesis1b
+o11 u0fm2synthesis0fm2synthesis
