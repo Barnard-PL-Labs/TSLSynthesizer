@@ -2,6 +2,7 @@ const {exec, execFile} = require('child_process');
 const express = require('express');
 const fs = require('fs');
 const https = require('https');
+const path = require('path');
 const app = express();
 
 app.use(express.json());
@@ -37,9 +38,17 @@ try {
 
 // Serve the homepage
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+   let htmlPath = path.join(__dirname, './views/index.html');
+   res.sendFile(htmlPath);
 });
 
+app.get('/beta', (req, res) => {
+   let htmlPath = path.join(__dirname, './views/beta.html');
+   res.sendFile(htmlPath);
+});
+
+
+ 
 // GET and POST
 app.get('/synthesized', async (req, res) => {
     let synthesized = await synthesize();
@@ -50,6 +59,11 @@ app.get('/synthesized', async (req, res) => {
 app.post('/spec', async (req, res) => {
     await writeTmpFile(req.body.spec);
     res.sendStatus(201);
+})
+
+app.use((req, res) => {
+    let htmlPath = path.join(__dirname, './views/404.html');
+    res.status(404).sendFile(htmlPath);
 })
 
 function writeTmpFile(spec){

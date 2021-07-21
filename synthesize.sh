@@ -1,13 +1,17 @@
 #! /usr/bin/env bash
 
 file_name=$1
-file_header=${file_name:0:-4}
+file_header=${file_name%%.*}
+tsl="$fromTslmt.tsl"
 tlsf="$file_header.tlsf"
 aag="$file_header.aag"
 js="$file_header.js"
 
+# Run TSLMT -> TSL 
+./temos.sh $file_name | cat > $tsl
+
 # Build TLSF
-tsltools/tsl2tlsf $file_name | cat > $tlsf
+tsltools/tsl2tlsf $tsl | cat > $tlsf
 
 # Build AAG from docker
 sudo docker run --rm -v $(pwd):/files -i wonhyukchoi/tlsf_to_aag /Strix/scripts/strix_tlsf.sh files/$tlsf > $aag
@@ -28,4 +32,6 @@ fi
 tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
 
 # Synthesize the resulting code
-tsltools/cfm2code WebAudio $aag
+tsltools/cfm2code $aag -o temp.js --webaudio 
+chmod 744 temp.js
+echo "$(cat temp.js)"
