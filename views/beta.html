@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>The TSL Synthesis Synthesizer</title>
+    <meta name="description" content="A synthesizer that synthesizes code based off of logical specifications." />
+    <meta name="author" content="Wonhyuk Choi" />
+    <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet'/>
+
+    <link href="./styles/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for the cover template -->
+    <link href="./styles/product.css" rel="stylesheet">
+    <style>.ismanga .control-panel-tabs{display:flex;justify-content:space-around;list-style:none;margin-bottom:4px;padding:0}.ismanga .control-panel-tabs__item{margin-left:8px;margin-right:8px}.ismanga .control-panel-tabs__item:first-child{margin-left:0}.ismanga .control-panel-tabs__item:last-child{margin-right:0}.ismanga .control-panel-tabs__item:hover .control-panel-tabs__item-btn,.ismanga .control-panel-tabs__item.active .control-panel-tabs__item-btn{box-shadow:0 4px #b4183d;color:#b4183d;cursor:pointer}.ismanga .control-panel-tabs__item-btn{background:none;border:0;border-radius:0;color:#ccc;font-family:"Bangers";font-size:18px;padding:0}</style><style></style><style>.ismanga .control-panel-view-content__select-label{font-size:16px;line-height:1.2;margin-bottom:4px;margin-top:16px}</style><style>.ismanga .control-panel{background:#fff;border-bottom-right-radius:8px;border-top-right-radius:8px;box-shadow:0 0 5px #b4b4b4;color:#000;padding:16px}</style><style>.ismanga .ismanga-spinner{align-items:center;display:flex;flex-direction:column;position:absolute}.ismanga .ismanga-spinner__inner{animation:spin 2s linear infinite;border-color:rgba(255,255,255,.5);border-radius:50%;border-style:solid;border-top-color:#b4183d}@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style><style>.ismanga .ismanga-layer-canvas{pointer-events:auto;position:absolute}.ismanga .ismanga-translate-button{background-color:#b4183d;border:0;border-radius:2px;box-shadow:none;color:#fff;font-family:"bangers";letter-spacing:.8px;outline:none;padding:6px 10px}.ismanga .ismanga-translate-button:hover{background-color:#901330}</style><style>.ismanga{font-family:"Bangers"}.ismanga *,.ismanga *::before,.ismanga *::after{box-sizing:border-box}.ismanga ul[class],.ismanga ol[class]{padding:0}.ismanga body,.ismanga h1,.ismanga h2,.ismanga h3,.ismanga h4,.ismanga p,.ismanga ul[class],.ismanga ol[class],.ismanga li,.ismanga figure,.ismanga figcaption,.ismanga blockquote,.ismanga dl,.ismanga dd{margin:0}.ismanga body{line-height:1.5;min-height:100vh;scroll-behavior:smooth;text-rendering:optimizeSpeed}.ismanga ul[class],.ismanga ol[class]{list-style:none}.ismanga a:not([class]){text-decoration-skip-ink:auto}.ismanga img{display:block;max-width:100%}.ismanga article>*+*{margin-top:1em}.ismanga input,.ismanga button,.ismanga textarea,.ismanga select{font:inherit}@media(prefers-reduced-motion: reduce){.ismanga *{animation-duration:.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:.01ms !important}}.ismanga.ismanga-control-panel-container{left:0;position:fixed;top:40%;z-index:99999 !important}.ismanga.ismanga-layer-container{height:100%;left:0;position:absolute;top:0;width:100%}</style></head>
+
+    <!-- Custom styles for this page -->
+    <link rel="stylesheet" href="./styles/style.css"/>
+
+</head>
+<body>
+    <nav>
+        <nav class="site-header">
+            <div class="container d-flex flex-column flex-md-row justify-content-between">
+              <a class="py-2 d-none d-md-inline-block" href="https://github.com/Barnard-PL-Labs/TSLSynthesizer/blob/main/examples/tsl_help.md">TSL Syntax</a>
+              <a class="py-2 d-none d-md-inline-block" href="/about.html">About</a>
+              <a class="py-2 d-none d-md-inline-block" href="https://github.com/Barnard-PL-Labs/TSLSynthesizer">Github</a>
+            </div>
+          </nav>
+    </nav>
+
+    <div class="container col-md-12 p-lg-12 mx-auto my-12" style="padding-top:20px; background-color: yellow;
+    ">
+        <h2>TSL Synthesis Synthesizer</h2>
+        <div class="row" >
+            <div class="col-7" id="specification">
+                <h3 hidden> Specifications </h3>
+            </div>
+
+            <div class="col-sm">
+                <div id="lastClicked" hidden>
+                    <article id="selectedNote1">
+                    <span>
+                        Note 1: None (Play to change)
+                    </span>
+                        <button class="selectedNoteBtn"> Save / Reset</button>
+                    </article>
+                    <article id="selectedNote2">
+                    <span>
+                        Note 2: None (Play to change)
+                    </span>
+                        <button class="selectedNoteBtn"> Save / Reset</button>
+                    </article>
+                    <article id="selectedNote3">
+                    <span>
+                        Note 3: None (Play to change)
+                    </span>
+                        <button class="selectedNoteBtn"> Save / Reset</button>
+                    </article>
+                    <article id="selectedNote4">
+                    <span>
+                        Note 4: None (Play to change)
+                    </span>
+                        <button class="selectedNoteBtn"> Save / Reset</button>
+                    </article>
+            </div>
+                <section id="synthStatus" style="margin-top: 10%;">
+                    <span id="synth-status">Status: Unsynthesized</span><br>
+                    <button id="synthesize-btn">Synthesize!    </button>
+                    <span> <-- Click Me!</span>
+                </section>
+            </div>
+        </div>
+    <section id="specHelper">
+        <button id="frontendSwap" hidden>Swap specification style</button>
+        <button id="clearSpec">Clear All</button>
+        <button id="randomSpec">Try a random specification</button>
+		<a href="/"><button>Switch interfaces</button></a>
+        <span><a href="https://www.youtube.com/watch?v=Rs2Q8bbbixs">Watch the demo</a></span>
+        <br>
+        <button id="melodyMakerBtn">Toggle Melody Maker</button>
+    </section>
+
+    <hr>
+
+    <section id="controls">
+        <h3 hidden>Synthesizer</h3>
+        <div class="synth-control row">
+            <div class="col-3">
+                <label for="gain">Gain</label>
+                <input id="gain" type="range" min="0" max="0.95" step="0.01" value="0.8">
+            </div>
+            <div class="col-3">
+                <label for="waveform">Waveform</label>
+                <select name="waveform" id="waveform" class="musicOption">
+                    <option value="sine">Sine</option>
+                    <option value="sawtooth">Sawtooth</option>
+                    <option value="square">Square</option>
+                    <option value="triangle">Triangle</option>
+                </select>
+            </div>
+    </div>
+        <div class="synth-control row" id="lfoControl">
+            <div class="col-3">
+                <label for="lfoDepth">LFO Depth </label>
+                <input id="lfoDepth" type="range" min="0" max="100">
+            </div>
+            <div class="col-3">
+                <label for="lfoFreq">LFO Frequency</label>
+                <input id="lfoFreq" type="range" min="0" max="20">
+            </div>
+            <div class="col-3">
+                <span id="lfoStatus">LFO: Off</span><br>
+                <button id="lfoOnBtn" class="btn"> LFO On </button>
+                <button id="lfoOffBtn" class="btn"> LFO Off </button>
+            </div>
+        </div>
+        <div class="row">
+        <div class="synth-control col-6" id="amControl">
+            <div class="row">
+                <div class="col-6">
+                    <label for="amFreq">AM frequency</label>
+                    <input id="amFreq" type="range" min="0" max="1000">
+                </div>
+                <div class="col-6">
+                    <span id="amStatus">AM: Off</span><br>
+                    <button id="amOnBtn" class="btn"> AM On </button>
+                    <button id="amOffBtn" class="btn"> AM Off </button>
+                </div>
+            </div>
+        </div>
+        <div class="synth-control col-6" id="fmControl">
+            <div class="row">
+                <div class="col-6">
+                    <label for="fmFreq">FM frequency</label>
+                    <input id="fmFreq" type="range" min="0" max="1000">
+                </div>
+                <div class="col-6">
+                    <span id="fmStatus">FM: Off</span><br>
+                    <button id="fmOnBtn" class="btn"> FM On </button>
+                    <button id="fmOffBtn" class="btn"> FM Off </button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="synth-control row" id="filterControl">
+            <div class="col-3">
+                <label for="filterCutoff"> FILTER cutoff </label>
+                <input id="filterCutoff" type="range" min="20" max="10000" value="10000">
+            </div>
+            <div class="col-3">
+                <label for="filterQ"> Q </label>
+                <input id="filterQ" type="range" min="-4.0" max="2.0" step="0.01" value="0">
+            </div>
+            <div class="col-2">
+                <label for="filterTypeDropdown"> Type </label>
+                <select name="filterType" id="filterTypeDropdown" class="musicOption">
+                    <option value="lowpass">low-pass</option>
+                    <option value="highpass">high-pass</option>
+                    <option value="bandpass">band-pass</option>
+                </select>
+                </div>
+            <div class="col-4">
+                <span id="filterStatus">FILTER: Off</span><br>
+                <button id="filterOnBtn" class="btn"> FILTER On </button>
+                <button id="filterOffBtn" class="btn"> FILTER Off </button>
+            </div>
+        </div>
+        <div class="synth-control row" id="harmonizerControl">
+            <div class="col-6">
+                <label for="harmonizerInterval"> HARMONIZER Interval</label>
+                <input id="harmonizerInterval" type="range" class="harmonizerIntervalWidth" min="-12" max="12" value="-5">
+            </div>
+            <div class="col-6">
+                <span id="harmonizerStatus">HARMONIZER: Off</span><br>
+                <button id="harmonizerOnBtn" class="btn"> HARMONIZER On </button>
+                <button id="harmonizerOffBtn" class="btn"> HARMONIZER Off </button>
+            </div>
+        </div>
+        <div class="synth-control row" id="arpeggiatorControl">
+            <div class="col-3">
+                <label for="arpeggiatorRate"> ARPEGGIATOR rate </label>
+                <input id="arpeggiatorRate" type="range" min="1" max="60" value="6">
+            </div>
+            <div class="col-3">
+                <label for="arpeggiatorStyleDropdown"> Style </label>
+                <select name="arpeggiatorStyle" id="arpeggiatorStyleDropdown" class="musicOption">
+                <option value="up">up</option>
+                <option value="up-down">up-down</option>
+                <option value="down">down</option>
+                <option value="random">random</option>
+                </select>
+            </div>
+            <div class="col-6">
+            <span id="arpeggiatorStatus">ARPEGGIATOR: Off</span><br>
+            <button id="arpeggiatorOnBtn" class="btn"> ARPEGGIATOR On </button>
+            <button id="arpeggiatorOffBtn" class="btn"> ARPEGGIATOR Off </button>
+        </div>
+    </section>
+    <br>
+    <div id="keyboard"></div>
+</div>
+</div>
+
+</div>
+
+<script src="qwerty-hancock.js"></script>
+<script src="audio.js"></script>
+<script src="htmlControl.js"></script>
+
+<script src="dropdownUtils.js"></script>
+<script src="dropdownComplexUI.js"></script>
+<script src="dropdownUI.js"></script>
+<script src="dropdownSpecGenerator.js"></script>
+
+<script src="template.js"></script>
+<script src="client.js"></script>
+</body>
+</html>
