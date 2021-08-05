@@ -56,6 +56,12 @@ app.get('/synthesized', async (req, res) => {
     res.send({result:synthesized});
 })
 
+app.get('/synthesizedMT', async (req, res) => {
+    let synthesized = await synthesizeMT();
+    await deleteTmpFiles();
+    res.send({result:synthesized});
+})
+
 app.post('/spec', async (req, res) => {
     await writeTmpFile(req.body.spec);
     res.sendStatus(201);
@@ -93,6 +99,23 @@ function deleteTmpFiles(){
 function synthesize() {
     return new Promise(resolve => {
         execFile('bash', ['synthesize.sh', tslFile],
+            function (err, data) {
+                let returnValue;
+                // XXX
+                if (err) {
+                    returnValue = "ERROR" + err;
+                }
+                else {
+                    returnValue = data.toString();
+                }
+                resolve(returnValue);
+            })
+    })
+}
+
+function synthesizeMT() {
+    return new Promise(resolve => {
+        execFile('bash', ['synthesizeMT.sh', tslFile],
             function (err, data) {
                 let returnValue;
                 // XXX
