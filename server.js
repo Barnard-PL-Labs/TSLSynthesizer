@@ -61,10 +61,6 @@ app.post('/spec', async (req, res) => {
     res.sendStatus(201);
 })
 
-app.use((req, res) => {
-    let htmlPath = path.join(__dirname, './views/404.html');
-    res.status(404).sendFile(htmlPath);
-})
 
 function writeTmpFile(spec){
     tmpFileHeader = "tmp" + Math.random().toString().slice(2,8);

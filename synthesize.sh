@@ -2,7 +2,7 @@
 
 file_name=$1
 file_header=${file_name%%.*}
-modTsl="$file_header.tslmt"
+modTsl="$newTSLMT.tsl"
 tlsf="$file_header.tlsf"
 aag="$file_header.aag"
 js="$file_header.js"
