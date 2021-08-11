@@ -19,7 +19,7 @@ function control({ s_lfo
     let b8 = p_gt(c_lfoFreq, w5);
     let b9 = p_lte(c_lfoFreq, w5);
 
-    let innerCircuit = controlCircuit(b9, b8);
+    let innerCircuit = controlCircuit(b8, b9);
 
     // Switches
     let o_lfo = lfoSwitch([w2, innerCircuit[0]], [w3, innerCircuit[1]], [c_lfo, innerCircuit[2]]);
@@ -54,11 +54,11 @@ function lfoFreqSwitch
 }
 
 
-var w33 = false;
+var w27 = false;
 var w3 = false;
-var w20 = false;
+var w28 = false;
 var w4 = false;
-var w25 = false;
+var w32 = false;
 var w5 = false;
 
 var w6 = false;
@@ -88,11 +88,10 @@ var w29 = false;
 var w30 = false;
 var w31 = false;
 var w32 = false;
-var w33 = false;
 
-w33 = false;
-w20 = false;
-w25 = false;
+w27 = false;
+w28 = false;
+w32 = false;
 
 function controlCircuit
     ( cin0
@@ -102,41 +101,42 @@ function controlCircuit
     // Latches
     // Gates
     w6 = w5 && w4;
-    w7 = cin1 && !cin0;
-    w8 = w7 && w3;
-    w9 = w5 && !w4;
-    w10 = w9 && w8;
-    w11 = !cin1 && cin0;
-    w12 = !w11 && w4;
-    w13 = w12 && !w8;
-    w14 = w7 && !w3;
-    w15 = !w14 && !w11;
-    w16 = !w15 && !w3;
-    w17 = !w16 && !w4;
-    w18 = !w13 && !w5;
-    w19 = w18 && !w17;
-    w20 = !w19 && !w10;
-    w21 = w14 && w4;
-    w22 = !w21 && !w5;
-    w23 = w15 && w5;
-    w24 = !w22 && !w6;
+    w7 = !w6 && w3;
+    w8 = !cin1 && cin0;
+    w9 = w8 && !w7;
+    w10 = !w5 && !w4;
+    w11 = w4 && !w3;
+    w12 = !w10 && w8;
+    w13 = w12 && !w11;
+    w14 = !w13 && !w9;
+    w15 = !w10 && !w6;
+    w16 = w15 && cin1;
+    w17 = !w3 && !cin0;
+    w18 = w17 && w16;
+    w19 = w5 && cin1;
+    w20 = !w19 && w3;
+    w21 = w20 && !w16;
+    w22 = !w15 && cin1;
+    w23 = !w22 && !w3;
+    w24 = !w21 && !cin0;
     w25 = w24 && !w23;
-    w26 = !w25 && w20;
-    w27 = !w26 && cin1;
-    w28 = !w27 && !w6;
-    w29 = !w26 && cin0;
-    w30 = !w29 && !w6;
-    w31 = !w14 && w9;
-    w32 = !w29 && w22;
-    w33 = !w32 && !w31;
+    w26 = !w25 && !w18;
+    w27 = !w18 && !w9;
+    w28 = !w25 && !w9;
+    w29 = !w16 && !w3;
+    w30 = !w20 && !cin0;
+    w31 = w30 && !w29;
+    w32 = !w31 && !w13;
 
     // Outputs
+    const o1 = !w14;
+    const o4 = !w26;
 
-    return [ w28
-           , w27
+    return [ w14
+           , o1
            , false
-           , w30
-           , w29
+           , w26
+           , o4
            , false];
 
  }

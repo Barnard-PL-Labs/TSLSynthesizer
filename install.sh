@@ -11,9 +11,8 @@ cd tsltools
 make
 cd -
 
-# Build Temos
-# runs makefile from Temos
-make all
+# Build Temos (should work)
+make all -C temos/
 
 echo "Requesting sudo access for docker."
 sudo docker pull wonhyukchoi/tlsf_to_aag

@@ -7,6 +7,6 @@ fi
 
 tslmt=$1
 
-java -jar decomp/target/decomp-1.0-SNAPSHOT-jar-with-dependencies.jar $tslmt > tmp.json
+java -jar temos/decomp/target/decomp-1.0-SNAPSHOT-jar-with-dependencies.jar $tslmt > tmp.json
 target/release/temos tmp.json $tslmt
 rm tmp.json
