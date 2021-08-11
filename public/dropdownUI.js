@@ -1,35 +1,3 @@
-function changeYoungerSibling(node, optionMap){
-    if(!node.value)
-        return;
-    const parentNode = node.parentNode,
-        oldSibling = node.nextSibling,
-        newSibling = strToDOM(optionMap[node.value]);
-    if(oldSibling){
-        parentNode.insertBefore(newSibling, oldSibling);
-        oldSibling.remove();
-    }
-    else{
-        parentNode.appendChild(newSibling);
-    }
-}
-
-function changeBinOp(node, termType){
-    const grandparent = node.parentNode.parentNode,
-        binOpNode = grandparent.getElementsByClassName("binOp")[0];
-    binOpNode.innerText = binOpMap[termType];
-}
-
-function removeSiblingsAfterIth(node, idx){
-    const parentNode = node.parentNode;
-    while(parentNode.children.length > idx)
-        parentNode.lastChild.remove();
-}
-
-function createOptionSpan(){
-    const spanNode = document.createElement("span");
-    spanNode.setAttribute("class", "specOption");
-    return spanNode;
-}
 
 function createSingleSpec(idx){
     const spec = document.createElement("article");
@@ -69,91 +37,62 @@ function createSingleSpec(idx){
     return spec;
 }
 
-// Frontend change stuff
-class specStyles {
-    static simple  = "simple";
-    static complex = "complex";
-    static written = "written";
-    static toNextSpecStyle(){
-        if(currSpecStyle === specStyles.simple){
-            currSpecStyle = specStyles.complex;
-            toggleReactiveInputVisibility();
-        }
-        else if(currSpecStyle === specStyles.complex){
-            currSpecStyle = specStyles.written;
-            toggleReactiveInputVisibility();
-        }
-        else if(currSpecStyle === specStyles.written){
-            currSpecStyle = specStyles.simple;
-        }
+////////////////////
+////NODE HELPERS////
+////////////////////
+
+
+function changeYoungerSibling(node, optionMap){
+    if(!node.value)
+        return;
+    const parentNode = node.parentNode,
+        oldSibling = node.nextSibling,
+        newSibling = strToDOM(optionMap[node.value]);
+    if(oldSibling){
+        parentNode.insertBefore(newSibling, oldSibling);
+        oldSibling.remove();
     }
-}
-let currSpecStyle = specStyles.simple;
-const swapFrontendBtn = document.getElementById("frontendSwap");
-function toggleReactiveInputVisibility(){
-    const buttons = document.getElementsByClassName("btn");
-    const musicOptions = document.getElementsByClassName("musicOption");
-    function toggleVisibility(node){
-        if(node.style.visibility === "hidden")
-            node.style.visibility = ""
-        else
-            node.style.visibility = "hidden"
+    else{
+        parentNode.appendChild(newSibling);
     }
-    for(let i=0; i<buttons.length;i++)
-        toggleVisibility(buttons[i])
-    for(let i=0; i<musicOptions.length;i++)
-        toggleVisibility(musicOptions[i])
 }
 
+function changeBinOp(node, termType){
+    const grandparent = node.parentNode.parentNode,
+        binOpNode = grandparent.getElementsByClassName("binOp")[0];
+    binOpNode.innerText = binOpMap[termType];
+}
+
+function removeSiblingsAfterIth(node, idx){
+    const parentNode = node.parentNode;
+    while(parentNode.children.length > idx)
+        parentNode.lastChild.remove();
+}
+
+function createOptionSpan(){
+    const spanNode = document.createElement("span");
+    spanNode.setAttribute("class", "specOption");
+    return spanNode;
+}
+
+
+
+///////////////////////////
+////swap interfaces btn////
+///////////////////////////
+
+const swapFrontendBtn = document.getElementById("frontendSwap");
 swapFrontendBtn.addEventListener("click", _ => {
     specStyles.toNextSpecStyle();
+    console.log('switch interface button exectued');
     rebootSpecs();
 }, false);
 
-function createSpecificationSimple(){
-    let specificationDiv = document.createElement("div");
-    for(let i=0; i<NUM_SPECS; i++){
-        const singleSpec = createSingleSpec(i);
-        specificationDiv.appendChild(singleSpec);
-        specNodeList.push(singleSpec);
-        specificationDiv.appendChild(document.createElement("br"));
-    }
-    return specificationDiv;
-}
 
-function createSpecificationComplex(){
-    currSpecStyle = specStyles.complex;
-    let specificationDiv = document.createElement("div");
-    for(let i=0; i<NUM_SPECS; i++){
-        const singleSpec = createSingleComplexSpec(i);
-        specificationDiv.appendChild(singleSpec);
-        specNodeList.push(singleSpec);
-        specificationDiv.appendChild(document.createElement("br"));
-    }
-    return specificationDiv;
-}
 
-function createSpecificationWritten(){
-    currSpecStyle = specStyles.written;
-    const textArea = document.createElement("textarea");
-    textArea.setAttribute("id", "specText");
-    textArea.setAttribute("cols", "70");
-    textArea.setAttribute("rows", "15");
-    textArea.value = `always guarantee{
-     	play note67 <-> [fmSynthesis <- toggle fmSynthesis];
-     	play note64 <-> [lfo <- toggle lfo];\n}`;
-    textArea.addEventListener("mouseover", _ => {
-      mouseOnTextArea = true;
-      console.log(mouseOnTextArea)
-    })
-    textArea.addEventListener("mouseout", _ => {
-      mouseOnTextArea = false;
-      console.log(mouseOnTextArea)
-    })
-    return textArea;
-}
-
-// RANDOM SPEC
+///////////////////////
+////RANDOM SPEC BTN////
+///////////////////////
 const randomSpecBtn = document.getElementById("randomSpec");
 randomSpecBtn.addEventListener("click", generateRandSpec, false);
 
@@ -206,4 +145,24 @@ function generateRandSpec(){
 			"Note " + (i+1).toString() + ": MIDI note " +
 			rand_int + " (" + midiNoteToNoteName[rand_int] + ")";
 	}
+}
+
+
+
+////////////////////////
+///UHH...LEGACY CODE////
+////////////////////////
+function toggleReactiveInputVisibility(){
+    const buttons = document.getElementsByClassName("btn");
+    const musicOptions = document.getElementsByClassName("musicOption");
+    function toggleVisibility(node){
+        if(node.style.visibility === "hidden")
+            node.style.visibility = ""
+        else
+            node.style.visibility = "hidden"
+    }
+    for(let i=0; i<buttons.length;i++)
+        toggleVisibility(buttons[i])
+    for(let i=0; i<musicOptions.length;i++)
+        toggleVisibility(musicOptions[i])
 }

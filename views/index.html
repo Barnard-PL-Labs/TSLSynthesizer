@@ -37,7 +37,7 @@
             </div>
 
             <div class="col-sm">
-                <div id="lastClicked" hidden>
+                <div id="lastClicked">
                     <article id="selectedNote1">
                     <span>
                         Note 1: None (Play to change)
@@ -71,10 +71,9 @@
             </div>
         </div>
     <section id="specHelper">
-        <button id="frontendSwap" hidden>Swap specification style</button>
         <button id="clearSpec">Clear All</button>
         <button id="randomSpec">Try a random specification</button>
-		<a href="/beta"><button>Switch interfaces</button></a>
+        <button id="frontendSwap">Switch interfaces</button>
         <span><a href="https://www.youtube.com/watch?v=Rs2Q8bbbixs">Watch the demo</a></span>
         <br>
         <button id="melodyMakerBtn">Toggle Melody Maker</button>
@@ -208,9 +207,13 @@
 <script src="htmlControl.js"></script>
 
 <script src="dropdownUtils.js"></script>
-<script src="dropdownComplexUI.js"></script>
 <script src="dropdownUI.js"></script>
 <script src="dropdownSpecGenerator.js"></script>
+<script src="interfaces/alpha.js"></script>
+<script src="interfaces/beta.js"></script>
+<script src="interfaces/written.js"></script>
+<script src="interfaces/writtenMT.js"></script>
+
 
 <script src="template.js"></script>
 <script src="client.js"></script>

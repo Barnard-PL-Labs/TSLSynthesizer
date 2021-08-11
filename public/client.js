@@ -62,6 +62,62 @@ function synthesize(spec){
         });
 }
 
+function synthesizeMT(spec){
+    // POST
+    fetch('/spec', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            spec: spec
+        })
+    })
+        .then(function(response){
+            if(response.ok){
+                console.log('POST success.');
+                // GET
+                fetch('/synthesizedMT', {method: 'GET'})
+                    .then(function(response){
+                        if(response.ok){
+                            console.log("GET success.");
+                            return response.json();
+                        }
+                        throw new Error('GET failed.');
+                    })
+                    .then(function(data){
+                        let synthesized = data.result;
+
+                        // XXX
+                        if(synthesized.toString().search("UNREALIZABLE") !== -1){
+                            synthStatus.innerText = "Status: Unrealizable... please try again\t";
+                        }
+
+                        else if(synthesized.toString().search("ERROR") !== -1){
+                            synthStatus.innerText = "Server Error. Please refresh page.\t";
+                            console.log(synthesized);
+                        }
+                        else {
+                            let script = document.createElement("script");
+                            script.text = synthesized;
+                            script.setAttribute("id", "synthesizedScript");
+                            document.body.appendChild(script);
+                            synthStatus.innerHTML = "Status: Synthesis Complete!\t"
+                        }
+
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+                    return fetch;
+                }
+           else
+                throw new Error('POST failed.');
+        })
+        .catch(function(error){
+            console.log(error);
+        });
+}
 
 document.getElementById("synthesize-btn").addEventListener(
     "click", _ => {
@@ -78,7 +134,12 @@ document.getElementById("synthesize-btn").addEventListener(
                 synthStatus.innerHTML = "Status: No specification given\t";
                 return;
             }
-            synthesize(spec);
+            if(currSpecStyle === specStyles.writtenMT){
+                synthesizeMT(spec);
+            } else { 
+                synthesize(spec); 
+            }
+
         }
         catch(err){
             if(err instanceof UnselectedNoteError)

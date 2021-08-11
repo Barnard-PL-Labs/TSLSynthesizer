@@ -1,16 +1,60 @@
-class UnselectedNoteError extends Error {}
-
-function getSelectedNote(noteOption){
-    const selectedNoteNum = parseInt(noteOption);
-    if(Number.isNaN(selectedNoteNum))
-        throw new TypeError("Invalid note number");
-
-    const selectedNote = selectedNotesList[selectedNoteNum];
-    if(!selectedNote)
-        throw new UnselectedNoteError;
-    else
-        return selectedNote;
+////////////////////////////////////////////////////
+//      Populate the 'unselected' nodes           //
+// USE FOR YOUR getSpecFromDOMDropdownYourInterface() //
+////////////////////////////////////////////////////
+const unselectedNotes = [];
+function populateUnselectedNotes(){
+    const allNotes = document.getElementsByClassName("keyboardNote");
+    for(let i=0; i<allNotes.length; i++){
+        if(selectedNotesList.includes(allNotes[i].getAttribute("id")))
+            continue;
+        unselectedNotes.push(allNotes[i]);
+    }
 }
+
+
+////////////////////////////////////////////////////
+//      parse the specificaiton Nodes             //
+// USE FOR YOUR getSpecFromDOMDropdownYourInterface() //
+////////////////////////////////////////////////////
+function parseSpecNode(spec){
+    let PREDICATE_IDX;
+    if(currSpecStyle === specStyles.simple)
+        PREDICATE_IDX = 0;
+    else if(currSpecStyle === specStyles.complex)
+        PREDICATE_IDX = 1;
+    else
+        throw new Error("Unknown specification style");
+    const optionList =  onlySpecChildren(spec);
+
+    if(optionList.length === 0)
+        return ["", ""];
+
+    // XXX: Hardcoded
+
+    let formulaList = []
+    for(let i=0; i<optionList.length; i++){
+        const node     = optionList[i],
+              termType = node.firstChild.value,
+              action   = node.lastChild.value;
+        if(!termType || !action)
+            return ["", ""];
+        formulaList.push(formulaMap(termType, action));
+    }
+    let tslSpec = buildFormulaFromParts(optionList, formulaList);
+    tslSpec += ";";
+
+    let predicate = "";
+    if(optionList[PREDICATE_IDX].firstChild.value === "playing"){
+        predicate = formulaList[PREDICATE_IDX];
+    }
+    else {
+        predicate = "";
+    }
+
+    return [predicate, tslSpec];
+}
+
 
 function buildFormulaFromParts(optionList, formulaList){
     if(currSpecStyle === specStyles.simple){
@@ -61,44 +105,6 @@ function buildFormulaFromParts(optionList, formulaList){
     else {
         throw new Error("Unknown specification style.");
     }
-}
-
-function parseSpecNode(spec){
-    let PREDICATE_IDX;
-    if(currSpecStyle === specStyles.simple)
-        PREDICATE_IDX = 0;
-    else if(currSpecStyle === specStyles.complex)
-        PREDICATE_IDX = 1;
-    else
-        throw new Error("Unknown specification style");
-    const optionList =  onlySpecChildren(spec);
-
-    if(optionList.length === 0)
-        return ["", ""];
-
-    // XXX: Hardcoded
-
-    let formulaList = []
-    for(let i=0; i<optionList.length; i++){
-        const node     = optionList[i],
-              termType = node.firstChild.value,
-              action   = node.lastChild.value;
-        if(!termType || !action)
-            return ["", ""];
-        formulaList.push(formulaMap(termType, action));
-    }
-    let tslSpec = buildFormulaFromParts(optionList, formulaList);
-    tslSpec += ";";
-
-    let predicate = "";
-    if(optionList[PREDICATE_IDX].firstChild.value === "playing"){
-        predicate = formulaList[PREDICATE_IDX];
-    }
-    else {
-        predicate = "";
-    }
-
-    return [predicate, tslSpec];
 }
 
 function makePairs(arr){
@@ -172,59 +178,4 @@ function makeAlwaysAssume(predicateList){
 
 }
 
-const unselectedNotes = [];
-function populateUnselectedNotes(){
-    const allNotes = document.getElementsByClassName("keyboardNote");
-    for(let i=0; i<allNotes.length; i++){
-        if(selectedNotesList.includes(allNotes[i].getAttribute("id")))
-            continue;
-        unselectedNotes.push(allNotes[i]);
-    }
-}
 
-function getSpecFromDOMDropdown(){
-    let spec;
-    populateUnselectedNotes();
-    if(currSpecStyle === specStyles.simple || currSpecStyle === specStyles.complex){
-        let tslSpecList = [];
-        let predicateSet = new Set();
-
-        for(let i=0; i < specRootNode.children.length; i++){
-            const specNode = specRootNode.children[i];
-            if(specNode.tagName !== "ARTICLE")
-                continue;
-            const [predicate, tslSpec] = parseSpecNode(specNode);
-
-            if(!tslSpec)
-                continue;
-
-            tslSpecList.push(tslSpec);
-            if(predicate)
-                predicateSet.add(predicate);
-        }
-
-        if(tslSpecList.length === 0){
-            return "";
-        }
-
-        const predicateList = [...predicateSet];
-        const alwaysAssume = makeAlwaysAssume(predicateList);
-        const alwaysGuarantee = "always guarantee {\n" +
-            "\t" + tslSpecList.join("\n\t") + "\n}\n";
-
-        spec = alwaysAssume + alwaysGuarantee;
-    }
-    else if(currSpecStyle === specStyles.written){
-        spec = document.getElementById("specText").value;
-    }
-    else {
-        throw new Error("Incorrect type of specification style");
-    }
-    console.log(`Got spec from DOM: \n${spec}`);
-
-    return spec;
-}
-
-function getSpecFromDOMSimple(){return getSpecFromDOMDropdown();}
-function getSpecFromDOMComplex(){return getSpecFromDOMDropdown();}
-function getSpecFromDOMWritten(){return getSpecFromDOMDropdown();}

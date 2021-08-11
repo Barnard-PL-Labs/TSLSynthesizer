@@ -8,6 +8,7 @@ aag="$file_header.aag"
 js="$file_header.js"
 
 # Run TSLMT -> TSL 
+#temos/temos.sh $file_name | cat > $modTsl
 ./temos.sh $file_name | cat > $modTsl
 
 # Build TLSF
