@@ -24,7 +24,7 @@ try {
 
     const httpsServer = https.createServer(httpsOptions, app);
 
-    httpsServer.listen(7474, 'tslsynthesissynthesizer.com');
+    httpsServer.listen(443, 'tslsynthesissynthesizer.com');
 	console.log("Service started on on https://tslsynthesissynthesizer.com.");
 
 
@@ -39,11 +39,6 @@ try {
 // Serve the homepage
 app.get('/', (req, res) => {
    let htmlPath = path.join(__dirname, './views/index.html');
-   res.sendFile(htmlPath);
-});
-
-app.get('/beta', (req, res) => {
-   let htmlPath = path.join(__dirname, './views/beta.html');
    res.sendFile(htmlPath);
 });
 

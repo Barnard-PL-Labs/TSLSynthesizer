@@ -140,3 +140,4 @@ dist
 
 package.json
 a.txt*
+nohup.out
