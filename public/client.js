@@ -203,3 +203,23 @@ function p_gt(arg1, arg2){return arg1 > arg2;}
 function p_lte(arg1, arg2){return arg1 <= arg2;}
 fmFreq = 300;
 lfoDepth = 5;
+function genRandSpec(){
+	const noteBase = "note6";
+	for(let i=0; i<selectedNotesList.length; i++)
+	    selectedNotesList[i] = `${noteBase}${i}`;
+	randomSpecBtn.click();
+}
+
+function genManyRandSpecs(times){
+    const specs = [];
+    for(let i=0; i<times; i++){
+        genRandSpec();
+        specs.push(getSpecFromDOM());
+    }
+    return specs
+}
+
+function concatManyRandSpecs(times){
+	const specList = genManyRandSpecs(times);
+	return specList.join('\n***\n\n');
+}
