@@ -2,7 +2,6 @@ const {exec, execFile} = require('child_process');
 const express = require('express');
 const fs = require('fs');
 const https = require('https');
-const path = require('path');
 const app = express();
 
 app.use(express.json());
@@ -24,7 +23,7 @@ try {
 
     const httpsServer = https.createServer(httpsOptions, app);
 
-    httpsServer.listen(7474, 'tslsynthesissynthesizer.com');
+    httpsServer.listen(443, 'tslsynthesissynthesizer.com');
 	console.log("Service started on on https://tslsynthesissynthesizer.com.");
 
 
@@ -38,17 +37,9 @@ try {
 
 // Serve the homepage
 app.get('/', (req, res) => {
-   let htmlPath = path.join(__dirname, './views/index.html');
-   res.sendFile(htmlPath);
+    res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/beta', (req, res) => {
-   let htmlPath = path.join(__dirname, './views/beta.html');
-   res.sendFile(htmlPath);
-});
-
-
- 
 // GET and POST
 app.get('/synthesized', async (req, res) => {
     let synthesized = await synthesize();
@@ -56,12 +47,10 @@ app.get('/synthesized', async (req, res) => {
     res.send({result:synthesized});
 })
 
-
 app.post('/spec', async (req, res) => {
     await writeTmpFile(req.body.spec);
     res.sendStatus(201);
 })
-
 
 function writeTmpFile(spec){
     tmpFileHeader = "tmp" + Math.random().toString().slice(2,8);

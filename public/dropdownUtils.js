@@ -443,22 +443,6 @@ function weakUntilMap(specOptionNode){
     }
 }
 
-////////////////////
-// Selected Notes //
-////////////////////
-class UnselectedNoteError extends Error {}
-
-function getSelectedNote(noteOption){
-    const selectedNoteNum = parseInt(noteOption);
-    if(Number.isNaN(selectedNoteNum))
-        throw new TypeError("Invalid note number");
-
-    const selectedNote = selectedNotesList[selectedNoteNum];
-    if(!selectedNote)
-        throw new UnselectedNoteError;
-    else
-        return selectedNote;
-}
 
 ////////////////////////
 //  HELPER FUNCTIONS  //
