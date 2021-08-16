@@ -19,9 +19,6 @@ function createSpecificationInterface() {
         case specStyles.written:
             return createSpecificationWritten();
             break;
-        case specStyles.writtenMT:
-            return createSpecificationWrittenMT();
-            break;
         // case specStyles.YourInterface:
         //     return createSpecificationYourInterface();
         //     break; 
@@ -41,9 +38,6 @@ function getSpecFromDOM(){
             break;
         case specStyles.written:
             return getSpecFromDOMDropdownWritten();
-            break;
-        case specStyles.writtenMT:
-            return getSpecFromDOMDropdownWrittenMT();
             break;
         // case specStyles.YourInterface:
         //     return getSpecFromDOMDropdownYourInterface();
@@ -71,10 +65,6 @@ class specStyles {
             //toggleReactiveInputVisibility();
         }
         else if(currSpecStyle === specStyles.written){
-            currSpecStyle = specStyles.writtenMT;
-        }
-        //NEWNEW
-        else if(currSpecStyle === specStyles.writtenMT){
             currSpecStyle = specStyles.simple;
         }
     }

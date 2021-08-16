@@ -1,5 +1,0 @@
-//#LIA#
-always guarantee {
-	gt bottom top -> [up <- True()];
-	!(gt bottom top) -> [up <- False()];
-}

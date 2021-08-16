@@ -1,6 +1,0 @@
-//#LIA#
-
-always guarantee{
-     	[lfo <- False()]   -> [lfoFreq <- add lfoFreq c1()];
-	[lfo <- True()]  -> [lfoFreq <- sub lfoFreq c1()];
-}

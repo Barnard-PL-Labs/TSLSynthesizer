@@ -1,7 +1,7 @@
 always assume{
+!((gt lfoFreq c10()) && !(gt lfoFreq c10()));
 !((lte lfoFreq c10()) && !(lte lfoFreq c10()));
 !(!(gt lfoFreq c10()) && !(lte lfoFreq c10()));
-!((gt lfoFreq c10()) && !(gt lfoFreq c10()));
 !((gt lfoFreq c10()) && (lte lfoFreq c10()));
 (gt lfoFreq c10()) && ([lfoFreq <- ( add lfoFreq c1() )] W (gt lfoFreq c10())) -> F (gt lfoFreq c10());
 (gt lfoFreq c10()) && ([lfoFreq <- ( add lfoFreq c1() )]) -> X  (gt lfoFreq c10());
