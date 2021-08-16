@@ -28,6 +28,4 @@ fi
 tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
 
 # Synthesize the resulting code
-tsltools/cfm2code $aag -o temp.js --webaudio 
-chmod 744 temp.js
-echo "$(cat temp.js)"
+tsltools/cfm2code $aag --webaudio 
