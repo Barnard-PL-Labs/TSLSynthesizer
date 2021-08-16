@@ -139,3 +139,4 @@ dist
 .tern-port
 
 package.json
+a.txt*
