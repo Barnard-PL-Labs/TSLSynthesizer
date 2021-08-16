@@ -95,6 +95,8 @@ let userGainLevel = 0.8
 globalGain.gain.value = userGainLevel;
 globalGain.connect(context.destination);
 
+let mouseOnTextArea = false;
+
 // Waveform
 let waveform = 'sine';
 const waveformControl = document.getElementById("waveform");
@@ -954,11 +956,13 @@ function audioKeyUp(note, frequency) {
 
 function qwertyKeyDown(note, frequency) {
 
-    if(!melodyMakerOn){ //normal
-        lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
-        audioKeyDown(note, frequency);
-        reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
-        saveLastQuerty(noteNameToMidiNote[note]);
+    if (!melodyMakerOn) { //normal
+        if (!mouseOnTextArea) {
+          lightenUp(document.getElementById("note" + noteNameToMidiNote[note].toString()));
+          audioKeyDown(note, frequency);
+          reactiveUpdateOnMIDI(noteNameToMidiNote[note], 127);
+          saveLastQuerty(noteNameToMidiNote[note]);
+        }
     } else { //melody maker
         if (melodyMakerNotes.has(note)){
             melodyMakerNotes.delete(note)
@@ -1003,8 +1007,6 @@ function mouseKeyUp(note, frequency) {
 
 // This function will be removed once synthesized.
 function reactiveUpdateOnMIDI(note, velocity){}
-
-
 
 const allKeys = document.getElementById("keyboard").children[0].children;
 

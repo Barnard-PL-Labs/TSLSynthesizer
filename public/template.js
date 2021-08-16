@@ -9,15 +9,65 @@ const yourInterfaceHTML  = `
 // Option 2) Write your interface in HTML,
 // and use the helper function strToDOM to return a HTML node object
 function createSpecificationInterface() {
-     return createSpecificationSimple();
-    //return createSpecificationComplex();
-    // return createSpecificationWritten();
-	// return strToDOM(yourInterfaceHTML);
+    switch(currSpecStyle){
+        case specStyles.simple:
+            return createSpecificationSimple();
+            break;
+        case specStyles.complex:
+            return createSpecificationComplex();
+            break;
+        case specStyles.written:
+            return createSpecificationWritten();
+            break;
+        // case specStyles.YourInterface:
+        //     return createSpecificationYourInterface();
+        //     break; 
+        default: 
+            console.log('template.js error, no currSpecStyle, default:simple');
+            return getSpecFromDOMDropdownSimple(); 
+    }
 }
 
 function getSpecFromDOM(){
-     return getSpecFromDOMSimple();
-    //return getSpecFromDOMComplex();
-    // return getSpecFromDOMWritten();
-    // return yourInterfaceToLogicFunction();
+    switch(currSpecStyle){
+        case specStyles.simple:
+            return getSpecFromDOMDropdownSimple();
+            break;
+        case specStyles.complex:
+            return getSpecFromDOMDropdownComplex();
+            break;
+        case specStyles.written:
+            return getSpecFromDOMDropdownWritten();
+            break;
+        // case specStyles.YourInterface:
+        //     return getSpecFromDOMDropdownYourInterface();
+        //     break; 
+        default: 
+            console.log('template.js error, no currSpecStyle, default:simple');
+            return getSpecFromDOMDropdownSimple(); 
+    }
 }
+
+// Frontend change stuff
+class specStyles {
+    static simple  = "simple";
+    static complex = "complex";
+    static written = "written";
+    static writtenMT = "writtenMT"
+    static toNextSpecStyle(){
+        if(currSpecStyle === specStyles.simple){
+            currSpecStyle = specStyles.complex;
+            //genuinely not sure if these are needed
+            //toggleReactiveInputVisibility();
+        }
+        else if(currSpecStyle === specStyles.complex){
+            currSpecStyle = specStyles.written;
+            //toggleReactiveInputVisibility();
+        }
+        else if(currSpecStyle === specStyles.written){
+            currSpecStyle = specStyles.simple;
+        }
+    }
+}
+
+let currSpecStyle = specStyles.simple;

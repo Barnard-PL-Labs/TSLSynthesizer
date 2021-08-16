@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 file_name=$1
-file_header=${file_name:0:-4}
+file_header=${file_name%%.*}
 tlsf="$file_header.tlsf"
 aag="$file_header.aag"
 js="$file_header.js"
@@ -28,4 +28,6 @@ fi
 tail -n +2 "$aag" > "$aag.tmp" && mv "$aag.tmp" "$aag"
 
 # Synthesize the resulting code
-tsltools/cfm2code WebAudio $aag
+tsltools/cfm2code $aag -o temp.js --webaudio 
+chmod 744 temp.js
+echo "$(cat temp.js)"

@@ -574,7 +574,7 @@
                 return;
                 }
                 if (keyboardDown(key, that.keyDown)) {
-                    key.preventDefault();
+                    // key.preventDefault();
                 }
             });
 
