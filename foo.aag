@@ -1,0 +1,34 @@
+aag 6 2 1 12 3
+2
+4
+6 12
+1
+0
+9
+8
+1
+0
+11
+10
+1
+0
+1
+0
+8 7 5
+10 7 3
+12 11 9
+i0 p0p0play0note524
+i1 p0p0play0note53
+l0 l0
+o0 u0am2synthesis0f1dtoggle0am2synthesis1b
+o1 u0am2synthesis0am2synthesis
+o2 u0fm2freq0f1ddec24230fm2freq1b
+o3 u0fm2freq0fm2freq
+o4 u0filter2on0f1dtoggle0filter2on1b
+o5 u0filter2on0filter2on
+o6 u0harmonizer2interval0f1ddec24min24250harmonizer2interval1b
+o7 u0harmonizer2interval0harmonizer2interval
+o8 u0waveform0f1dsine1b
+o9 u0waveform0waveform
+o10 u0filter2q0f1ddec240filter2q1b
+o11 u0filter2q0filter2q
