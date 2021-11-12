@@ -65,6 +65,15 @@ node server.js
 ```
 Then open your favorite browser to `localhost:4747`, and enjoy!
 
+#### To refresh the ssl cert
+
+  ps aux | grep 'node'
+  kill (node processes)
+  certbot --standalone renew
+  sudo nohup node server.js &
+  sudo nohup node http_redirect.js &
+
+TODO make it a cron job (renews once every three months?)
 
 ## Acknowledgments
 The UI is adopted from [qwerty hancock](https://stuartmemo.com/qwerty-hancock/).
