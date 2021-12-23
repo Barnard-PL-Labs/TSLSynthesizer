@@ -12,4 +12,4 @@ make
 cd -
 
 echo "Requesting sudo access for docker."
-sudo docker pull wonhyukchoi/tlsf_to_aag
+sudo docker pull wonhyukchoi/tsl-strix-docker
